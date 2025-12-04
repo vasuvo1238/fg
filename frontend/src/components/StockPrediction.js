@@ -116,20 +116,43 @@ export default function StockPrediction({ sessionId }) {
           </Button>
         </div>
         
-        {/* Timeframe Selector */}
-        <div className="mt-4 flex items-center gap-2">
-          <span className="text-sm text-muted-foreground" style={{ fontFamily: 'JetBrains Mono, monospace' }}>Forecast:</span>
-          {["7d", "30d", "90d", "180d"].map((tf) => (
+        {/* Timeframe & Model Selector */}
+        <div className="mt-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground" style={{ fontFamily: 'JetBrains Mono, monospace' }}>Forecast:</span>
+            {["7d", "30d", "90d", "180d"].map((tf) => (
+              <Button
+                key={tf}
+                data-testid={`timeframe-${tf}`}
+                variant={timeframe === tf ? "default" : "outline"}
+                size="sm"
+                onClick={() => setTimeframe(tf)}
+              >
+                {tf}
+              </Button>
+            ))}
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground" style={{ fontFamily: 'JetBrains Mono, monospace' }}>Model:</span>
             <Button
-              key={tf}
-              data-testid={`timeframe-${tf}`}
-              variant={timeframe === tf ? "default" : "outline"}
+              data-testid="standard-model-btn"
+              variant={!useEnsemble ? "default" : "outline"}
               size="sm"
-              onClick={() => setTimeframe(tf)}
+              onClick={() => setUseEnsemble(false)}
             >
-              {tf}
+              Standard
             </Button>
-          ))}
+            <Button
+              data-testid="ensemble-model-btn"
+              variant={useEnsemble ? "default" : "outline"}
+              size="sm"
+              onClick={() => setUseEnsemble(true)}
+              className="gap-1"
+            >
+              <Activity className="w-3 h-3" />
+              Ensemble (LSTM + Mean Reversion)
+            </Button>
+          </div>
         </div>
       </Card>
 
