@@ -678,7 +678,8 @@ Include appropriate disclaimer about financial advice."""
             "technical_indicators": indicators,
             "trading_signals": signals,
             "mean_reversion_analysis": arbitrage_score,
-            "ai_analysis": ai_analysis
+            "ai_analysis": ai_analysis,
+            "explanations": explanations
         }
     except Exception as e:
         logger.error(f"Error in ensemble prediction for {symbol}: {str(e)}")
