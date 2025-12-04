@@ -783,6 +783,222 @@ async def get_autohedge_history(symbol: str, limit: int = 10):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+# ============== Options Strategy Builder ==============
+
+class OptionLegRequest(BaseModel):
+    option_type: str  # 'call' or 'put'
+    action: str  # 'buy' or 'sell'
+    strike: float
+    quantity: int
+    days_to_expiry: int
+
+class CustomStrategyRequest(BaseModel):
+    strategy_name: str
+    underlying_symbol: str
+    spot_price: float
+    legs: List[OptionLegRequest]
+    volatility: Optional[float] = 0.25
+    risk_free_rate: Optional[float] = 0.05
+
+class TemplateStrategyRequest(BaseModel):
+    template_name: str
+    underlying_symbol: str
+    spot_price: float
+    days_to_expiry: int = 30
+    strike_width: Optional[float] = None
+    volatility: Optional[float] = 0.25
+
+@api_router.post("/options/strategy/custom")
+async def build_custom_strategy(request: CustomStrategyRequest):
+    """Build a custom options strategy"""
+    try:
+        strategy = OptionsStrategy(
+            request.strategy_name,
+            request.underlying_symbol,
+            request.spot_price
+        )
+        strategy.volatility = request.volatility
+        strategy.risk_free_rate = request.risk_free_rate
+        
+        # Add all legs
+        for leg in request.legs:
+            strategy.add_leg(
+                leg.option_type,
+                leg.action,
+                leg.strike,
+                leg.quantity,
+                leg.days_to_expiry
+            )
+        
+        # Get complete analysis
+        loop = asyncio.get_event_loop()
+        summary = await loop.run_in_executor(executor, strategy.get_strategy_summary)
+        
+        # Save to database
+        summary["created_at"] = datetime.now(timezone.utc).isoformat()
+        await db.options_strategies.insert_one(summary)
+        
+        return summary
+        
+    except Exception as e:
+        logger.error(f"Error building custom strategy: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.post("/options/strategy/template")
+async def build_template_strategy(request: TemplateStrategyRequest):
+    """Build a strategy from template"""
+    try:
+        if request.template_name not in STRATEGY_TEMPLATES:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Unknown template. Available: {list(STRATEGY_TEMPLATES.keys())}"
+            )
+        
+        # Build strategy from template
+        loop = asyncio.get_event_loop()
+        strategy_func = STRATEGY_TEMPLATES[request.template_name]
+        
+        if request.strike_width:
+            strategy = await loop.run_in_executor(
+                executor,
+                strategy_func,
+                request.spot_price,
+                request.strike_width,
+                request.days_to_expiry
+            )
+        else:
+            strategy = await loop.run_in_executor(
+                executor,
+                strategy_func,
+                request.spot_price,
+                None,
+                request.days_to_expiry
+            )
+        
+        strategy.underlying_symbol = request.underlying_symbol
+        strategy.volatility = request.volatility
+        
+        # Get analysis
+        summary = await loop.run_in_executor(executor, strategy.get_strategy_summary)
+        
+        # Save to database
+        summary["created_at"] = datetime.now(timezone.utc).isoformat()
+        await db.options_strategies.insert_one(summary)
+        
+        return summary
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error building template strategy: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/options/templates")
+async def list_strategy_templates():
+    """List all available strategy templates"""
+    return {
+        "templates": [
+            {
+                "name": "bull_call_spread",
+                "description": "Moderately bullish, limited risk/reward",
+                "market_view": "Bullish",
+                "risk": "Limited",
+                "reward": "Limited"
+            },
+            {
+                "name": "bear_put_spread",
+                "description": "Moderately bearish, limited risk/reward",
+                "market_view": "Bearish",
+                "risk": "Limited",
+                "reward": "Limited"
+            },
+            {
+                "name": "long_straddle",
+                "description": "Big move expected (either direction)",
+                "market_view": "Volatile",
+                "risk": "Limited (premium paid)",
+                "reward": "Unlimited"
+            },
+            {
+                "name": "iron_condor",
+                "description": "Range-bound, neutral",
+                "market_view": "Neutral",
+                "risk": "Limited",
+                "reward": "Limited"
+            },
+            {
+                "name": "long_strangle",
+                "description": "Big move expected, lower cost than straddle",
+                "market_view": "Volatile",
+                "risk": "Limited (premium paid)",
+                "reward": "Unlimited"
+            },
+            {
+                "name": "butterfly_spread",
+                "description": "Neutral, low risk/reward",
+                "market_view": "Neutral",
+                "risk": "Limited",
+                "reward": "Limited"
+            }
+        ]
+    }
+
+@api_router.get("/options/price")
+async def calculate_option_price(
+    spot_price: float,
+    strike: float,
+    days_to_expiry: int,
+    volatility: float = 0.25,
+    risk_free_rate: float = 0.05,
+    option_type: str = "call"
+):
+    """Calculate single option price and Greeks"""
+    try:
+        time_to_expiry = days_to_expiry / 365.0
+        
+        loop = asyncio.get_event_loop()
+        
+        price = await loop.run_in_executor(
+            executor,
+            black_scholes,
+            spot_price, strike, time_to_expiry, risk_free_rate, volatility, option_type
+        )
+        
+        greeks = await loop.run_in_executor(
+            executor,
+            calculate_greeks,
+            spot_price, strike, time_to_expiry, risk_free_rate, volatility, option_type
+        )
+        
+        return {
+            "price": round(price, 2),
+            "greeks": greeks,
+            "inputs": {
+                "spot_price": spot_price,
+                "strike": strike,
+                "days_to_expiry": days_to_expiry,
+                "volatility": volatility,
+                "option_type": option_type
+            }
+        }
+        
+    except Exception as e:
+        logger.error(f"Error calculating option price: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/options/strategies/history")
+async def get_strategy_history(limit: int = 20):
+    """Get recently built strategies"""
+    try:
+        strategies = await db.options_strategies.find(
+            {},
+            {"_id": 0}
+        ).sort("created_at", -1).limit(limit).to_list(limit)
+        
+        return {"strategies": strategies}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 # ============== Portfolio Management ==============
 
 @api_router.post("/portfolio/add")
