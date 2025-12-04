@@ -269,7 +269,6 @@ export default function StockPrediction({ sessionId }) {
 
       {/* Prediction Results */}
       {prediction && (
-        {/* Charts Section - Always visible when stock data available */}
         {(historicalData || stockData) && (
           <div className="mb-6 space-y-4">
             <PriceHistoryChart 
