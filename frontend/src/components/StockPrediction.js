@@ -32,6 +32,8 @@ export default function StockPrediction({ sessionId }) {
   const [timeframe, setTimeframe] = useState("30d");
   const [activeTab, setActiveTab] = useState("prediction");
   const [useEnsemble, setUseEnsemble] = useState(true);
+  const [showSettings, setShowSettings] = useState(false);
+  const [customWeights, setCustomWeights] = useState(null);
 
   const searchStock = async () => {
     if (!symbol.trim()) return;
