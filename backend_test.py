@@ -255,6 +255,156 @@ class FinancialChatbotTester:
             self.log_test("Session Deletion", False, str(e))
             return False
 
+    def test_stock_info_endpoint(self):
+        """Test stock info endpoint"""
+        try:
+            # Test with AAPL (Apple)
+            symbol = "AAPL"
+            response = requests.get(
+                f"{self.api_url}/stocks/{symbol}/info",
+                timeout=30
+            )
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}"
+            
+            if success:
+                data = response.json()
+                required_fields = ["symbol", "name", "current_price", "market_cap"]
+                missing_fields = [field for field in required_fields if field not in data or data[field] is None]
+                
+                if missing_fields:
+                    success = False
+                    details += f", Missing/null fields: {missing_fields}"
+                elif data.get("symbol") != symbol:
+                    success = False
+                    details += f", Symbol mismatch: expected {symbol}, got {data.get('symbol')}"
+                elif not isinstance(data.get("current_price"), (int, float)) or data["current_price"] <= 0:
+                    success = False
+                    details += f", Invalid current_price: {data.get('current_price')}"
+                else:
+                    details += f", Stock: {data['name']}, Price: ${data['current_price']:.2f}"
+                    
+            self.log_test("Stock Info Endpoint", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Stock Info Endpoint", False, str(e))
+            return False
+
+    def test_stock_prediction_endpoint(self):
+        """Test stock prediction endpoint"""
+        try:
+            # Test with AAPL (Apple)
+            symbol = "AAPL"
+            payload = {
+                "symbol": symbol,
+                "timeframe": "30d"
+            }
+            
+            response = requests.post(
+                f"{self.api_url}/stocks/{symbol}/predict",
+                json=payload,
+                headers={"Content-Type": "application/json"},
+                timeout=60  # Longer timeout for AI analysis
+            )
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}"
+            
+            if success:
+                data = response.json()
+                required_sections = ["current_info", "technical_indicators", "statistical_prediction", "trading_signals", "ai_analysis"]
+                missing_sections = [section for section in required_sections if section not in data]
+                
+                if missing_sections:
+                    success = False
+                    details += f", Missing sections: {missing_sections}"
+                else:
+                    # Check technical indicators
+                    tech_indicators = data["technical_indicators"]
+                    if "moving_averages" not in tech_indicators or "rsi" not in tech_indicators:
+                        success = False
+                        details += ", Missing technical indicator data"
+                    
+                    # Check statistical prediction
+                    stat_pred = data["statistical_prediction"]
+                    if "predicted_price_end" not in stat_pred or "trend" not in stat_pred:
+                        success = False
+                        details += ", Missing statistical prediction data"
+                    
+                    # Check AI analysis
+                    if not isinstance(data["ai_analysis"], str) or len(data["ai_analysis"]) < 50:
+                        success = False
+                        details += ", AI analysis too short or missing"
+                    
+                    if success:
+                        details += f", Prediction: {stat_pred.get('trend', 'N/A')}, AI analysis: {len(data['ai_analysis'])} chars"
+                    
+            self.log_test("Stock Prediction Endpoint", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Stock Prediction Endpoint", False, str(e))
+            return False
+
+    def test_stock_search_endpoint(self):
+        """Test stock search endpoint"""
+        try:
+            # Test search functionality
+            query = "GOOGL"
+            response = requests.get(
+                f"{self.api_url}/stocks/search/{query}",
+                timeout=30
+            )
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}"
+            
+            if success:
+                data = response.json()
+                if "symbol" not in data or "name" not in data:
+                    success = False
+                    details += ", Missing symbol or name in search result"
+                elif data.get("symbol") != query:
+                    success = False
+                    details += f", Symbol mismatch: expected {query}, got {data.get('symbol')}"
+                else:
+                    details += f", Found: {data['name']} ({data['symbol']})"
+                    
+            self.log_test("Stock Search Endpoint", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Stock Search Endpoint", False, str(e))
+            return False
+
+    def test_invalid_stock_symbol(self):
+        """Test handling of invalid stock symbol"""
+        try:
+            # Test with invalid symbol
+            symbol = "INVALIDSTOCK123"
+            response = requests.get(
+                f"{self.api_url}/stocks/{symbol}/info",
+                timeout=30
+            )
+            
+            # Should return 404 or 500 for invalid stock
+            success = response.status_code in [404, 500]
+            details = f"Status: {response.status_code}"
+            
+            if not success:
+                details += ", Should return error for invalid stock symbol"
+            else:
+                details += ", Correctly handled invalid stock symbol"
+                    
+            self.log_test("Invalid Stock Symbol Handling", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Invalid Stock Symbol Handling", False, str(e))
+            return False
+
     def test_llm_integration(self):
         """Test LLM integration with complex finance question"""
         try:
