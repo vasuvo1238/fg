@@ -126,7 +126,7 @@ def lstm_prediction(df: pd.DataFrame, days_ahead: int = 30, symbol: str = None):
         lookback_days = 60
         
         # Check if cached model exists
-        cache_file = MODEL_CACHE_DIR / f"{symbol}_lstm_model.pkl" if symbol else None
+        cache_file = MODEL_CACHE_DIR / f"{symbol}_lstm_model.keras" if symbol else None
         scaler_file = MODEL_CACHE_DIR / f"{symbol}_scaler.pkl" if symbol else None
         
         use_cache = False
