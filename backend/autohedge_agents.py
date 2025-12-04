@@ -23,6 +23,8 @@ class AgentAnalysis(BaseModel):
 
 class TradeRecommendation(BaseModel):
     """Structured trade recommendation output"""
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+    
     action: str  # BUY, SELL, HOLD
     symbol: str
     consensus_score: float  # 0-100
