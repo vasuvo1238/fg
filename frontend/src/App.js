@@ -184,6 +184,8 @@ function App() {
             <StockPrediction sessionId={sessionId} />
           ) : activeView === "options" ? (
             <OptionsStrategyBuilder />
+          ) : activeView === "analytics" ? (
+            <AdvancedAnalytics />
           ) : (
             <div>
           {showWelcome && messages.length === 0 && (
