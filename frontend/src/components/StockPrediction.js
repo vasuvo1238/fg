@@ -281,7 +281,11 @@ export default function StockPrediction({ sessionId }) {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <PredictionChart
                   currentPrice={stockData?.current_price}
-                  predictions={prediction.statistical_prediction?.predictions || prediction.ensemble_prediction?.predictions || []}
+                  predictions={
+                    prediction.individual_predictions?.lstm?.predictions || 
+                    prediction.statistical_prediction?.predictions || 
+                    []
+                  }
                   confidenceInterval={prediction.confidence_interval}
                 />
                 <VolumeChart historicalData={historicalData} />
