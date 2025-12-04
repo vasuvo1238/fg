@@ -267,16 +267,16 @@ export default function StockPrediction({ sessionId }) {
         </Card>
       )}
 
-      {/* Prediction Results */}
-      {prediction && (
-        {(historicalData || stockData) && (
-          <div className="mb-6 space-y-4">
-            <PriceHistoryChart 
-              historicalData={historicalData} 
-              stockName={stockData?.name || symbol.toUpperCase()}
-            />
-            
-            {prediction && (
+      {/* Price Charts - Show when we have historical data */}
+      {(historicalData && stockData) && (
+        <div className="mb-6 space-y-4">
+          <PriceHistoryChart 
+            historicalData={historicalData} 
+            stockName={stockData?.name || symbol.toUpperCase()}
+          />
+          
+          {prediction && (
+            <>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <PredictionChart
                   currentPrice={stockData?.current_price}
@@ -289,17 +289,20 @@ export default function StockPrediction({ sessionId }) {
                 />
                 <VolumeChart historicalData={historicalData} />
               </div>
-            )}
-            
-            {prediction?.technical_indicators && (
-              <TechnicalIndicatorsChart
-                historicalData={historicalData}
-                indicators={prediction.technical_indicators}
-              />
-            )}
-          </div>
-        )}
+              
+              {prediction?.technical_indicators && (
+                <TechnicalIndicatorsChart
+                  historicalData={historicalData}
+                  indicators={prediction.technical_indicators}
+                />
+              )}
+            </>
+          )}
+        </div>
+      )}
 
+      {/* Prediction Results */}
+      {prediction && (
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="prediction">Prediction</TabsTrigger>
