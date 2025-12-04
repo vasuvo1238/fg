@@ -53,7 +53,7 @@ export default function StockPrediction({ sessionId }) {
       // Fetch stock info and historical data in parallel
       const [infoResponse, histResponse] = await Promise.all([
         axios.get(`${API}/stocks/${symbol.toUpperCase()}/info`),
-        axios.get(`${API}/stocks/${symbol.toUpperCase()}/historical?period=3mo`)
+        axios.get(`${API}/stocks/${symbol.toUpperCase()}/historical?period=${historicalPeriod}`)
       ]);
       
       setStockData(infoResponse.data);
@@ -61,6 +61,29 @@ export default function StockPrediction({ sessionId }) {
       toast.success(`Loaded ${infoResponse.data.name}`);
     } catch (error) {
       toast.error("Stock not found");
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getAutoHedgeRecommendation = async () => {
+    if (!symbol.trim()) return;
+
+    setLoading(true);
+    setShowAutohedge(true);
+    try {
+      const response = await axios.post(`${API}/autohedge/analyze`, {
+        symbol: symbol.toUpperCase(),
+        task: "Analyze this stock for investment opportunity",
+        portfolio_allocation: 100000,
+        timeframe: timeframe
+      });
+      
+      setAutohedgeAnalysis(response.data);
+      toast.success("AutoHedge Analysis Complete!");
+    } catch (error) {
+      toast.error("AutoHedge analysis failed");
       console.error(error);
     } finally {
       setLoading(false);
