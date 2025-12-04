@@ -309,7 +309,7 @@ export default function AdvancedAnalytics() {
                   <div className="p-3 bg-secondary rounded-lg">
                     <p className="text-xs text-muted-foreground">Best Accuracy</p>
                     <p className="text-xl font-bold text-green-600" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
-                      {performanceData.metrics.best_accuracy.toFixed(1)}%
+                      {performanceData.metrics?.best_accuracy ? performanceData.metrics.best_accuracy.toFixed(1) : "0.0"}%
                     </p>
                   </div>
                   <div className="p-3 bg-secondary rounded-lg">
