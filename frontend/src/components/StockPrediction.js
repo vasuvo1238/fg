@@ -269,6 +269,34 @@ export default function StockPrediction({ sessionId }) {
 
       {/* Prediction Results */}
       {prediction && (
+        {/* Charts Section - Always visible when stock data available */}
+        {(historicalData || stockData) && (
+          <div className="mb-6 space-y-4">
+            <PriceHistoryChart 
+              historicalData={historicalData} 
+              stockName={stockData?.name || symbol.toUpperCase()}
+            />
+            
+            {prediction && (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <PredictionChart
+                  currentPrice={stockData?.current_price}
+                  predictions={prediction.statistical_prediction?.predictions || prediction.ensemble_prediction?.predictions || []}
+                  confidenceInterval={prediction.confidence_interval}
+                />
+                <VolumeChart historicalData={historicalData} />
+              </div>
+            )}
+            
+            {prediction?.technical_indicators && (
+              <TechnicalIndicatorsChart
+                historicalData={historicalData}
+                indicators={prediction.technical_indicators}
+              />
+            )}
+          </div>
+        )}
+
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="prediction">Prediction</TabsTrigger>
