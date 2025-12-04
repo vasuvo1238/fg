@@ -171,6 +171,8 @@ function App() {
         <div className="max-w-6xl mx-auto px-6 pt-8 pb-4">
           {activeView === "stocks" ? (
             <StockPrediction sessionId={sessionId} />
+          ) : activeView === "options" ? (
+            <OptionsStrategyBuilder />
           ) : (
             <div>
           {showWelcome && messages.length === 0 && (
