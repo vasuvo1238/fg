@@ -223,30 +223,49 @@ export default function StockPrediction({ sessionId }) {
           <TabsContent value="prediction" className="space-y-4">
             <Card className="p-6">
               <h3 className="text-lg font-bold mb-4" style={{ fontFamily: 'Fraunces, serif' }}>
-                Price Prediction ({timeframe})
+                {prediction.ensemble_prediction ? 'Ensemble Prediction' : 'Price Prediction'} ({timeframe})
               </h3>
+              
+              {prediction.ensemble_prediction && (
+                <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded">
+                  <p className="text-xs text-blue-900">
+                    <strong>Ensemble Model:</strong> Combines LSTM (40%), Linear Regression (20%), Z-Score Mean Reversion (20%), and Ornstein-Uhlenbeck (20%) for higher accuracy.
+                  </p>
+                </div>
+              )}
               
               <div className="grid grid-cols-3 gap-4 mb-6">
                 <div className="text-center p-4 bg-secondary rounded-lg">
                   <p className="text-xs text-muted-foreground mb-1">Current Price</p>
                   <p className="text-2xl font-bold" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
-                    {formatPrice(prediction.statistical_prediction.current_price)}
+                    {formatPrice(stockData.current_price)}
                   </p>
                 </div>
                 <div className="text-center p-4 bg-secondary rounded-lg">
                   <p className="text-xs text-muted-foreground mb-1">Predicted Price</p>
                   <p className="text-2xl font-bold" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
-                    {formatPrice(prediction.statistical_prediction.predicted_price_end)}
+                    {formatPrice(
+                      prediction.ensemble_prediction 
+                        ? prediction.ensemble_prediction.predicted_price
+                        : prediction.statistical_prediction.predicted_price_end
+                    )}
                   </p>
                 </div>
-                <div className={`text-center p-4 rounded-lg ${prediction.statistical_prediction.trend === 'bullish' ? 'bg-green-100' : 'bg-red-100'}`}>
+                <div className={`text-center p-4 rounded-lg ${
+                  (prediction.ensemble_prediction?.trend || prediction.statistical_prediction.trend) === 'bullish' 
+                    ? 'bg-green-100' : 'bg-red-100'
+                }`}>
                   <p className="text-xs text-muted-foreground mb-1">Expected Change</p>
                   <p className="text-2xl font-bold flex items-center justify-center gap-2" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
-                    {prediction.statistical_prediction.trend === 'bullish' ? 
+                    {(prediction.ensemble_prediction?.trend || prediction.statistical_prediction.trend) === 'bullish' ? 
                       <TrendingUp className="w-5 h-5 text-green-600" /> : 
                       <TrendingDown className="w-5 h-5 text-red-600" />
                     }
-                    {formatPercent(prediction.statistical_prediction.price_change_percent)}
+                    {formatPercent(
+                      prediction.ensemble_prediction
+                        ? prediction.ensemble_prediction.price_change_percent
+                        : prediction.statistical_prediction.price_change_percent
+                    )}
                   </p>
                 </div>
               </div>
@@ -254,21 +273,183 @@ export default function StockPrediction({ sessionId }) {
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
                   <span className="text-sm">Confidence</span>
-                  <span className="font-semibold">{prediction.statistical_prediction.confidence.toFixed(1)}%</span>
+                  <span className="font-semibold">
+                    {(prediction.ensemble_prediction?.confidence || prediction.statistical_prediction.confidence).toFixed(1)}%
+                  </span>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">Volatility</span>
-                  <span className="font-semibold">{prediction.statistical_prediction.volatility.toFixed(2)}%</span>
-                </div>
+                {prediction.statistical_prediction && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Volatility</span>
+                    <span className="font-semibold">{prediction.statistical_prediction.volatility.toFixed(2)}%</span>
+                  </div>
+                )}
                 <div className="flex justify-between items-center">
                   <span className="text-sm">Trend</span>
-                  <span className={`font-semibold capitalize ${prediction.statistical_prediction.trend === 'bullish' ? 'text-green-600' : 'text-red-600'}`}>
-                    {prediction.statistical_prediction.trend}
+                  <span className={`font-semibold capitalize ${
+                    (prediction.ensemble_prediction?.trend || prediction.statistical_prediction.trend) === 'bullish' 
+                      ? 'text-green-600' : 'text-red-600'
+                  }`}>
+                    {prediction.ensemble_prediction?.trend || prediction.statistical_prediction.trend}
                   </span>
                 </div>
               </div>
             </Card>
           </TabsContent>
+
+          {prediction?.individual_predictions && (
+            <TabsContent value="models" className="space-y-4">
+              <Card className="p-6">
+                <h3 className="text-lg font-bold mb-4" style={{ fontFamily: 'Fraunces, serif' }}>
+                  Model Comparison
+                </h3>
+                
+                <div className="space-y-4">
+                  {/* LSTM */}
+                  <div className="p-4 border rounded-lg">
+                    <div className="flex items-center justify-between mb-2">
+                      <div>
+                        <h4 className="font-semibold">LSTM Neural Network</h4>
+                        <p className="text-xs text-muted-foreground">Deep learning time series model</p>
+                      </div>
+                      <span className="px-3 py-1 bg-blue-100 text-blue-800 text-xs font-bold rounded">40% Weight</span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-4 mt-3">
+                      <div>
+                        <p className="text-xs text-muted-foreground">Predicted</p>
+                        <p className="font-bold" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+                          {formatPrice(prediction.individual_predictions.lstm.predicted_price_end)}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground">Change</p>
+                        <p className={`font-bold ${prediction.individual_predictions.lstm.price_change_percent >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                          {formatPercent(prediction.individual_predictions.lstm.price_change_percent)}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground">Confidence</p>
+                        <p className="font-bold">{prediction.individual_predictions.lstm.confidence.toFixed(1)}%</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Linear Regression */}
+                  <div className="p-4 border rounded-lg">
+                    <div className="flex items-center justify-between mb-2">
+                      <div>
+                        <h4 className="font-semibold">Linear Regression</h4>
+                        <p className="text-xs text-muted-foreground">Statistical trend analysis</p>
+                      </div>
+                      <span className="px-3 py-1 bg-gray-100 text-gray-800 text-xs font-bold rounded">20% Weight</span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-4 mt-3">
+                      <div>
+                        <p className="text-xs text-muted-foreground">Predicted</p>
+                        <p className="font-bold" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+                          {formatPrice(prediction.individual_predictions.linear_regression.predicted_price_end)}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground">Change</p>
+                        <p className={`font-bold ${prediction.individual_predictions.linear_regression.price_change_percent >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                          {formatPercent(prediction.individual_predictions.linear_regression.price_change_percent)}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground">Confidence</p>
+                        <p className="font-bold">{prediction.individual_predictions.linear_regression.confidence.toFixed(1)}%</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Z-Score Mean Reversion */}
+                  <div className="p-4 border rounded-lg">
+                    <div className="flex items-center justify-between mb-2">
+                      <div>
+                        <h4 className="font-semibold">Z-Score Mean Reversion</h4>
+                        <p className="text-xs text-muted-foreground">Statistical mean reversion analysis</p>
+                      </div>
+                      <span className="px-3 py-1 bg-yellow-100 text-yellow-800 text-xs font-bold rounded">20% Weight</span>
+                    </div>
+                    <div className="grid grid-cols-4 gap-4 mt-3">
+                      <div>
+                        <p className="text-xs text-muted-foreground">Predicted</p>
+                        <p className="font-bold" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+                          {formatPrice(prediction.individual_predictions.z_score_mean_reversion.predicted_price_end)}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground">Change</p>
+                        <p className={`font-bold ${prediction.individual_predictions.z_score_mean_reversion.price_change_percent >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                          {formatPercent(prediction.individual_predictions.z_score_mean_reversion.price_change_percent)}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground">Z-Score</p>
+                        <p className="font-bold">{prediction.individual_predictions.z_score_mean_reversion.z_score.toFixed(2)}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground">Signal</p>
+                        <p className="font-bold text-xs">{prediction.individual_predictions.z_score_mean_reversion.signal}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Ornstein-Uhlenbeck */}
+                  <div className="p-4 border rounded-lg">
+                    <div className="flex items-center justify-between mb-2">
+                      <div>
+                        <h4 className="font-semibold">Ornstein-Uhlenbeck Process</h4>
+                        <p className="text-xs text-muted-foreground">Stochastic mean reversion model</p>
+                      </div>
+                      <span className="px-3 py-1 bg-purple-100 text-purple-800 text-xs font-bold rounded">20% Weight</span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-4 mt-3">
+                      <div>
+                        <p className="text-xs text-muted-foreground">Predicted</p>
+                        <p className="font-bold" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+                          {formatPrice(prediction.individual_predictions.ornstein_uhlenbeck.predicted_price_end)}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground">Change</p>
+                        <p className={`font-bold ${prediction.individual_predictions.ornstein_uhlenbeck.price_change_percent >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                          {formatPercent(prediction.individual_predictions.ornstein_uhlenbeck.price_change_percent)}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground">Half-Life</p>
+                        <p className="font-bold">
+                          {prediction.individual_predictions.ornstein_uhlenbeck.half_life_days 
+                            ? `${prediction.individual_predictions.ornstein_uhlenbeck.half_life_days.toFixed(0)}d`
+                            : 'N/A'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Mean Reversion Analysis */}
+                  {prediction.mean_reversion_analysis && (
+                    <div className="p-4 border-2 border-primary rounded-lg bg-primary/5">
+                      <h4 className="font-semibold mb-3">Mean Reversion Analysis</h4>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-xs text-muted-foreground">Reversion Score</p>
+                          <p className="text-2xl font-bold">{prediction.mean_reversion_analysis.mean_reversion_score.toFixed(0)}/100</p>
+                          <p className="text-xs mt-1">{prediction.mean_reversion_analysis.interpretation.overall}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-muted-foreground">Hurst Exponent</p>
+                          <p className="text-2xl font-bold">{prediction.mean_reversion_analysis.hurst_exponent.toFixed(3)}</p>
+                          <p className="text-xs mt-1">{prediction.mean_reversion_analysis.interpretation.hurst}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </Card>
+            </TabsContent>
+          )}
 
           <TabsContent value="technical" className="space-y-4">
             <Card className="p-6">
