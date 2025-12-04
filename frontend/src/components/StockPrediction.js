@@ -53,13 +53,17 @@ export default function StockPrediction({ sessionId }) {
 
     setLoading(true);
     try {
-      const response = await axios.post(`${API}/stocks/${symbol.toUpperCase()}/predict`, {
+      const endpoint = useEnsemble 
+        ? `${API}/stocks/${symbol.toUpperCase()}/predict/ensemble`
+        : `${API}/stocks/${symbol.toUpperCase()}/predict`;
+      
+      const response = await axios.post(endpoint, {
         symbol: symbol.toUpperCase(),
         timeframe
       });
       setPrediction(response.data);
       setStockData(response.data.current_info);
-      toast.success("Prediction generated!");
+      toast.success(`${useEnsemble ? 'Ensemble' : 'Standard'} prediction generated!`);
     } catch (error) {
       toast.error("Failed to generate prediction");
       console.error(error);
