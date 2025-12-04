@@ -41,6 +41,9 @@ export default function StockPrediction({ sessionId }) {
   const [showSettings, setShowSettings] = useState(false);
   const [customWeights, setCustomWeights] = useState(null);
   const [historicalData, setHistoricalData] = useState(null);
+  const [historicalPeriod, setHistoricalPeriod] = useState("1mo");
+  const [autohedgeAnalysis, setAutohedgeAnalysis] = useState(null);
+  const [showAutohedge, setShowAutohedge] = useState(false);
 
   const searchStock = async () => {
     if (!symbol.trim()) return;
