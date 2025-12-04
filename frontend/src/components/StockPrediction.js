@@ -84,9 +84,15 @@ export default function StockPrediction({ sessionId }) {
         endpoint = `${API}/stocks/${symbol.toUpperCase()}/predict`;
       }
       
-      const response = await axios.post(endpoint, requestData);
-      setPrediction(response.data);
-      setStockData(response.data.current_info);
+      // Fetch prediction and historical data
+      const [predResponse, histResponse] = await Promise.all([
+        axios.post(endpoint, requestData),
+        axios.get(`${API}/stocks/${symbol.toUpperCase()}/historical?period=3mo`)
+      ]);
+      
+      setPrediction(predResponse.data);
+      setStockData(predResponse.data.current_info);
+      setHistoricalData(histResponse.data.data);
       
       const predType = customWeights ? 'Custom' : useEnsemble ? 'Ensemble' : 'Standard';
       toast.success(`${predType} prediction generated!`);
