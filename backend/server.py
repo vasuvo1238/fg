@@ -6,11 +6,21 @@ import os
 import logging
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 import uuid
 from datetime import datetime, timezone
 from emergentintegrations.llm.chat import LlmChat, UserMessage
 import re
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
+from stock_analysis import (
+    get_stock_info,
+    get_historical_data,
+    calculate_technical_indicators,
+    statistical_prediction,
+    generate_trading_signals,
+    compare_stocks
+)
 
 
 ROOT_DIR = Path(__file__).parent
