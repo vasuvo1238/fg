@@ -190,8 +190,8 @@ async def chat(request: ChatRequest):
         intent = detect_intent(request.message)
         detected_tickers = [t for t in intent["tickers"] if validate_ticker(t)] if intent["tickers"] else []
         
-        # Check guardrails
-        is_allowed, guardrail_msg = check_guardrails(request.message)
+        # Check guardrails (pass detected tickers to allow stock queries)
+        is_allowed, guardrail_msg = check_guardrails(request.message, detected_tickers)
         
         if not is_allowed:
             # Save user message with guardrail flag
