@@ -36,7 +36,7 @@ class TradeRecommendation(BaseModel):
     time_horizon: str  # "short-term", "medium-term", "long-term"
     risk_level: int  # 1-10
     agents_analysis: Dict[str, AgentAnalysis]
-    execution_plan: Dict[str, any]
+    execution_plan: Dict[str, Any]
     timestamp: str
 
 
