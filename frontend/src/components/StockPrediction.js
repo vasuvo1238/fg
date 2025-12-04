@@ -169,15 +169,17 @@ export default function StockPrediction({ sessionId }) {
           >
             Search
           </Button>
-          <Button
-            data-testid="predict-button"
-            onClick={getPrediction}
-            disabled={loading || !symbol.trim()}
-            className="bg-primary"
-          >
-            <Activity className="w-4 h-4 mr-2" />
-            Predict
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              data-testid="autohedge-button"
+              onClick={getAutoHedgeRecommendation}
+              disabled={loading || !symbol.trim()}
+              className="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
+            >
+              <Activity className="w-4 h-4 mr-2" />
+              AutoHedge Analysis
+            </Button>
+          </div>
         </div>
         
         {/* Timeframe, Historical Period & Model Selector */}
