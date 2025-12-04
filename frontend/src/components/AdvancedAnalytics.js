@@ -343,7 +343,7 @@ export default function AdvancedAnalytics() {
                         </div>
                         <div className="text-right">
                           <p className="font-bold">
-                            Accuracy: {pred.accuracy.toFixed(1)}%
+                            Accuracy: {pred.accuracy ? pred.accuracy.toFixed(1) : "0.0"}%
                           </p>
                           <p className="text-xs text-muted-foreground">
                             Predicted: {formatPercent(pred.predicted_change_percent)} | 
