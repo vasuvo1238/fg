@@ -102,83 +102,85 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Test the Options Strategy Builder feature with template mode (Bull Call Spread) and custom mode functionality"
+user_problem_statement: "Test the new Advanced Analytics feature with Model Performance, Pairs Trading, and Backtesting tabs"
 
 frontend:
-  - task: "Options Strategy Builder - Template Mode"
+  - task: "Advanced Analytics - Navigation and Tab Structure"
     implemented: true
-    working: true
-    file: "/app/frontend/src/components/OptionsStrategyBuilder.js"
+    working: "NA"
+    file: "/app/frontend/src/components/AdvancedAnalytics.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
         - working: "NA"
           agent: "testing"
-          comment: "Starting testing of Options Strategy Builder template mode functionality"
-        - working: true
-          agent: "testing"
-          comment: "✅ PASSED - Template mode fully functional. Successfully tested Bull Call Spread with spot price 150, DTE 30. All summary cards display correctly (Net Premium: Debit $2.81, Max Profit: $4.69, Max Loss: $2.81, Breakeven: $152.81). Template selection and description work properly."
+          comment: "Starting testing of Advanced Analytics navigation and tab structure - verifying 3 sub-tabs load correctly"
 
-  - task: "Options Strategy Builder - Custom Mode"
+  - task: "Advanced Analytics - Model Performance Tab"
     implemented: true
-    working: true
-    file: "/app/frontend/src/components/OptionsStrategyBuilder.js"
+    working: "NA"
+    file: "/app/frontend/src/components/AdvancedAnalytics.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
         - working: "NA"
           agent: "testing"
-          comment: "Starting testing of Options Strategy Builder custom mode functionality"
-        - working: true
-          agent: "testing"
-          comment: "✅ PASSED - Custom mode fully functional. Successfully created custom strategy with 2 legs: Buy Call Strike 100 and Sell Call Strike 110. Add/remove legs work correctly, dropdown selections function properly, and strategy builds successfully with accurate results."
+          comment: "Starting testing of Model Performance tab - dropdown, symbol input, Load Performance button functionality"
 
-  - task: "Options Strategy Builder - Results Display"
+  - task: "Advanced Analytics - Pairs Trading Tab"
     implemented: true
-    working: true
-    file: "/app/frontend/src/components/OptionsStrategyBuilder.js"
+    working: "NA"
+    file: "/app/frontend/src/components/AdvancedAnalytics.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
         - working: "NA"
           agent: "testing"
-          comment: "Starting testing of strategy results display including payoff diagram, Greeks, and summary cards"
-        - working: true
+          comment: "Starting testing of Pairs Trading tab - AAPL/MSFT analysis, trading signals, metrics display"
+
+  - task: "Advanced Analytics - Backtesting Tab"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/AdvancedAnalytics.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
           agent: "testing"
-          comment: "✅ PASSED - All result sections display correctly: 1) Summary cards with proper $ formatting and color coding, 2) Payoff diagram with line chart and proper axes, 3) Greeks analysis showing all 5 Greeks (Delta: 0.2587, Gamma: 0.0057, Theta: -0.0160, Vega: 0.0264, Rho: 0.0295) with explanations, 4) Strategy legs table showing BUY/SELL labels and strike prices with premiums."
+          comment: "Starting testing of Backtesting tab - symbol input, timeframe dropdown, UI rendering"
 
 backend:
-  - task: "Options Strategy API Endpoints"
+  - task: "Advanced Analytics API Endpoints"
     implemented: true
-    working: true
+    working: "NA"
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
         - working: "NA"
           agent: "testing"
-          comment: "Starting testing of options strategy API endpoints for template and custom strategies"
-        - working: true
-          agent: "testing"
-          comment: "✅ PASSED - All API endpoints working correctly: /api/options/templates returns available templates, /api/options/strategy/template builds template strategies successfully, /api/options/strategy/custom builds custom strategies. Black-Scholes pricing engine calculates accurate option premiums and Greeks. Response includes complete payoff diagram data, strategy summary, and leg details."
+          comment: "Starting testing of Advanced Analytics API endpoints - model performance, pairs trading, backtesting APIs"
 
 metadata:
   created_by: "testing_agent"
   version: "1.0"
-  test_sequence: 1
+  test_sequence: 2
 
 test_plan:
-  current_focus: []
+  current_focus:
+    - "Advanced Analytics - Navigation and Tab Structure"
+    - "Advanced Analytics - Model Performance Tab"
+    - "Advanced Analytics - Pairs Trading Tab"
+    - "Advanced Analytics - Backtesting Tab"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
 agent_communication:
     - agent: "testing"
-      message: "Starting comprehensive testing of Options Strategy Builder feature. Will test both template mode (Bull Call Spread) and custom mode functionality, including UI interactions, API calls, and results display."
-    - agent: "testing"
-      message: "✅ TESTING COMPLETE - All Options Strategy Builder functionality working perfectly. Template mode tested with Bull Call Spread (spot: 150, DTE: 30), custom mode tested with 2-leg strategy (Buy Call 100, Sell Call 110). All result sections display correctly: summary cards, payoff diagram with proper chart, Greeks analysis with all 5 Greeks, and strategy legs table. API endpoints functioning properly with accurate Black-Scholes calculations. No critical issues found."
+      message: "Starting comprehensive testing of Advanced Analytics feature. Will test navigation to Analytics tab, verify 3 sub-tabs (Model Performance, Pairs Trading, Backtesting), test Model Performance dropdown and Load Performance button, test Pairs Trading with AAPL/MSFT analysis, and verify Backtesting UI rendering."
