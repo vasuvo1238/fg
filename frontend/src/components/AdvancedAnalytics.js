@@ -108,7 +108,7 @@ export default function AdvancedAnalytics() {
 
     setLoading(true);
     try {
-      const response = await axios.post(`${API}/pairs-trading`, {
+      const response = await axios.post(`${API}/stocks/pairs-trading`, {
         symbols: [symbol1.toUpperCase(), symbol2.toUpperCase()]
       });
       setPairsData(response.data);
