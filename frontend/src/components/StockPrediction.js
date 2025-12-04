@@ -155,24 +155,44 @@ export default function StockPrediction({ sessionId }) {
             <span className="text-sm text-muted-foreground" style={{ fontFamily: 'JetBrains Mono, monospace' }}>Model:</span>
             <Button
               data-testid="standard-model-btn"
-              variant={!useEnsemble ? "default" : "outline"}
+              variant={!useEnsemble && !customWeights ? "default" : "outline"}
               size="sm"
-              onClick={() => setUseEnsemble(false)}
+              onClick={() => { setUseEnsemble(false); setCustomWeights(null); }}
             >
               Standard
             </Button>
             <Button
               data-testid="ensemble-model-btn"
-              variant={useEnsemble ? "default" : "outline"}
+              variant={useEnsemble && !customWeights ? "default" : "outline"}
               size="sm"
-              onClick={() => setUseEnsemble(true)}
+              onClick={() => { setUseEnsemble(true); setCustomWeights(null); }}
               className="gap-1"
             >
               <Activity className="w-3 h-3" />
-              Ensemble (LSTM + Mean Reversion)
+              Ensemble
+            </Button>
+            <Button
+              data-testid="custom-weights-btn"
+              variant={customWeights ? "default" : "outline"}
+              size="sm"
+              onClick={() => setShowSettings(!showSettings)}
+              className="gap-1"
+            >
+              <Settings className="w-3 h-3" />
+              Custom
             </Button>
           </div>
         </div>
+
+        {/* Custom Weights Settings */}
+        {showSettings && (
+          <div className="mt-4">
+            <ModelSettings 
+              onWeightsChange={handleCustomWeights}
+              onClose={() => setShowSettings(false)}
+            />
+          </div>
+        )}
       </Card>
 
       {/* Stock Info Card */}
