@@ -297,7 +297,7 @@ export default function AdvancedAnalytics() {
                   <div className="p-3 bg-secondary rounded-lg">
                     <p className="text-xs text-muted-foreground">Median Error</p>
                     <p className="text-xl font-bold" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
-                      {performanceData.metrics.median_absolute_error.toFixed(2)}%
+                      {performanceData.metrics?.median_absolute_error ? performanceData.metrics.median_absolute_error.toFixed(2) : "0.00"}%
                     </p>
                   </div>
                   <div className="p-3 bg-secondary rounded-lg">
