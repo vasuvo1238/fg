@@ -303,7 +303,7 @@ export default function AdvancedAnalytics() {
                   <div className="p-3 bg-secondary rounded-lg">
                     <p className="text-xs text-muted-foreground">Std Deviation</p>
                     <p className="text-xl font-bold" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
-                      {performanceData.metrics.std_error.toFixed(2)}%
+                      {performanceData.metrics?.std_error ? performanceData.metrics.std_error.toFixed(2) : "0.00"}%
                     </p>
                   </div>
                   <div className="p-3 bg-secondary rounded-lg">
