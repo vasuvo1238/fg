@@ -47,9 +47,15 @@ export default function StockPrediction({ sessionId }) {
 
     setLoading(true);
     try {
-      const response = await axios.get(`${API}/stocks/${symbol.toUpperCase()}/info`);
-      setStockData(response.data);
-      toast.success(`Loaded ${response.data.name}`);
+      // Fetch stock info and historical data in parallel
+      const [infoResponse, histResponse] = await Promise.all([
+        axios.get(`${API}/stocks/${symbol.toUpperCase()}/info`),
+        axios.get(`${API}/stocks/${symbol.toUpperCase()}/historical?period=3mo`)
+      ]);
+      
+      setStockData(infoResponse.data);
+      setHistoricalData(histResponse.data.data);
+      toast.success(`Loaded ${infoResponse.data.name}`);
     } catch (error) {
       toast.error("Stock not found");
       console.error(error);
