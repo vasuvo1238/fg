@@ -56,23 +56,39 @@ export default function StockPrediction({ sessionId }) {
 
     setLoading(true);
     try {
-      const endpoint = useEnsemble 
-        ? `${API}/stocks/${symbol.toUpperCase()}/predict/ensemble`
-        : `${API}/stocks/${symbol.toUpperCase()}/predict`;
-      
-      const response = await axios.post(endpoint, {
+      let endpoint;
+      let requestData = {
         symbol: symbol.toUpperCase(),
         timeframe
-      });
+      };
+      
+      if (customWeights) {
+        endpoint = `${API}/stocks/${symbol.toUpperCase()}/predict/custom`;
+        requestData = { ...requestData, ...customWeights };
+      } else if (useEnsemble) {
+        endpoint = `${API}/stocks/${symbol.toUpperCase()}/predict/ensemble`;
+      } else {
+        endpoint = `${API}/stocks/${symbol.toUpperCase()}/predict`;
+      }
+      
+      const response = await axios.post(endpoint, requestData);
       setPrediction(response.data);
       setStockData(response.data.current_info);
-      toast.success(`${useEnsemble ? 'Ensemble' : 'Standard'} prediction generated!`);
+      
+      const predType = customWeights ? 'Custom' : useEnsemble ? 'Ensemble' : 'Standard';
+      toast.success(`${predType} prediction generated!`);
     } catch (error) {
       toast.error("Failed to generate prediction");
       console.error(error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCustomWeights = (weights) => {
+    setCustomWeights(weights);
+    setShowSettings(false);
+    toast.success("Custom weights applied! Click Predict to see results.");
   };
 
   const formatPrice = (price) => {
