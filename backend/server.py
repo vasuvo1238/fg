@@ -36,6 +36,14 @@ from model_performance import (
     backtest_strategy,
     calculate_confidence_intervals
 )
+from prediction_reasoning import (
+    explain_lstm_prediction,
+    explain_linear_regression,
+    explain_zscore_mean_reversion,
+    explain_ornstein_uhlenbeck,
+    explain_ensemble_prediction,
+    explain_technical_indicators
+)
 
 
 ROOT_DIR = Path(__file__).parent
