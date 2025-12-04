@@ -405,6 +405,540 @@ class FinancialChatbotTester:
             self.log_test("Invalid Stock Symbol Handling", False, str(e))
             return False
 
+    # ============== Options Strategy Endpoints ==============
+    
+    def test_options_templates(self):
+        """Test GET /options/templates - List all strategy templates"""
+        try:
+            start_time = time.time()
+            response = requests.get(f"{self.api_url}/options/templates", timeout=15)
+            latency = time.time() - start_time
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if success:
+                data = response.json()
+                if "templates" not in data:
+                    success = False
+                    details += ", Missing 'templates' field"
+                elif not isinstance(data["templates"], list):
+                    success = False
+                    details += ", 'templates' should be a list"
+                elif len(data["templates"]) == 0:
+                    success = False
+                    details += ", No templates found"
+                else:
+                    # Check template structure
+                    template = data["templates"][0]
+                    required_fields = ["name", "description", "market_view", "risk", "reward"]
+                    missing_fields = [field for field in required_fields if field not in template]
+                    
+                    if missing_fields:
+                        success = False
+                        details += f", Template missing fields: {missing_fields}"
+                    else:
+                        details += f", Found {len(data['templates'])} templates"
+                        
+            self.log_test("Options Templates", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Options Templates", False, str(e))
+            return False
+
+    def test_options_strategy_template(self):
+        """Test POST /options/strategy/template - Build Bull Call Spread for AAPL"""
+        try:
+            payload = {
+                "template_name": "bull_call_spread",
+                "underlying_symbol": "AAPL",
+                "spot_price": 150.0,
+                "days_to_expiry": 30,
+                "strike_width": 10.0,
+                "volatility": 0.25
+            }
+            
+            start_time = time.time()
+            response = requests.post(
+                f"{self.api_url}/options/strategy/template",
+                json=payload,
+                headers={"Content-Type": "application/json"},
+                timeout=30
+            )
+            latency = time.time() - start_time
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if success:
+                data = response.json()
+                required_fields = ["strategy_name", "underlying_symbol", "legs", "analysis"]
+                missing_fields = [field for field in required_fields if field not in data]
+                
+                if missing_fields:
+                    success = False
+                    details += f", Missing fields: {missing_fields}"
+                elif not isinstance(data.get("legs"), list):
+                    success = False
+                    details += ", 'legs' should be a list"
+                elif len(data["legs"]) != 2:
+                    success = False
+                    details += f", Bull call spread should have 2 legs, got {len(data['legs'])}"
+                else:
+                    details += f", Strategy: {data.get('strategy_name')}, Legs: {len(data['legs'])}"
+                    
+            self.log_test("Options Strategy Template (Bull Call Spread)", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Options Strategy Template (Bull Call Spread)", False, str(e))
+            return False
+
+    def test_options_strategy_custom(self):
+        """Test POST /options/strategy/custom - Create custom 2-leg strategy"""
+        try:
+            payload = {
+                "strategy_name": "Custom Call Spread",
+                "underlying_symbol": "AAPL",
+                "spot_price": 150.0,
+                "legs": [
+                    {
+                        "option_type": "call",
+                        "action": "buy",
+                        "strike": 100.0,
+                        "quantity": 1,
+                        "days_to_expiry": 30
+                    },
+                    {
+                        "option_type": "call",
+                        "action": "sell",
+                        "strike": 110.0,
+                        "quantity": 1,
+                        "days_to_expiry": 30
+                    }
+                ],
+                "volatility": 0.25,
+                "risk_free_rate": 0.05
+            }
+            
+            start_time = time.time()
+            response = requests.post(
+                f"{self.api_url}/options/strategy/custom",
+                json=payload,
+                headers={"Content-Type": "application/json"},
+                timeout=30
+            )
+            latency = time.time() - start_time
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if success:
+                data = response.json()
+                required_fields = ["strategy_name", "underlying_symbol", "legs", "analysis"]
+                missing_fields = [field for field in required_fields if field not in data]
+                
+                if missing_fields:
+                    success = False
+                    details += f", Missing fields: {missing_fields}"
+                elif data.get("strategy_name") != "Custom Call Spread":
+                    success = False
+                    details += f", Strategy name mismatch"
+                elif len(data.get("legs", [])) != 2:
+                    success = False
+                    details += f", Expected 2 legs, got {len(data.get('legs', []))}"
+                else:
+                    details += f", Custom strategy created successfully"
+                    
+            self.log_test("Options Strategy Custom", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Options Strategy Custom", False, str(e))
+            return False
+
+    def test_options_strategies_history(self):
+        """Test GET /options/strategies/history - Get recent strategies"""
+        try:
+            start_time = time.time()
+            response = requests.get(f"{self.api_url}/options/strategies/history", timeout=15)
+            latency = time.time() - start_time
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if success:
+                data = response.json()
+                if "strategies" not in data:
+                    success = False
+                    details += ", Missing 'strategies' field"
+                elif not isinstance(data["strategies"], list):
+                    success = False
+                    details += ", 'strategies' should be a list"
+                else:
+                    details += f", Found {len(data['strategies'])} historical strategies"
+                    
+            self.log_test("Options Strategies History", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Options Strategies History", False, str(e))
+            return False
+
+    # ============== Advanced Analytics Endpoints ==============
+    
+    def test_models_performance(self):
+        """Test GET /models/performance - Get performance data for all models"""
+        try:
+            start_time = time.time()
+            response = requests.get(f"{self.api_url}/models/performance?model_type=all", timeout=20)
+            latency = time.time() - start_time
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if success:
+                data = response.json()
+                # Check for expected performance metrics structure
+                if isinstance(data, dict):
+                    details += f", Performance data retrieved"
+                else:
+                    success = False
+                    details += ", Invalid response structure"
+                    
+            self.log_test("Models Performance", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Models Performance", False, str(e))
+            return False
+
+    def test_models_evaluate(self):
+        """Test POST /models/evaluate - Evaluate pending predictions"""
+        try:
+            start_time = time.time()
+            response = requests.post(
+                f"{self.api_url}/models/evaluate",
+                headers={"Content-Type": "application/json"},
+                timeout=30
+            )
+            latency = time.time() - start_time
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if success:
+                data = response.json()
+                if "evaluated_count" not in data:
+                    success = False
+                    details += ", Missing 'evaluated_count' field"
+                else:
+                    details += f", Evaluated {data['evaluated_count']} predictions"
+                    
+            self.log_test("Models Evaluate", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Models Evaluate", False, str(e))
+            return False
+
+    def test_stocks_pairs_trading(self):
+        """Test POST /stocks/pairs-trading with AAPL and MSFT"""
+        try:
+            payload = ["AAPL", "MSFT"]
+            
+            start_time = time.time()
+            response = requests.post(
+                f"{self.api_url}/stocks/pairs-trading",
+                json=payload,
+                headers={"Content-Type": "application/json"},
+                timeout=45
+            )
+            latency = time.time() - start_time
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if success:
+                data = response.json()
+                # Check for pairs trading analysis structure
+                if isinstance(data, dict):
+                    details += f", Pairs trading analysis completed"
+                else:
+                    success = False
+                    details += ", Invalid response structure"
+                    
+            self.log_test("Stocks Pairs Trading", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Stocks Pairs Trading", False, str(e))
+            return False
+
+    def test_stocks_backtest(self):
+        """Test POST /stocks/AAPL/backtest?timeframe=1y (may return 404 if no predictions)"""
+        try:
+            start_time = time.time()
+            response = requests.post(
+                f"{self.api_url}/stocks/AAPL/backtest?timeframe=1y",
+                headers={"Content-Type": "application/json"},
+                timeout=30
+            )
+            latency = time.time() - start_time
+            
+            # 404 is expected if no evaluated predictions exist
+            success = response.status_code in [200, 404]
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if response.status_code == 200:
+                data = response.json()
+                details += ", Backtest completed successfully"
+            elif response.status_code == 404:
+                details += ", No evaluated predictions found (expected behavior)"
+            else:
+                success = False
+                details += ", Unexpected status code"
+                    
+            self.log_test("Stocks Backtest", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Stocks Backtest", False, str(e))
+            return False
+
+    # ============== Stock Prediction Endpoints ==============
+    
+    def test_stock_basic_info(self):
+        """Test GET /stock/AAPL - Get basic stock info"""
+        try:
+            start_time = time.time()
+            response = requests.get(f"{self.api_url}/stocks/AAPL/info", timeout=20)
+            latency = time.time() - start_time
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if success:
+                data = response.json()
+                required_fields = ["symbol", "name", "current_price"]
+                missing_fields = [field for field in required_fields if field not in data or data[field] is None]
+                
+                if missing_fields:
+                    success = False
+                    details += f", Missing fields: {missing_fields}"
+                elif data.get("symbol") != "AAPL":
+                    success = False
+                    details += f", Symbol mismatch: expected AAPL, got {data.get('symbol')}"
+                else:
+                    details += f", Stock: {data['name']}, Price: ${data['current_price']:.2f}"
+                    
+            self.log_test("Stock Basic Info (AAPL)", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Stock Basic Info (AAPL)", False, str(e))
+            return False
+
+    def test_historical_data(self):
+        """Test GET /historical/AAPL?period=30d - Get 30 days historical data"""
+        try:
+            start_time = time.time()
+            response = requests.get(f"{self.api_url}/stocks/AAPL/historical?period=1mo", timeout=20)
+            latency = time.time() - start_time
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if success:
+                data = response.json()
+                required_fields = ["symbol", "period", "data"]
+                missing_fields = [field for field in required_fields if field not in data]
+                
+                if missing_fields:
+                    success = False
+                    details += f", Missing fields: {missing_fields}"
+                elif not isinstance(data.get("data"), list):
+                    success = False
+                    details += ", 'data' should be a list"
+                elif len(data["data"]) == 0:
+                    success = False
+                    details += ", No historical data returned"
+                else:
+                    # Check data point structure
+                    data_point = data["data"][0]
+                    required_point_fields = ["date", "open", "high", "low", "close", "volume"]
+                    missing_point_fields = [field for field in required_point_fields if field not in data_point]
+                    
+                    if missing_point_fields:
+                        success = False
+                        details += f", Data point missing fields: {missing_point_fields}"
+                    else:
+                        details += f", Retrieved {len(data['data'])} data points"
+                        
+            self.log_test("Historical Data (AAPL 30d)", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Historical Data (AAPL 30d)", False, str(e))
+            return False
+
+    def test_ensemble_predict(self):
+        """Test POST /ensemble-predict/AAPL - Run ensemble prediction"""
+        try:
+            payload = {
+                "symbol": "AAPL",
+                "timeframe": "30d"
+            }
+            
+            start_time = time.time()
+            response = requests.post(
+                f"{self.api_url}/stocks/AAPL/predict/ensemble",
+                json=payload,
+                headers={"Content-Type": "application/json"},
+                timeout=90  # Longer timeout for ensemble prediction
+            )
+            latency = time.time() - start_time
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if success:
+                data = response.json()
+                required_sections = ["ensemble_prediction", "individual_predictions", "technical_indicators", "ai_analysis"]
+                missing_sections = [section for section in required_sections if section not in data]
+                
+                if missing_sections:
+                    success = False
+                    details += f", Missing sections: {missing_sections}"
+                else:
+                    # Check ensemble prediction structure
+                    ensemble = data["ensemble_prediction"]
+                    required_ensemble_fields = ["predicted_price", "price_change_percent", "confidence", "trend"]
+                    missing_ensemble_fields = [field for field in required_ensemble_fields if field not in ensemble]
+                    
+                    if missing_ensemble_fields:
+                        success = False
+                        details += f", Ensemble missing fields: {missing_ensemble_fields}"
+                    else:
+                        # Check individual predictions
+                        individual = data["individual_predictions"]
+                        expected_models = ["lstm", "linear_regression", "z_score_mean_reversion", "ornstein_uhlenbeck"]
+                        missing_models = [model for model in expected_models if model not in individual]
+                        
+                        if missing_models:
+                            success = False
+                            details += f", Missing models: {missing_models}"
+                        else:
+                            details += f", Ensemble: {ensemble['trend']}, Confidence: {ensemble['confidence']:.1f}%"
+                            
+            self.log_test("Ensemble Predict (AAPL)", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Ensemble Predict (AAPL)", False, str(e))
+            return False
+
+    def test_autohedge_analysis(self):
+        """Test POST /autohedge/AAPL - Get multi-agent trade analysis"""
+        try:
+            payload = {
+                "symbol": "AAPL",
+                "task": "Analyze this stock for investment",
+                "portfolio_allocation": 100000.0,
+                "timeframe": "30d"
+            }
+            
+            start_time = time.time()
+            response = requests.post(
+                f"{self.api_url}/autohedge/analyze",
+                json=payload,
+                headers={"Content-Type": "application/json"},
+                timeout=120  # Very long timeout for multi-agent analysis
+            )
+            latency = time.time() - start_time
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if success:
+                data = response.json()
+                required_fields = ["symbol", "action", "confidence", "analysis"]
+                missing_fields = [field for field in required_fields if field not in data]
+                
+                if missing_fields:
+                    success = False
+                    details += f", Missing fields: {missing_fields}"
+                else:
+                    details += f", Action: {data['action']}, Confidence: {data.get('confidence', 'N/A')}"
+                    
+            self.log_test("AutoHedge Analysis (AAPL)", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("AutoHedge Analysis (AAPL)", False, str(e))
+            return False
+
+    # ============== Chat Endpoint ==============
+    
+    def test_chat_specific_question(self):
+        """Test POST /chat with 'What is a stock?' and session_id"""
+        try:
+            test_session = f"stock_question_{int(time.time())}"
+            
+            payload = {
+                "message": "What is a stock?",
+                "session_id": test_session
+            }
+            
+            start_time = time.time()
+            response = requests.post(
+                f"{self.api_url}/chat",
+                json=payload,
+                headers={"Content-Type": "application/json"},
+                timeout=30
+            )
+            latency = time.time() - start_time
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if success:
+                data = response.json()
+                required_fields = ["session_id", "message", "is_guardrail_triggered"]
+                missing_fields = [field for field in required_fields if field not in data]
+                
+                if missing_fields:
+                    success = False
+                    details += f", Missing fields: {missing_fields}"
+                elif data.get("session_id") != test_session:
+                    success = False
+                    details += f", Session ID mismatch"
+                elif data.get("is_guardrail_triggered", True):
+                    success = False
+                    details += ", Guardrails incorrectly triggered for finance question"
+                elif len(data.get("message", "")) < 50:
+                    success = False
+                    details += ", Response too short for stock explanation"
+                else:
+                    # Check if response contains stock-related terms
+                    response_text = data["message"].lower()
+                    stock_terms = ["stock", "share", "company", "ownership", "equity", "investment"]
+                    found_terms = sum(1 for term in stock_terms if term in response_text)
+                    
+                    if found_terms < 2:
+                        success = False
+                        details += f", Response lacks stock-related content (found {found_terms}/6 terms)"
+                    else:
+                        details += f", Quality response ({len(data['message'])} chars, {found_terms}/6 stock terms)"
+                        
+            self.log_test("Chat - What is a stock?", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Chat - What is a stock?", False, str(e))
+            return False
+
     def test_llm_integration(self):
         """Test LLM integration with complex finance question"""
         try:
