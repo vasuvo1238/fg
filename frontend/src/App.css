@@ -1,24 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
-:root {
-  --background: 253 252 248;
-  --foreground: 26 26 26;
-  --primary: 15 81 50;
-  --secondary: 244 244 245;
-  --accent: 212 175 55;
-  --muted: 115 115 115;
-  --border: 229 229 229;
-}
-
-.dark {
-  --background: 5 5 5;
-  --foreground: 229 229 229;
-  --primary: 16 185 129;
-  --secondary: 31 31 31;
-  --accent: 245 158 11;
-  --muted: 163 163 163;
-  --border: 38 38 38;
-}
+/* Colors are defined in index.css */
 
 * {
   margin: 0;
