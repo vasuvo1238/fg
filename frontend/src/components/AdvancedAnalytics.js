@@ -263,7 +263,7 @@ export default function AdvancedAnalytics() {
                     <span className="text-xs text-muted-foreground">Avg Accuracy</span>
                   </div>
                   <p className="text-2xl font-bold text-green-600">
-                    {performanceData.avg_accuracy.toFixed(1)}%
+                    {performanceData.avg_accuracy ? performanceData.avg_accuracy.toFixed(1) : "0.0"}%
                   </p>
                 </Card>
 
