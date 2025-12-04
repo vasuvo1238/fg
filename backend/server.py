@@ -219,33 +219,77 @@ async def chat(request: ChatRequest):
         # Build context from previous messages (excluding the current one)
         previous_messages = [msg for msg in history[:-1]] if len(history) > 1 else []
         
+        # Fetch real-time stock data if stocks mentioned
+        stock_context = ""
+        if detected_tickers:
+            stock_context = "\n\n=== LIVE STOCK DATA ===\n"
+            loop = asyncio.get_event_loop()
+            
+            for ticker in detected_tickers[:3]:  # Limit to 3 stocks
+                try:
+                    info = await loop.run_in_executor(executor, get_stock_info, ticker)
+                    stock_context += f"\n{ticker} - {info['name']}:\n"
+                    stock_context += f"  Current Price: ${info['current_price']:.2f}\n"
+                    
+                    if info['previous_close']:
+                        change_pct = ((info['current_price'] - info['previous_close']) / info['previous_close']) * 100
+                        stock_context += f"  Change: {change_pct:+.2f}% (from ${info['previous_close']:.2f})\n"
+                    
+                    if info['market_cap']:
+                        stock_context += f"  Market Cap: ${info['market_cap']/1e9:.2f}B\n"
+                    
+                    if info['pe_ratio']:
+                        stock_context += f"  P/E Ratio: {info['pe_ratio']:.2f}\n"
+                    
+                    # Get technical indicators for better analysis
+                    df = await loop.run_in_executor(executor, get_historical_data, ticker, "3mo")
+                    indicators = await loop.run_in_executor(executor, calculate_technical_indicators, df)
+                    signals = await loop.run_in_executor(executor, generate_trading_signals, indicators, info['current_price'])
+                    
+                    stock_context += f"  RSI: {indicators['rsi']:.1f} ({'Oversold' if indicators['rsi'] < 30 else 'Overbought' if indicators['rsi'] > 70 else 'Neutral'})\n"
+                    stock_context += f"  Technical Signal: {signals['overall_signal']}\n"
+                    
+                except Exception as e:
+                    logger.error(f"Error fetching stock data for {ticker}: {str(e)}")
+                    stock_context += f"\n{ticker}: Unable to fetch data\n"
+        
         # Initialize LLM chat
         api_key = os.environ.get('EMERGENT_LLM_KEY')
         
         # Build system message with context
         system_message = """You are a professional financial advisor chatbot with expertise in all areas of finance. 
-        
+
 Your characteristics:
-- Professional yet approachable tone
-- Provide clear, accurate financial information
+- Professional yet approachable and friendly tone
+- Provide clear, accurate financial information with real-time data
 - Break down complex concepts into simple terms
 - Always include appropriate disclaimers for investment advice
 - Focus on education and empowerment
 - Be concise but thorough
 
 IMPORTANT GUIDELINES:
-1. When discussing investments, always mention that past performance doesn't guarantee future results
-2. Remind users to consult with a licensed financial advisor for personalized advice
-3. Never guarantee specific returns or outcomes
-4. Explain both benefits and risks of financial products
-5. Use examples to illustrate concepts when helpful
-6. Stay current with financial trends and regulations
+1. When user mentions a company name (e.g., "NVIDIA", "Apple"), understand they're asking about the stock
+2. Use the LIVE STOCK DATA provided to give current, accurate information
+3. Always mention: "This is not financial advice. Past performance doesn't guarantee future results."
+4. Remind users to consult with a licensed financial advisor for personalized advice
+5. Never guarantee specific returns or outcomes
+6. Explain both benefits and risks
+7. When asked "should I buy X", provide balanced analysis covering:
+   - Current price and recent performance
+   - Technical indicators (RSI, signals)
+   - Risk factors
+   - Market conditions
+8. Be friendly and conversational while maintaining professionalism
 
-Always aim to help users make informed financial decisions while being clear about the limitations of general advice."""
+Always end investment discussions with: "Please consult a licensed financial advisor before making investment decisions." """
+        
+        # Add stock data context
+        if stock_context:
+            system_message += stock_context
         
         # Add conversation history to context if exists
         if previous_messages:
-            context_str = "\n\nPrevious conversation:\n"
+            context_str = "\n\n=== CONVERSATION HISTORY ===\n"
             for msg in previous_messages:
                 role = "User" if msg['role'] == 'user' else "Assistant"
                 context_str += f"{role}: {msg['content']}\n"
