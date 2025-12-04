@@ -237,7 +237,7 @@ def pairs_trading_suggestion(df1: pd.DataFrame, df2: pd.DataFrame, symbol1: str,
         
         # Test for cointegration (simplified)
         adf_spread = adfuller(spread)
-        is_cointegrated = adf_spread[1] < 0.05
+        is_cointegrated = bool(adf_spread[1] < 0.05)
         
         # Trading signal
         if current_spread_z > 2:
@@ -258,8 +258,8 @@ def pairs_trading_suggestion(df1: pd.DataFrame, df2: pd.DataFrame, symbol1: str,
             "is_cointegrated": is_cointegrated,
             "cointegration_p_value": float(adf_spread[1]),
             "signal": signal,
-            "signal_reason": reason,
-            "suitable_for_pairs_trading": is_cointegrated and abs(correlation) > 0.7
+            "reason": reason,
+            "suitable_for_pairs_trading": bool(is_cointegrated and abs(correlation) > 0.7)
         }
     
     except Exception as e:
