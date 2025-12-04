@@ -594,6 +594,36 @@ Include appropriate disclaimer about financial advice."""
         
         ai_analysis = await chat.send_message(UserMessage(text=analysis_prompt))
         
+        # Calculate confidence intervals from all model predictions
+        all_predictions = [
+            lstm_pred["predicted_price_end"],
+            linear_pred["predicted_price_end"],
+            zscore_pred["predicted_price_end"],
+            ou_pred["predicted_price_end"]
+        ]
+        
+        confidence_interval = calculate_confidence_intervals(all_predictions, 0.95)
+        
+        # Save predictions for performance tracking
+        for model_name, pred_data in [
+            ("lstm", lstm_pred),
+            ("linear_regression", linear_pred),
+            ("z_score_mean_reversion", zscore_pred),
+            ("ornstein_uhlenbeck", ou_pred)
+        ]:
+            pred_with_timeframe = {**pred_data, "timeframe_days": days_ahead}
+            await save_prediction(db, symbol.upper(), model_name, pred_with_timeframe)
+        
+        # Save ensemble prediction
+        ensemble_pred_data = {
+            "current_price": current_price,
+            "predicted_price_end": ensemble_price,
+            "price_change_percent": ensemble_change,
+            "confidence": ensemble_confidence,
+            "timeframe_days": days_ahead
+        }
+        await save_prediction(db, symbol.upper(), "ensemble", ensemble_pred_data)
+        
         return {
             "symbol": symbol.upper(),
             "company_name": info["name"],
