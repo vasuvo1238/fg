@@ -643,6 +643,7 @@ Include appropriate disclaimer about financial advice."""
                 "z_score_mean_reversion": zscore_pred,
                 "ornstein_uhlenbeck": ou_pred
             },
+            "confidence_interval": confidence_interval,
             "technical_indicators": indicators,
             "trading_signals": signals,
             "mean_reversion_analysis": arbitrage_score,
