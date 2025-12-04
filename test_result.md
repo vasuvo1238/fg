@@ -168,9 +168,9 @@ frontend:
 backend:
   - task: "Advanced Analytics API Endpoints"
     implemented: true
-    working: true
+    working: false
     file: "/app/backend/server.py"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
     needs_retesting: false
     status_history:
@@ -180,6 +180,45 @@ backend:
         - working: true
           agent: "testing"
           comment: "✅ PASSED - All Advanced Analytics API endpoints working correctly. /api/models/performance returns performance data successfully. /api/stocks/pairs-trading endpoint properly configured (fixed frontend API call path). /api/stocks/{symbol}/backtest endpoint accessible. Fixed API endpoint mismatch issue between frontend and backend."
+        - working: false
+          agent: "testing"
+          comment: "❌ FAILED - Comprehensive testing revealed critical issues: 1) /api/stocks/pairs-trading returns 500 Internal Server Error due to numpy serialization issue (ValueError: numpy.bool object is not iterable), 2) Options strategy endpoints missing expected fields (underlying_symbol vs underlying, missing analysis field), 3) Guardrails system not properly blocking non-finance questions. Other endpoints working correctly."
+
+  - task: "Options Strategy API Endpoints"
+    implemented: true
+    working: false
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: false
+          agent: "testing"
+          comment: "❌ FAILED - Options strategy endpoints have response structure issues: 1) Template and custom strategy endpoints return 'underlying' instead of expected 'underlying_symbol' field, 2) Missing 'analysis' field in responses, 3) Otherwise functional with correct calculations and payoff diagrams. Templates endpoint working correctly."
+
+  - task: "Stock Prediction and Analysis Endpoints"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ PASSED - All stock prediction endpoints working correctly: 1) Basic stock info (/api/stocks/{symbol}/info) returns complete data, 2) Historical data endpoint provides proper OHLCV data, 3) Ensemble prediction delivers comprehensive multi-model analysis with LSTM, linear regression, z-score mean reversion, and Ornstein-Uhlenbeck models, 4) AutoHedge multi-agent analysis working with detailed recommendations (though missing some expected fields in response structure), 5) All responses have valid JSON with no serialization errors."
+
+  - task: "Chat System and Guardrails"
+    implemented: true
+    working: false
+    file: "/app/backend/server.py"
+    stuck_count: 1
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: false
+          agent: "testing"
+          comment: "❌ FAILED - Guardrails system not properly blocking non-finance questions. Test with 'Tell me a joke about cats' should trigger guardrails but returns 200 with normal response instead of guardrail message. Finance-related questions work correctly with proper LLM integration and context maintenance."
 
 metadata:
   created_by: "testing_agent"
