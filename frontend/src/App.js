@@ -156,8 +156,12 @@ function App() {
           </div>
         </div>
 
-        {/* Messages Area */}
-        <div className="max-w-4xl mx-auto px-6 pt-8 pb-4">
+        {/* Content Area */}
+        <div className="max-w-6xl mx-auto px-6 pt-8 pb-4">
+          {activeView === "stocks" ? (
+            <StockPrediction sessionId={sessionId} />
+          ) : (
+            <div>
           {showWelcome && messages.length === 0 && (
             <div className="welcome-section mb-12">
               <div className="text-center mb-12">
