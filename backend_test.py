@@ -994,28 +994,54 @@ class FinancialChatbotTester:
 
     def run_all_tests(self):
         """Run all tests in sequence"""
-        print("🚀 Starting Financial Chatbot API Tests")
+        print("🚀 Starting Comprehensive Financial Advisor API Tests")
         print(f"Testing against: {self.base_url}")
-        print("=" * 60)
+        print("=" * 80)
         
-        # Test sequence
+        # Test sequence organized by category
         tests = [
+            # Basic API tests
             self.test_api_root,
+            
+            # Chat functionality tests
             self.test_chat_finance_question,
             self.test_chat_guardrails,
             self.test_context_maintenance,
             self.test_chat_history,
             self.test_llm_integration,
+            self.test_chat_specific_question,  # New: "What is a stock?" test
             self.test_session_deletion,
-            # Stock prediction tests
+            
+            # Options Strategy Endpoints
+            self.test_options_templates,
+            self.test_options_strategy_template,
+            self.test_options_strategy_custom,
+            self.test_options_strategies_history,
+            
+            # Advanced Analytics Endpoints
+            self.test_models_performance,
+            self.test_models_evaluate,
+            self.test_stocks_pairs_trading,
+            self.test_stocks_backtest,
+            
+            # Stock Prediction Endpoints
+            self.test_stock_basic_info,
+            self.test_historical_data,
+            self.test_ensemble_predict,
+            self.test_autohedge_analysis,
+            
+            # Legacy stock tests
             self.test_stock_info_endpoint,
             self.test_stock_search_endpoint,
             self.test_stock_prediction_endpoint,
             self.test_invalid_stock_symbol,
         ]
         
-        for test in tests:
+        print(f"Running {len(tests)} comprehensive tests...\n")
+        
+        for i, test in enumerate(tests, 1):
             try:
+                print(f"[{i:2d}/{len(tests)}] Running {test.__name__}...")
                 test()
                 time.sleep(1)  # Brief pause between tests
             except Exception as e:
@@ -1023,14 +1049,22 @@ class FinancialChatbotTester:
                 self.tests_run += 1
         
         # Summary
-        print("\n" + "=" * 60)
+        print("\n" + "=" * 80)
         print(f"📊 Test Results: {self.tests_passed}/{self.tests_run} passed")
+        print(f"Success Rate: {(self.tests_passed/self.tests_run)*100:.1f}%")
+        
+        # Detailed breakdown
+        failed_tests = [result for result in self.test_results if not result["success"]]
+        if failed_tests:
+            print(f"\n❌ Failed Tests ({len(failed_tests)}):")
+            for test in failed_tests:
+                print(f"  • {test['test']}: {test['details']}")
         
         if self.tests_passed == self.tests_run:
-            print("🎉 All tests passed!")
+            print("\n🎉 All tests passed!")
             return 0
         else:
-            print("⚠️  Some tests failed. Check details above.")
+            print(f"\n⚠️  {len(failed_tests)} tests failed. Check details above.")
             return 1
 
 def main():
