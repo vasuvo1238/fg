@@ -351,6 +351,104 @@ export default function StockPrediction({ sessionId }) {
             </Card>
           </TabsContent>
 
+          {prediction?.explanations && (
+            <TabsContent value="explained" className="space-y-4">
+              <Card className="p-6">
+                <div className="mb-6 p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
+                  <h3 className="text-lg font-bold mb-2" style={{ fontFamily: 'Fraunces, serif' }}>
+                    📚 Predictions Explained for Everyone
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    No finance degree needed! We'll explain each prediction method using simple analogies and plain English.
+                  </p>
+                </div>
+
+                {/* Ensemble Explanation */}
+                <div className="mb-6">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+                    <h4 className="text-md font-bold">Ensemble Prediction (Combined Wisdom)</h4>
+                  </div>
+                  <div className="prose prose-sm max-w-none">
+                    <div className="whitespace-pre-wrap text-sm leading-relaxed">
+                      {prediction.explanations.ensemble}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="border-t my-6"></div>
+
+                {/* Individual Model Explanations */}
+                <div className="space-y-6">
+                  {/* LSTM */}
+                  <div>
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-2 h-2 rounded-full bg-purple-500"></div>
+                      <h4 className="text-md font-bold">LSTM Neural Network (The AI Detective)</h4>
+                    </div>
+                    <div className="prose prose-sm max-w-none bg-purple-50 p-4 rounded-lg">
+                      <div className="whitespace-pre-wrap text-sm leading-relaxed">
+                        {prediction.explanations.lstm}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Linear Regression */}
+                  <div>
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                      <h4 className="text-md font-bold">Linear Regression (The Trend Follower)</h4>
+                    </div>
+                    <div className="prose prose-sm max-w-none bg-green-50 p-4 rounded-lg">
+                      <div className="whitespace-pre-wrap text-sm leading-relaxed">
+                        {prediction.explanations.linear_regression}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Z-Score */}
+                  <div>
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
+                      <h4 className="text-md font-bold">Z-Score Mean Reversion (The Rubber Band)</h4>
+                    </div>
+                    <div className="prose prose-sm max-w-none bg-yellow-50 p-4 rounded-lg">
+                      <div className="whitespace-pre-wrap text-sm leading-relaxed">
+                        {prediction.explanations.z_score_mean_reversion}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* OU */}
+                  <div>
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-2 h-2 rounded-full bg-orange-500"></div>
+                      <h4 className="text-md font-bold">Ornstein-Uhlenbeck (The Ball in Bowl)</h4>
+                    </div>
+                    <div className="prose prose-sm max-w-none bg-orange-50 p-4 rounded-lg">
+                      <div className="whitespace-pre-wrap text-sm leading-relaxed">
+                        {prediction.explanations.ornstein_uhlenbeck}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Technical Indicators */}
+                  <div>
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-2 h-2 rounded-full bg-indigo-500"></div>
+                      <h4 className="text-md font-bold">Technical Indicators Explained</h4>
+                    </div>
+                    <div className="prose prose-sm max-w-none bg-indigo-50 p-4 rounded-lg">
+                      <div className="whitespace-pre-wrap text-sm leading-relaxed">
+                        {prediction.explanations.technical_indicators}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            </TabsContent>
+          )}
+
           {prediction?.individual_predictions && (
             <TabsContent value="models" className="space-y-4">
               <Card className="p-6">
