@@ -45,6 +45,12 @@ from prediction_reasoning import (
     explain_technical_indicators
 )
 from autohedge_agents import run_autohedge_analysis, TradeRecommendation
+from options_pricing import (
+    OptionsStrategy,
+    STRATEGY_TEMPLATES,
+    black_scholes,
+    calculate_greeks
+)
 
 
 ROOT_DIR = Path(__file__).parent
