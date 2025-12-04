@@ -147,11 +147,14 @@ export default function AdvancedAnalytics() {
   };
 
   const formatCurrency = (value) => {
-    return `$${Math.abs(value).toFixed(2)}`;
+    if (value === undefined || value === null || isNaN(value)) return "$0.00";
+    return `$${Math.abs(Number(value)).toFixed(2)}`;
   };
 
   const formatPercent = (value) => {
-    return `${value >= 0 ? '+' : ''}${value.toFixed(2)}%`;
+    if (value === undefined || value === null || isNaN(value)) return "0.00%";
+    const numValue = Number(value);
+    return `${numValue >= 0 ? '+' : ''}${numValue.toFixed(2)}%`;
   };
 
   return (
