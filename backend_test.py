@@ -473,6 +473,11 @@ class FinancialChatbotTester:
             self.test_chat_history,
             self.test_llm_integration,
             self.test_session_deletion,
+            # Stock prediction tests
+            self.test_stock_info_endpoint,
+            self.test_stock_search_endpoint,
+            self.test_stock_prediction_endpoint,
+            self.test_invalid_stock_symbol,
         ]
         
         for test in tests:
