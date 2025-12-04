@@ -434,6 +434,136 @@ Remember to include standard disclaimer about financial advice."""
         logger.error(f"Error predicting stock {symbol}: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@api_router.post("/stocks/{symbol}/predict/ensemble")
+async def predict_stock_ensemble(symbol: str, request: StockPredictionRequest):
+    """Get ensemble prediction with LSTM, Linear Regression, and Mean Reversion"""
+    try:
+        # Parse timeframe
+        days_map = {"7d": 7, "30d": 30, "90d": 90, "180d": 180}
+        days_ahead = days_map.get(request.timeframe, 30)
+        
+        loop = asyncio.get_event_loop()
+        
+        # Fetch data - need 5 years for LSTM
+        info_future = loop.run_in_executor(executor, get_stock_info, symbol.upper())
+        hist_future = loop.run_in_executor(executor, get_historical_data, symbol.upper(), "5y")
+        
+        info, df = await asyncio.gather(info_future, hist_future)
+        
+        logger.info(f"Running ensemble prediction for {symbol.upper()} with {len(df)} days of data")
+        
+        # Run all prediction models in parallel
+        linear_future = loop.run_in_executor(executor, statistical_prediction, df.copy(), days_ahead)
+        lstm_future = loop.run_in_executor(executor, lstm_prediction, df.copy(), days_ahead, symbol.upper())
+        zscore_future = loop.run_in_executor(executor, z_score_mean_reversion, df.copy(), days_ahead, 20)
+        ou_future = loop.run_in_executor(executor, ornstein_uhlenbeck_process, df.copy(), days_ahead)
+        indicators_future = loop.run_in_executor(executor, calculate_technical_indicators, df.copy())
+        arbitrage_future = loop.run_in_executor(executor, statistical_arbitrage_score, df.copy())
+        
+        linear_pred, lstm_pred, zscore_pred, ou_pred, indicators, arbitrage_score = await asyncio.gather(
+            linear_future, lstm_future, zscore_future, ou_future, indicators_future, arbitrage_future
+        )
+        
+        # Calculate ensemble prediction (weighted average)
+        # LSTM gets highest weight due to deep learning
+        weights = {
+            "lstm": 0.4,
+            "linear": 0.2,
+            "zscore": 0.2,
+            "ou": 0.2
+        }
+        
+        ensemble_price = (
+            lstm_pred["predicted_price_end"] * weights["lstm"] +
+            linear_pred["predicted_price_end"] * weights["linear"] +
+            zscore_pred["predicted_price_end"] * weights["zscore"] +
+            ou_pred["predicted_price_end"] * weights["ou"]
+        )
+        
+        ensemble_confidence = (
+            lstm_pred["confidence"] * weights["lstm"] +
+            linear_pred["confidence"] * weights["linear"] +
+            zscore_pred["confidence"] * weights["zscore"] +
+            ou_pred["confidence"] * weights["ou"]
+        )
+        
+        current_price = info["current_price"]
+        ensemble_change = ((ensemble_price - current_price) / current_price) * 100
+        
+        # Generate trading signals
+        signals = await loop.run_in_executor(
+            executor,
+            generate_trading_signals,
+            indicators,
+            current_price
+        )
+        
+        # Get AI analysis for ensemble
+        api_key = os.environ.get('EMERGENT_LLM_KEY')
+        analysis_prompt = f"""Analyze this comprehensive stock prediction ensemble for {info['name']} ({symbol.upper()}):
+
+**Current Price:** ${current_price:.2f}
+
+**Model Predictions ({days_ahead}d):**
+1. LSTM (Deep Learning): ${lstm_pred['predicted_price_end']:.2f} ({lstm_pred['price_change_percent']:+.2f}%) - Confidence: {lstm_pred['confidence']:.1f}%
+2. Linear Regression: ${linear_pred['predicted_price_end']:.2f} ({linear_pred['price_change_percent']:+.2f}%) - Confidence: {linear_pred['confidence']:.1f}%
+3. Z-Score Mean Reversion: ${zscore_pred['predicted_price_end']:.2f} ({zscore_pred['price_change_percent']:+.2f}%)
+4. Ornstein-Uhlenbeck: ${ou_pred['predicted_price_end']:.2f} ({ou_pred['price_change_percent']:+.2f}%)
+
+**Ensemble Prediction:** ${ensemble_price:.2f} ({ensemble_change:+.2f}%) - Confidence: {ensemble_confidence:.1f}%
+
+**Mean Reversion Analysis:**
+- Score: {arbitrage_score['mean_reversion_score']:.1f}/100
+- Hurst Exponent: {arbitrage_score['hurst_exponent']:.3f} ({arbitrage_score['interpretation']['hurst']})
+- {arbitrage_score['interpretation']['overall']}
+
+**Technical Indicators:**
+- RSI: {indicators['rsi']:.1f}
+- Overall Signal: {signals['overall_signal']}
+
+Provide a comprehensive 4-5 sentence analysis covering:
+1. Consensus view from all models
+2. Key divergences between models (if any)
+3. Mean reversion characteristics and implications
+4. Investment recommendation with risk assessment
+
+Include appropriate disclaimer about financial advice."""
+
+        chat = LlmChat(
+            api_key=api_key,
+            session_id=f"ensemble_analysis_{symbol}_{datetime.now().timestamp()}",
+            system_message="You are a quantitative analyst providing ensemble model analysis."
+        ).with_model("openai", "gpt-5.1")
+        
+        ai_analysis = await chat.send_message(UserMessage(text=analysis_prompt))
+        
+        return {
+            "symbol": symbol.upper(),
+            "company_name": info["name"],
+            "current_info": info,
+            "timeframe": request.timeframe,
+            "ensemble_prediction": {
+                "predicted_price": float(ensemble_price),
+                "price_change_percent": float(ensemble_change),
+                "confidence": float(ensemble_confidence),
+                "trend": "bullish" if ensemble_price > current_price else "bearish",
+                "model_weights": weights
+            },
+            "individual_predictions": {
+                "lstm": lstm_pred,
+                "linear_regression": linear_pred,
+                "z_score_mean_reversion": zscore_pred,
+                "ornstein_uhlenbeck": ou_pred
+            },
+            "technical_indicators": indicators,
+            "trading_signals": signals,
+            "mean_reversion_analysis": arbitrage_score,
+            "ai_analysis": ai_analysis
+        }
+    except Exception as e:
+        logger.error(f"Error in ensemble prediction for {symbol}: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @api_router.post("/stocks/compare")
 async def compare_stocks_endpoint(symbols: List[str]):
     """Compare multiple stocks"""
