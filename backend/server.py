@@ -25,8 +25,10 @@ from lstm_models import lstm_prediction
 from mean_reversion import (
     z_score_mean_reversion,
     ornstein_uhlenbeck_process,
-    statistical_arbitrage_score
+    statistical_arbitrage_score,
+    pairs_trading_suggestion
 )
+from stock_ticker_extractor import extract_stock_tickers, detect_intent, validate_ticker
 
 
 ROOT_DIR = Path(__file__).parent
