@@ -443,7 +443,7 @@ export default function AdvancedAnalytics() {
                     <span className="text-xs text-muted-foreground">Correlation</span>
                   </div>
                   <p className="text-2xl font-bold">
-                    {pairsData.correlation.toFixed(3)}
+                    {pairsData.correlation ? pairsData.correlation.toFixed(3) : "0.000"}
                   </p>
                 </Card>
 
