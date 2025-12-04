@@ -463,9 +463,9 @@ export default function AdvancedAnalytics() {
                     <span className="text-xs text-muted-foreground">Spread Z-Score</span>
                   </div>
                   <p className={`text-2xl font-bold ${
-                    Math.abs(pairsData.spread_z_score) > 2 ? 'text-orange-600' : 'text-green-600'
+                    pairsData.spread_z_score && Math.abs(pairsData.spread_z_score) > 2 ? 'text-orange-600' : 'text-green-600'
                   }`}>
-                    {pairsData.spread_z_score.toFixed(2)}
+                    {pairsData.spread_z_score ? pairsData.spread_z_score.toFixed(2) : "0.00"}
                   </p>
                 </Card>
 
