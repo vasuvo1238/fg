@@ -277,7 +277,8 @@ function App() {
         <p className="text-center text-xs text-muted-foreground mt-3" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
           Always consult a licensed advisor for personalized financial advice
         </p>
-      </div>
+        </div>
+      )}
     </div>
   );
 }
