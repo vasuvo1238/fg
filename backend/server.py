@@ -44,6 +44,7 @@ from prediction_reasoning import (
     explain_ensemble_prediction,
     explain_technical_indicators
 )
+from autohedge_agents import run_autohedge_analysis, TradeRecommendation
 
 
 ROOT_DIR = Path(__file__).parent
