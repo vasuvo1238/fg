@@ -10,6 +10,12 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import ModelSettings from "@/components/ModelSettings";
+import { 
+  PriceHistoryChart, 
+  PredictionChart, 
+  TechnicalIndicatorsChart,
+  VolumeChart 
+} from "@/components/StockCharts";
 import {
   LineChart,
   Line,
