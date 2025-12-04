@@ -251,9 +251,10 @@ export default function StockPrediction({ sessionId }) {
       {/* Prediction Results */}
       {prediction && (
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="prediction">Prediction</TabsTrigger>
-            {prediction?.individual_predictions && <TabsTrigger value="models">Model Comparison</TabsTrigger>}
+            {prediction?.explanations && <TabsTrigger value="explained">📚 Explained</TabsTrigger>}
+            {prediction?.individual_predictions && <TabsTrigger value="models">Models</TabsTrigger>}
             <TabsTrigger value="technical">Technical</TabsTrigger>
             <TabsTrigger value="signals">Signals</TabsTrigger>
             <TabsTrigger value="analysis">AI Analysis</TabsTrigger>
