@@ -23,7 +23,7 @@ import {
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-export default function StockPrediction({ session Id }) {
+export default function StockPrediction({ sessionId }) {
   const [symbol, setSymbol] = useState("");
   const [loading, setLoading] = useState(false);
   const [stockData, setStockData] = useState(null);
