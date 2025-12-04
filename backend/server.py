@@ -412,8 +412,8 @@ async def stock_info(symbol: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 @api_router.get("/stocks/{symbol}/historical")
-async def stock_historical(symbol: str, period: str = "1y"):
-    """Get historical stock data"""
+async def stock_historical(symbol: str, period: str = "3mo"):
+    """Get historical stock data - Supports: 1mo, 3mo, 6mo, 1y, 2y, 5y"""
     try:
         loop = asyncio.get_event_loop()
         df = await loop.run_in_executor(executor, get_historical_data, symbol.upper(), period)
