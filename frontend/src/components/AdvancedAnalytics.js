@@ -453,7 +453,7 @@ export default function AdvancedAnalytics() {
                     <span className="text-xs text-muted-foreground">Hedge Ratio</span>
                   </div>
                   <p className="text-2xl font-bold">
-                    {pairsData.hedge_ratio.toFixed(3)}
+                    {pairsData.hedge_ratio ? pairsData.hedge_ratio.toFixed(3) : "0.000"}
                   </p>
                 </Card>
 
