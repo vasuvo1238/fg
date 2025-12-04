@@ -44,6 +44,9 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# Thread pool for CPU-bound operations
+executor = ThreadPoolExecutor(max_workers=4)
+
 # ============== Models ==============
 
 class Message(BaseModel):
