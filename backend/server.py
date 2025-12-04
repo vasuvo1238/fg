@@ -636,6 +636,7 @@ Include appropriate disclaimer about financial advice."""
                 "trend": "bullish" if ensemble_price > current_price else "bearish",
                 "model_weights": weights
             },
+            "confidence_interval": confidence_interval,
             "individual_predictions": {
                 "lstm": lstm_pred,
                 "linear_regression": linear_pred,
