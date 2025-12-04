@@ -273,7 +273,7 @@ export default function AdvancedAnalytics() {
                     <span className="text-xs text-muted-foreground">Direction Accuracy</span>
                   </div>
                   <p className="text-2xl font-bold text-blue-600">
-                    {performanceData.direction_accuracy.toFixed(1)}%
+                    {performanceData.direction_accuracy ? performanceData.direction_accuracy.toFixed(1) : "0.0"}%
                   </p>
                 </Card>
 
