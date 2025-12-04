@@ -163,6 +163,16 @@ function App() {
                   <TrendingUp className="w-4 h-4" />
                   Options
                 </Button>
+                <Button
+                  data-testid="analytics-view-btn"
+                  variant={activeView === "analytics" ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setActiveView("analytics")}
+                  className="gap-2"
+                >
+                  <Microscope className="w-4 h-4" />
+                  Analytics
+                </Button>
               </div>
             </div>
           </div>
