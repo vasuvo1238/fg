@@ -655,7 +655,7 @@ export default function AdvancedAnalytics() {
                         <span className="font-bold">{formatCurrency(trade.price)}</span>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm font-bold">{trade.shares.toFixed(2)} shares</p>
+                        <p className="text-sm font-bold">{trade.shares ? trade.shares.toFixed(2) : "0.00"} shares</p>
                         <p className="text-xs text-muted-foreground">
                           Predicted: {formatPercent(trade.predicted_change)}
                         </p>
