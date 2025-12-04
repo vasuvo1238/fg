@@ -696,6 +696,87 @@ async def compare_stocks_endpoint(symbols: List[str]):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+# ============== AutoHedge Multi-Agent Trade Recommendations ==============
+
+class AutoHedgeRequest(BaseModel):
+    symbol: str
+    task: str = "Analyze this stock for investment"
+    portfolio_allocation: float = 100000.0  # $100k default
+    timeframe: str = "30d"
+
+@api_router.post("/autohedge/analyze", response_model=TradeRecommendation)
+async def autohedge_trade_recommendation(request: AutoHedgeRequest):
+    """
+    Run full AutoHedge multi-agent analysis for trade recommendations
+    Returns structured output with Director, Quant, Risk Manager, and Execution agent analysis
+    """
+    try:
+        symbol = request.symbol.upper()
+        
+        logger.info(f"Starting AutoHedge analysis for {symbol}")
+        
+        # Parse timeframe
+        days_map = {"7d": 7, "30d": 30, "90d": 90, "180d": 180}
+        days_ahead = days_map.get(request.timeframe, 30)
+        
+        loop = asyncio.get_event_loop()
+        
+        # Fetch all required data
+        info_future = loop.run_in_executor(executor, get_stock_info, symbol)
+        hist_future = loop.run_in_executor(executor, get_historical_data, symbol, "1y")
+        
+        info, df = await asyncio.gather(info_future, hist_future)
+        
+        # Get technical analysis
+        indicators = await loop.run_in_executor(executor, calculate_technical_indicators, df.copy())
+        signals = await loop.run_in_executor(executor, generate_trading_signals, indicators, info["current_price"])
+        
+        # Get prediction for quantitative analysis
+        prediction = await loop.run_in_executor(executor, statistical_prediction, df.copy(), days_ahead)
+        
+        # Run AutoHedge multi-agent system
+        api_key = os.environ.get('EMERGENT_LLM_KEY')
+        
+        recommendation = await run_autohedge_analysis(
+            stock_symbol=symbol,
+            stock_info=info,
+            technical_indicators=indicators,
+            trading_signals=signals,
+            prediction=prediction,
+            task=request.task,
+            api_key=api_key,
+            portfolio_allocation=request.portfolio_allocation
+        )
+        
+        # Save to database for tracking
+        recommendation_dict = recommendation.model_dump()
+        recommendation_dict['timestamp'] = recommendation_dict['timestamp']
+        
+        await db.autohedge_recommendations.insert_one(recommendation_dict)
+        
+        logger.info(f"AutoHedge analysis saved: {recommendation.action} {symbol}")
+        
+        return recommendation
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error in AutoHedge analysis: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/autohedge/history/{symbol}")
+async def get_autohedge_history(symbol: str, limit: int = 10):
+    """Get historical AutoHedge recommendations for a symbol"""
+    try:
+        recommendations = await db.autohedge_recommendations.find(
+            {"symbol": symbol.upper()},
+            {"_id": 0}
+        ).sort("timestamp", -1).limit(limit).to_list(limit)
+        
+        return {"symbol": symbol.upper(), "recommendations": recommendations}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 # ============== Portfolio Management ==============
 
 @api_router.post("/portfolio/add")
