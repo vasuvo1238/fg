@@ -150,7 +150,17 @@ function App() {
                   className="gap-2"
                 >
                   <BarChart3 className="w-4 h-4" />
-                  Stock Predictions
+                  Stocks
+                </Button>
+                <Button
+                  data-testid="options-view-btn"
+                  variant={activeView === "options" ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setActiveView("options")}
+                  className="gap-2"
+                >
+                  <TrendingUp className="w-4 h-4" />
+                  Options
                 </Button>
               </div>
             </div>
