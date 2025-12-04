@@ -36,7 +36,8 @@ import {
   ArrowLeftRight,
   Target,
   Award,
-  RefreshCcw
+  RefreshCcw,
+  DollarSign
 } from "lucide-react";
 import { toast } from "sonner";
 
