@@ -101,3 +101,73 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "Test the Options Strategy Builder feature with template mode (Bull Call Spread) and custom mode functionality"
+
+frontend:
+  - task: "Options Strategy Builder - Template Mode"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/OptionsStrategyBuilder.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "testing"
+          comment: "Starting testing of Options Strategy Builder template mode functionality"
+
+  - task: "Options Strategy Builder - Custom Mode"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/OptionsStrategyBuilder.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "testing"
+          comment: "Starting testing of Options Strategy Builder custom mode functionality"
+
+  - task: "Options Strategy Builder - Results Display"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/OptionsStrategyBuilder.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "testing"
+          comment: "Starting testing of strategy results display including payoff diagram, Greeks, and summary cards"
+
+backend:
+  - task: "Options Strategy API Endpoints"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "testing"
+          comment: "Starting testing of options strategy API endpoints for template and custom strategies"
+
+metadata:
+  created_by: "testing_agent"
+  version: "1.0"
+  test_sequence: 1
+
+test_plan:
+  current_focus:
+    - "Options Strategy Builder - Template Mode"
+    - "Options Strategy Builder - Custom Mode"
+    - "Options Strategy Builder - Results Display"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+    - agent: "testing"
+      message: "Starting comprehensive testing of Options Strategy Builder feature. Will test both template mode (Bull Call Spread) and custom mode functionality, including UI interactions, API calls, and results display."
