@@ -263,6 +263,113 @@ export default function StockPrediction({ sessionId }) {
         )}
       </Card>
 
+      {/* AutoHedge Analysis Card */}
+      {autohedgeAnalysis && showAutohedge && (
+        <Card className="p-6 mb-6 border-2 border-purple-500 bg-gradient-to-br from-purple-50 to-indigo-50">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-2xl font-bold" style={{ fontFamily: 'Fraunces, serif' }}>
+              🤖 AutoHedge Multi-Agent Analysis
+            </h2>
+            <div className={`px-4 py-2 rounded-full text-xl font-bold ${
+              autohedgeAnalysis.action === 'BUY' ? 'bg-green-500 text-white' :
+              autohedgeAnalysis.action === 'SELL' ? 'bg-red-500 text-white' :
+              'bg-gray-500 text-white'
+            }`}>
+              {autohedgeAnalysis.action}
+            </div>
+          </div>
+
+          {/* Consensus Score */}
+          <div className="mb-6 p-4 bg-white rounded-lg border-2 border-purple-300">
+            <div className="flex items-center justify-between">
+              <span className="text-lg font-semibold">Agent Consensus</span>
+              <span className="text-3xl font-bold text-purple-600">{autohedgeAnalysis.consensus_score.toFixed(0)}%</span>
+            </div>
+            <div className="mt-2 h-3 bg-gray-200 rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-gradient-to-r from-purple-500 to-indigo-500 transition-all duration-500"
+                style={{ width: `${autohedgeAnalysis.consensus_score}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Trade Details */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div className="p-3 bg-white rounded-lg">
+              <p className="text-xs text-muted-foreground">Position Size</p>
+              <p className="text-lg font-bold text-purple-600">{autohedgeAnalysis.position_size_percent.toFixed(1)}%</p>
+            </div>
+            <div className="p-3 bg-white rounded-lg">
+              <p className="text-xs text-muted-foreground">Risk Level</p>
+              <p className="text-lg font-bold">{autohedgeAnalysis.risk_level}/10</p>
+            </div>
+            <div className="p-3 bg-white rounded-lg">
+              <p className="text-xs text-muted-foreground">Target Price</p>
+              <p className="text-lg font-bold text-green-600">${autohedgeAnalysis.target_price.toFixed(2)}</p>
+            </div>
+            <div className="p-3 bg-white rounded-lg">
+              <p className="text-xs text-muted-foreground">Stop Loss</p>
+              <p className="text-lg font-bold text-red-600">${autohedgeAnalysis.stop_loss.toFixed(2)}</p>
+            </div>
+          </div>
+
+          {/* Agent Analysis */}
+          <div className="space-y-3">
+            <h3 className="text-lg font-bold mb-3">Agent Recommendations:</h3>
+            
+            {Object.entries(autohedgeAnalysis.agents_analysis).map(([agentName, analysis]) => (
+              <div key={agentName} className="p-4 bg-white rounded-lg border-l-4" style={{
+                borderLeftColor: analysis.recommendation === 'BUY' ? '#10b981' : 
+                                  analysis.recommendation === 'SELL' ? '#ef4444' : '#6b7280'
+              }}>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-bold capitalize">{analysis.agent_name} Agent</span>
+                  <div className="flex items-center gap-2">
+                    <span className={`px-3 py-1 rounded-full text-sm font-bold ${
+                      analysis.recommendation === 'BUY' ? 'bg-green-100 text-green-800' :
+                      analysis.recommendation === 'SELL' ? 'bg-red-100 text-red-800' :
+                      'bg-gray-100 text-gray-800'
+                    }`}>
+                      {analysis.recommendation}
+                    </span>
+                    <span className="text-sm font-semibold">{analysis.confidence.toFixed(0)}%</span>
+                  </div>
+                </div>
+                <p className="text-sm text-muted-foreground mb-2">{analysis.reasoning}</p>
+                <ul className="text-xs space-y-1">
+                  {analysis.key_points.map((point, idx) => (
+                    <li key={idx}>• {point}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+
+          {/* Execution Plan */}
+          <div className="mt-6 p-4 bg-indigo-50 rounded-lg border-2 border-indigo-300">
+            <h3 className="text-lg font-bold mb-3">📋 Execution Plan</h3>
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              <div>
+                <span className="text-muted-foreground">Entry Range:</span>
+                <span className="font-bold ml-2">${autohedgeAnalysis.entry_price_range.min} - ${autohedgeAnalysis.entry_price_range.max}</span>
+              </div>
+              <div>
+                <span className="text-muted-foreground">Risk/Reward:</span>
+                <span className="font-bold ml-2">{autohedgeAnalysis.risk_reward_ratio.toFixed(2)}:1</span>
+              </div>
+              <div>
+                <span className="text-muted-foreground">Time Horizon:</span>
+                <span className="font-bold ml-2 capitalize">{autohedgeAnalysis.time_horizon}</span>
+              </div>
+              <div>
+                <span className="text-muted-foreground">Order Type:</span>
+                <span className="font-bold ml-2">{autohedgeAnalysis.execution_plan.execution_style}</span>
+              </div>
+            </div>
+          </div>
+        </Card>
+      )}
+
       {/* Stock Info Card */}
       {stockData && (
         <Card className="p-6 mb-6">
