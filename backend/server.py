@@ -29,6 +29,13 @@ from mean_reversion import (
     pairs_trading_suggestion
 )
 from stock_ticker_extractor import extract_stock_tickers, detect_intent, validate_ticker
+from model_performance import (
+    save_prediction,
+    evaluate_predictions,
+    get_model_performance,
+    backtest_strategy,
+    calculate_confidence_intervals
+)
 
 
 ROOT_DIR = Path(__file__).parent
