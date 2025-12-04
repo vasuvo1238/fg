@@ -30,6 +30,7 @@ export default function StockPrediction({ sessionId }) {
   const [prediction, setPrediction] = useState(null);
   const [timeframe, setTimeframe] = useState("30d");
   const [activeTab, setActiveTab] = useState("prediction");
+  const [useEnsemble, setUseEnsemble] = useState(true);
 
   const searchStock = async () => {
     if (!symbol.trim()) return;
