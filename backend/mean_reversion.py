@@ -190,9 +190,9 @@ def statistical_arbitrage_score(df: pd.DataFrame):
         
         return {
             "mean_reversion_score": float(min(100, score)),
-            "is_mean_reverting": score > 50,
+            "is_mean_reverting": bool(score > 50),
             "hurst_exponent": float(hurst),
-            "is_stationary": is_stationary,
+            "is_stationary": bool(is_stationary),
             "adf_p_value": float(adf_result[1]),
             "half_life_days": float(half_life) if half_life else None,
             "interpretation": {
