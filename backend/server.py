@@ -174,6 +174,10 @@ async def chat(request: ChatRequest):
         # Generate session_id if not provided
         session_id = request.session_id or str(uuid.uuid4())
         
+        # Detect stock tickers and intent
+        intent = detect_intent(request.message)
+        detected_tickers = [t for t in intent["tickers"] if validate_ticker(t)] if intent["tickers"] else []
+        
         # Check guardrails
         is_allowed, guardrail_msg = check_guardrails(request.message)
         
