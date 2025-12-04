@@ -180,8 +180,22 @@ export default function StockPrediction({ sessionId }) {
           </Button>
         </div>
         
-        {/* Timeframe & Model Selector */}
-        <div className="mt-4 flex items-center justify-between">
+        {/* Timeframe, Historical Period & Model Selector */}
+        <div className="mt-4 space-y-3">
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground" style={{ fontFamily: 'JetBrains Mono, monospace' }}>Chart Period:</span>
+            {["1mo", "3mo", "6mo", "1y"].map((period) => (
+              <Button
+                key={period}
+                variant={historicalPeriod === period ? "default" : "outline"}
+                size="sm"
+                onClick={() => setHistoricalPeriod(period)}
+              >
+                {period === "1mo" ? "30 days" : period === "3mo" ? "3 months" : period === "6mo" ? "6 months" : "1 year"}
+              </Button>
+            ))}
+          </div>
+          
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground" style={{ fontFamily: 'JetBrains Mono, monospace' }}>Forecast:</span>
             {["7d", "30d", "90d", "180d"].map((tf) => (
