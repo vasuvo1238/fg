@@ -475,9 +475,9 @@ export default function AdvancedAnalytics() {
                     <span className="text-xs text-muted-foreground">Cointegration P-value</span>
                   </div>
                   <p className={`text-2xl font-bold ${
-                    pairsData.cointegration_p_value < 0.05 ? 'text-green-600' : 'text-red-600'
+                    pairsData.cointegration_p_value && pairsData.cointegration_p_value < 0.05 ? 'text-green-600' : 'text-red-600'
                   }`}>
-                    {pairsData.cointegration_p_value.toFixed(4)}
+                    {pairsData.cointegration_p_value ? pairsData.cointegration_p_value.toFixed(4) : "0.0000"}
                   </p>
                 </Card>
               </div>
