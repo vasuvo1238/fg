@@ -18,6 +18,7 @@ function App() {
   const [sessionId, setSessionId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
+  const [activeView, setActiveView] = useState("chat");
   const scrollRef = useRef(null);
   const inputRef = useRef(null);
 
