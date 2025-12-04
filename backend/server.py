@@ -136,12 +136,16 @@ OFF_TOPIC_INDICATORS = [
     'story', 'poem', 'riddle', 'puzzle'
 ]
 
-def check_guardrails(message: str) -> tuple[bool, Optional[str]]:
+def check_guardrails(message: str, detected_tickers: List[str] = None) -> tuple[bool, Optional[str]]:
     """
     Check if the message is finance-related.
     Returns: (is_allowed, guardrail_message)
     """
     message_lower = message.lower()
+    
+    # If stock tickers detected, it's finance-related
+    if detected_tickers and len(detected_tickers) > 0:
+        return True, None
     
     # Check for explicit off-topic indicators
     for indicator in OFF_TOPIC_INDICATORS:
@@ -155,11 +159,12 @@ def check_guardrails(message: str) -> tuple[bool, Optional[str]]:
     
     # Check for common financial question patterns
     financial_patterns = [
-        r'how (much|to|can|do|should).*(save|invest|spend|budget)',
+        r'how (much|to|can|do|should).*(save|invest|spend|budget|buy|sell)',
         r'what (is|are).*(stock|bond|etf|mutual fund|portfolio|diversification)',
-        r'(should|can|how) (i|we).*(retire|retirement)',
-        r'(best|good).*(investment|portfolio|strategy)',
+        r'(should|can|how) (i|we).*(retire|retirement|invest|buy|sell|trade)',
+        r'(best|good).*(investment|portfolio|strategy|stock)',
         r'(explain|tell me about).*(market|trading|investing)',
+        r'(price|value|worth).*of',
     ]
     
     for pattern in financial_patterns:
