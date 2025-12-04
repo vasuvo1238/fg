@@ -637,6 +637,24 @@ Include appropriate disclaimer about financial advice."""
         }
         await save_prediction(db, symbol.upper(), "ensemble", ensemble_pred_data)
         
+        # Generate plain English explanations
+        explanations = {
+            "lstm": explain_lstm_prediction({**lstm_pred, "symbol": symbol.upper()}),
+            "linear_regression": explain_linear_regression(linear_pred),
+            "z_score_mean_reversion": explain_zscore_mean_reversion(zscore_pred),
+            "ornstein_uhlenbeck": explain_ornstein_uhlenbeck(ou_pred),
+            "ensemble": explain_ensemble_prediction(
+                {"predicted_price": ensemble_price, "price_change_percent": ensemble_change, "model_weights": weights},
+                {
+                    "lstm": lstm_pred,
+                    "linear_regression": linear_pred,
+                    "z_score_mean_reversion": zscore_pred,
+                    "ornstein_uhlenbeck": ou_pred
+                }
+            ),
+            "technical_indicators": explain_technical_indicators(indicators, current_price)
+        }
+        
         return {
             "symbol": symbol.upper(),
             "company_name": info["name"],
