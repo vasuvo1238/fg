@@ -160,15 +160,19 @@ async def chat(request: ChatRequest):
         
         await db.messages.insert_one(user_msg_dict)
         
-        # Get chat history for context
+        # Get chat history for context (excluding the just-added user message)
         history = await db.messages.find(
             {"session_id": session_id},
             {"_id": 0}
         ).sort("timestamp", 1).to_list(50)
         
+        # Build context from previous messages (excluding the current one)
+        previous_messages = [msg for msg in history[:-1]] if len(history) > 1 else []
+        
         # Initialize LLM chat
         api_key = os.environ.get('EMERGENT_LLM_KEY')
         
+        # Build system message with context
         system_message = """You are a professional financial advisor chatbot with expertise in all areas of finance. 
         
 Your characteristics:
@@ -188,6 +192,14 @@ IMPORTANT GUIDELINES:
 6. Stay current with financial trends and regulations
 
 Always aim to help users make informed financial decisions while being clear about the limitations of general advice."""
+        
+        # Add conversation history to context if exists
+        if previous_messages:
+            context_str = "\n\nPrevious conversation:\n"
+            for msg in previous_messages:
+                role = "User" if msg['role'] == 'user' else "Assistant"
+                context_str += f"{role}: {msg['content']}\n"
+            system_message += context_str
         
         chat = LlmChat(
             api_key=api_key,
