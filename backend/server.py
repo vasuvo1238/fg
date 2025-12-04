@@ -306,7 +306,14 @@ async def search_stocks(query: str):
     try:
         loop = asyncio.get_event_loop()
         ticker = await loop.run_in_executor(executor, get_stock_info, query.upper())
+        
+        # Validate that we got real data
+        if not ticker.get("current_price"):
+            raise HTTPException(status_code=404, detail=f"Stock symbol '{query.upper()}' not found or invalid")
+        
         return ticker
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"Stock not found: {str(e)}")
 
@@ -316,7 +323,14 @@ async def stock_info(symbol: str):
     try:
         loop = asyncio.get_event_loop()
         info = await loop.run_in_executor(executor, get_stock_info, symbol.upper())
+        
+        # Validate that we got real data
+        if not info.get("current_price"):
+            raise HTTPException(status_code=404, detail=f"Stock symbol '{symbol.upper()}' not found or invalid")
+        
         return info
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
