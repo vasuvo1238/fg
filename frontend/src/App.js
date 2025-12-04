@@ -246,8 +246,9 @@ function App() {
         </div>
       </div>
 
-      {/* Floating Input Bar */}
-      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 w-[90%] max-w-3xl z-20">
+      {/* Floating Input Bar - Only show in chat view */}
+      {activeView === "chat" && (
+        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 w-[90%] max-w-3xl z-20">
         <div className="input-command-bar backdrop-blur-xl bg-background/90 border border-border/50 rounded-full shadow-2xl p-2">
           <div className="flex items-center gap-2">
             <Input
