@@ -266,10 +266,25 @@ export default function StockPrediction({ sessionId }) {
               </h3>
               
               {prediction.ensemble_prediction && (
-                <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded">
-                  <p className="text-xs text-blue-900">
-                    <strong>Ensemble Model:</strong> Combines LSTM (40%), Linear Regression (20%), Z-Score Mean Reversion (20%), and Ornstein-Uhlenbeck (20%) for higher accuracy.
-                  </p>
+                <div className="mb-4 space-y-2">
+                  <div className="p-3 bg-blue-50 border border-blue-200 rounded">
+                    <p className="text-xs text-blue-900">
+                      <strong>Ensemble Model:</strong> {customWeights ? 'Using your custom weights' : 'Combines LSTM (40%), Linear Regression (20%), Z-Score Mean Reversion (20%), and Ornstein-Uhlenbeck (20%)'} for higher accuracy.
+                    </p>
+                  </div>
+                  {prediction.confidence_interval && (
+                    <div className="p-3 bg-green-50 border border-green-200 rounded">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-semibold text-green-900">95% Confidence Interval</span>
+                        <span className="text-xs font-bold text-green-900" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+                          {formatPrice(prediction.confidence_interval.lower_bound)} - {formatPrice(prediction.confidence_interval.upper_bound)}
+                        </span>
+                      </div>
+                      <p className="text-xs text-green-800 mt-1">
+                        95% probability the price will be within this range
+                      </p>
+                    </div>
+                  )}
                 </div>
               )}
               
