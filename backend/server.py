@@ -834,9 +834,10 @@ async def build_custom_strategy(request: CustomStrategyRequest):
         loop = asyncio.get_event_loop()
         summary = await loop.run_in_executor(executor, strategy.get_strategy_summary)
         
-        # Save to database
-        summary["created_at"] = datetime.now(timezone.utc).isoformat()
-        await db.options_strategies.insert_one(summary)
+        # Save to database (create a copy to avoid _id injection)
+        db_record = summary.copy()
+        db_record["created_at"] = datetime.now(timezone.utc).isoformat()
+        await db.options_strategies.insert_one(db_record)
         
         return summary
         
