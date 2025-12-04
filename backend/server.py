@@ -73,6 +73,31 @@ class ChatHistory(BaseModel):
     session_id: str
     messages: List[Message]
 
+class StockPredictionRequest(BaseModel):
+    symbol: str
+    timeframe: str = "30d"  # 7d, 30d, 90d, 180d
+
+class PortfolioStock(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    symbol: str
+    quantity: float
+    purchase_price: float
+    purchase_date: datetime
+    user_session: str
+
+class AlertModel(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    symbol: str
+    target_price: float
+    condition: str  # 'above' or 'below'
+    user_session: str
+    is_triggered: bool = False
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
 # ============== Guardrails System ==============
 
 FINANCIAL_KEYWORDS = [
