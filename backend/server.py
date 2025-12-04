@@ -298,6 +298,256 @@ async def delete_session(session_id: str):
         logger.error(f"Error deleting session: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
+# ============== Stock Prediction Endpoints ==============
+
+@api_router.get("/stocks/search/{query}")
+async def search_stocks(query: str):
+    """Search for stocks by symbol or name"""
+    try:
+        loop = asyncio.get_event_loop()
+        ticker = await loop.run_in_executor(executor, get_stock_info, query.upper())
+        return ticker
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=f"Stock not found: {str(e)}")
+
+@api_router.get("/stocks/{symbol}/info")
+async def stock_info(symbol: str):
+    """Get current stock information"""
+    try:
+        loop = asyncio.get_event_loop()
+        info = await loop.run_in_executor(executor, get_stock_info, symbol.upper())
+        return info
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/stocks/{symbol}/historical")
+async def stock_historical(symbol: str, period: str = "1y"):
+    """Get historical stock data"""
+    try:
+        loop = asyncio.get_event_loop()
+        df = await loop.run_in_executor(executor, get_historical_data, symbol.upper(), period)
+        
+        data = []
+        for index, row in df.iterrows():
+            data.append({
+                "date": index.strftime('%Y-%m-%d'),
+                "open": float(row['Open']),
+                "high": float(row['High']),
+                "low": float(row['Low']),
+                "close": float(row['Close']),
+                "volume": int(row['Volume'])
+            })
+        
+        return {"symbol": symbol.upper(), "period": period, "data": data}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.post("/stocks/{symbol}/predict")
+async def predict_stock(symbol: str, request: StockPredictionRequest):
+    """Get AI-powered stock prediction with statistical analysis"""
+    try:
+        # Parse timeframe
+        days_map = {"7d": 7, "30d": 30, "90d": 90, "180d": 180}
+        days_ahead = days_map.get(request.timeframe, 30)
+        
+        loop = asyncio.get_event_loop()
+        
+        # Fetch data in parallel
+        info_future = loop.run_in_executor(executor, get_stock_info, symbol.upper())
+        hist_future = loop.run_in_executor(executor, get_historical_data, symbol.upper(), "1y")
+        
+        info, df = await asyncio.gather(info_future, hist_future)
+        
+        # Calculate indicators and predictions
+        indicators = await loop.run_in_executor(executor, calculate_technical_indicators, df.copy())
+        prediction = await loop.run_in_executor(executor, statistical_prediction, df.copy(), days_ahead)
+        signals = await loop.run_in_executor(
+            executor,
+            generate_trading_signals,
+            indicators,
+            info["current_price"]
+        )
+        
+        # Get AI analysis
+        api_key = os.environ.get('EMERGENT_LLM_KEY')
+        analysis_prompt = f"""Analyze this stock prediction for {info['name']} ({symbol.upper()}):
+
+Current Price: ${info['current_price']:.2f}
+Predicted Price ({days_ahead}d): ${prediction['predicted_price_end']:.2f}
+Change: {prediction['price_change_percent']:.2f}%
+Trend: {prediction['trend']}
+
+Technical Indicators:
+- RSI: {indicators['rsi']:.1f}
+- MA20: ${indicators['moving_averages']['ma_20']:.2f}
+- MA50: ${indicators['moving_averages']['ma_50']:.2f}
+- Volatility: {indicators['volatility']:.2f}%
+
+Trading Signals: {signals['overall_signal']}
+
+Provide a concise professional analysis (3-4 sentences) covering:
+1. Key insights from the technical indicators
+2. Risk assessment based on volatility
+3. Investment outlook (bullish/bearish/neutral)
+
+Remember to include standard disclaimer about financial advice."""
+
+        chat = LlmChat(
+            api_key=api_key,
+            session_id=f"stock_analysis_{symbol}_{datetime.now().timestamp()}",
+            system_message="You are a professional financial analyst providing stock analysis."
+        ).with_model("openai", "gpt-5.1")
+        
+        ai_analysis = await chat.send_message(UserMessage(text=analysis_prompt))
+        
+        return {
+            "symbol": symbol.upper(),
+            "company_name": info["name"],
+            "current_info": info,
+            "technical_indicators": indicators,
+            "statistical_prediction": prediction,
+            "trading_signals": signals,
+            "ai_analysis": ai_analysis,
+            "timeframe": request.timeframe
+        }
+    except Exception as e:
+        logger.error(f"Error predicting stock {symbol}: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.post("/stocks/compare")
+async def compare_stocks_endpoint(symbols: List[str]):
+    """Compare multiple stocks"""
+    try:
+        loop = asyncio.get_event_loop()
+        comparison = await loop.run_in_executor(executor, compare_stocks, symbols)
+        return {"stocks": comparison}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# ============== Portfolio Management ==============
+
+@api_router.post("/portfolio/add")
+async def add_to_portfolio(stock: PortfolioStock):
+    """Add stock to portfolio"""
+    try:
+        stock_dict = stock.model_dump()
+        stock_dict['purchase_date'] = stock_dict['purchase_date'].isoformat()
+        
+        await db.portfolio.insert_one(stock_dict)
+        return stock
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/portfolio/{user_session}")
+async def get_portfolio(user_session: str):
+    """Get user's portfolio"""
+    try:
+        portfolio = await db.portfolio.find(
+            {"user_session": user_session},
+            {"_id": 0}
+        ).to_list(100)
+        
+        # Calculate current values
+        for item in portfolio:
+            try:
+                loop = asyncio.get_event_loop()
+                info = await loop.run_in_executor(executor, get_stock_info, item['symbol'])
+                item['current_price'] = info['current_price']
+                item['current_value'] = item['quantity'] * info['current_price']
+                item['cost_basis'] = item['quantity'] * item['purchase_price']
+                item['gain_loss'] = item['current_value'] - item['cost_basis']
+                item['gain_loss_percent'] = (item['gain_loss'] / item['cost_basis']) * 100
+            except:
+                item['current_price'] = None
+        
+        return {"portfolio": portfolio}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.delete("/portfolio/{stock_id}")
+async def remove_from_portfolio(stock_id: str):
+    """Remove stock from portfolio"""
+    try:
+        result = await db.portfolio.delete_one({"id": stock_id})
+        return {"deleted": result.deleted_count > 0}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# ============== Price Alerts ==============
+
+@api_router.post("/alerts/create")
+async def create_alert(alert: AlertModel):
+    """Create price alert"""
+    try:
+        alert_dict = alert.model_dump()
+        alert_dict['created_at'] = alert_dict['created_at'].isoformat()
+        
+        await db.alerts.insert_one(alert_dict)
+        return alert
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/alerts/{user_session}")
+async def get_alerts(user_session: str):
+    """Get user's alerts"""
+    try:
+        alerts = await db.alerts.find(
+            {"user_session": user_session, "is_triggered": False},
+            {"_id": 0}
+        ).to_list(100)
+        
+        return {"alerts": alerts}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/alerts/{user_session}/check")
+async def check_alerts(user_session: str):
+    """Check if any alerts should be triggered"""
+    try:
+        alerts = await db.alerts.find(
+            {"user_session": user_session, "is_triggered": False},
+            {"_id": 0}
+        ).to_list(100)
+        
+        triggered = []
+        loop = asyncio.get_event_loop()
+        
+        for alert in alerts:
+            try:
+                info = await loop.run_in_executor(executor, get_stock_info, alert['symbol'])
+                current_price = info['current_price']
+                
+                should_trigger = False
+                if alert['condition'] == 'above' and current_price >= alert['target_price']:
+                    should_trigger = True
+                elif alert['condition'] == 'below' and current_price <= alert['target_price']:
+                    should_trigger = True
+                
+                if should_trigger:
+                    await db.alerts.update_one(
+                        {"id": alert['id']},
+                        {"$set": {"is_triggered": True}}
+                    )
+                    triggered.append({
+                        **alert,
+                        "current_price": current_price
+                    })
+            except:
+                continue
+        
+        return {"triggered_alerts": triggered}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.delete("/alerts/{alert_id}")
+async def delete_alert(alert_id: str):
+    """Delete alert"""
+    try:
+        result = await db.alerts.delete_one({"id": alert_id})
+        return {"deleted": result.deleted_count > 0}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 # Include the router in the main app
 app.include_router(api_router)
 
