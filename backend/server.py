@@ -755,6 +755,185 @@ async def delete_alert(alert_id: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+# ============== Pairs Trading ==============
+
+@api_router.post("/stocks/pairs-trading")
+async def analyze_pairs_trading(symbols: List[str]):
+    """Analyze pairs trading opportunities between stocks"""
+    try:
+        if len(symbols) != 2:
+            raise HTTPException(status_code=400, detail="Exactly 2 symbols required for pairs trading")
+        
+        loop = asyncio.get_event_loop()
+        
+        # Fetch historical data for both stocks
+        df1_future = loop.run_in_executor(executor, get_historical_data, symbols[0].upper(), "1y")
+        df2_future = loop.run_in_executor(executor, get_historical_data, symbols[1].upper(), "1y")
+        
+        df1, df2 = await asyncio.gather(df1_future, df2_future)
+        
+        # Analyze pairs trading
+        pairs_analysis = await loop.run_in_executor(
+            executor,
+            pairs_trading_suggestion,
+            df1, df2, symbols[0].upper(), symbols[1].upper()
+        )
+        
+        return pairs_analysis
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error in pairs trading analysis: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# ============== Model Performance & Backtesting ==============
+
+@api_router.get("/models/performance")
+async def model_performance(model_type: Optional[str] = None, symbol: Optional[str] = None):
+    """Get model performance statistics"""
+    try:
+        performance = await get_model_performance(db, model_type, symbol)
+        return performance
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.post("/models/evaluate")
+async def evaluate_model_predictions():
+    """Evaluate past predictions against actual prices"""
+    try:
+        async def get_price(symbol):
+            try:
+                loop = asyncio.get_event_loop()
+                info = await loop.run_in_executor(executor, get_stock_info, symbol)
+                return info.get('current_price')
+            except:
+                return None
+        
+        count = await evaluate_predictions(db, get_price)
+        return {"evaluated_count": count}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.post("/stocks/{symbol}/backtest")
+async def backtest_predictions(symbol: str, timeframe: str = "1y"):
+    """Backtest prediction strategy"""
+    try:
+        loop = asyncio.get_event_loop()
+        
+        # Get historical data
+        df = await loop.run_in_executor(executor, get_historical_data, symbol.upper(), timeframe)
+        
+        # Get past predictions for this symbol
+        predictions = await db.model_predictions.find(
+            {"symbol": symbol.upper(), "is_evaluated": True},
+            {"_id": 0}
+        ).to_list(100)
+        
+        if not predictions:
+            raise HTTPException(status_code=404, detail="No evaluated predictions found for backtesting")
+        
+        # Run backtest
+        backtest_results = await loop.run_in_executor(
+            executor,
+            backtest_strategy,
+            df, predictions, 10000
+        )
+        
+        return backtest_results
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error in backtesting: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# ============== Custom Ensemble Weights ==============
+
+class CustomWeights(BaseModel):
+    lstm_weight: float = 0.4
+    linear_weight: float = 0.2
+    zscore_weight: float = 0.2
+    ou_weight: float = 0.2
+
+@api_router.post("/stocks/{symbol}/predict/custom")
+async def predict_with_custom_weights(symbol: str, request: StockPredictionRequest, weights: CustomWeights):
+    """Predict with custom ensemble weights"""
+    try:
+        # Validate weights sum to 1
+        total_weight = weights.lstm_weight + weights.linear_weight + weights.zscore_weight + weights.ou_weight
+        if abs(total_weight - 1.0) > 0.01:
+            raise HTTPException(status_code=400, detail="Weights must sum to 1.0")
+        
+        days_map = {"7d": 7, "30d": 30, "90d": 90, "180d": 180}
+        days_ahead = days_map.get(request.timeframe, 30)
+        
+        loop = asyncio.get_event_loop()
+        
+        # Fetch data
+        info_future = loop.run_in_executor(executor, get_stock_info, symbol.upper())
+        hist_future = loop.run_in_executor(executor, get_historical_data, symbol.upper(), "5y")
+        
+        info, df = await asyncio.gather(info_future, hist_future)
+        
+        # Run all models
+        linear_future = loop.run_in_executor(executor, statistical_prediction, df.copy(), days_ahead)
+        lstm_future = loop.run_in_executor(executor, lstm_prediction, df.copy(), days_ahead, symbol.upper())
+        zscore_future = loop.run_in_executor(executor, z_score_mean_reversion, df.copy(), days_ahead, 20)
+        ou_future = loop.run_in_executor(executor, ornstein_uhlenbeck_process, df.copy(), days_ahead)
+        
+        linear_pred, lstm_pred, zscore_pred, ou_pred = await asyncio.gather(
+            linear_future, lstm_future, zscore_future, ou_future
+        )
+        
+        # Apply custom weights
+        custom_weights = {
+            "lstm": weights.lstm_weight,
+            "linear": weights.linear_weight,
+            "zscore": weights.zscore_weight,
+            "ou": weights.ou_weight
+        }
+        
+        ensemble_price = (
+            lstm_pred["predicted_price_end"] * custom_weights["lstm"] +
+            linear_pred["predicted_price_end"] * custom_weights["linear"] +
+            zscore_pred["predicted_price_end"] * custom_weights["zscore"] +
+            ou_pred["predicted_price_end"] * custom_weights["ou"]
+        )
+        
+        # Calculate confidence intervals
+        all_predictions = [
+            lstm_pred["predicted_price_end"],
+            linear_pred["predicted_price_end"],
+            zscore_pred["predicted_price_end"],
+            ou_pred["predicted_price_end"]
+        ]
+        
+        confidence_interval = calculate_confidence_intervals(all_predictions, 0.95)
+        
+        current_price = info["current_price"]
+        ensemble_change = ((ensemble_price - current_price) / current_price) * 100
+        
+        return {
+            "symbol": symbol.upper(),
+            "ensemble_prediction": {
+                "predicted_price": float(ensemble_price),
+                "price_change_percent": float(ensemble_change),
+                "trend": "bullish" if ensemble_price > current_price else "bearish",
+                "custom_weights": custom_weights
+            },
+            "confidence_interval": confidence_interval,
+            "individual_predictions": {
+                "lstm": lstm_pred,
+                "linear_regression": linear_pred,
+                "z_score_mean_reversion": zscore_pred,
+                "ornstein_uhlenbeck": ou_pred
+            }
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error in custom weights prediction: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 # Include the router in the main app
 app.include_router(api_router)
 
