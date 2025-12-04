@@ -40,6 +40,7 @@ export default function StockPrediction({ sessionId }) {
   const [useEnsemble, setUseEnsemble] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
   const [customWeights, setCustomWeights] = useState(null);
+  const [historicalData, setHistoricalData] = useState(null);
 
   const searchStock = async () => {
     if (!symbol.trim()) return;
