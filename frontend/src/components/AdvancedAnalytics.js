@@ -283,7 +283,7 @@ export default function AdvancedAnalytics() {
                     <span className="text-xs text-muted-foreground">Mean Error</span>
                   </div>
                   <p className="text-2xl font-bold text-orange-600">
-                    {performanceData.metrics.mean_absolute_error.toFixed(2)}%
+                    {performanceData.metrics?.mean_absolute_error ? performanceData.metrics.mean_absolute_error.toFixed(2) : "0.00"}%
                   </p>
                 </Card>
               </div>
