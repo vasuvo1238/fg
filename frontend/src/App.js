@@ -113,18 +113,44 @@ function App() {
 
   return (
     <div className="App min-h-screen">
-      {/* Main Chat Container */}
-      <div className="chat-container relative min-h-screen pb-32">
+      {/* Main Container */}
+      <div className="relative min-h-screen pb-32">
         {/* Header */}
         <div className="header-glass sticky top-0 z-10 backdrop-blur-xl bg-background/80 border-b border-border/50">
-          <div className="max-w-4xl mx-auto px-6 py-4">
-            <div className="flex items-center gap-3">
-              <div className="icon-glow">
-                <Sparkles className="w-6 h-6 text-primary" />
+          <div className="max-w-6xl mx-auto px-6 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="icon-glow">
+                  <Sparkles className="w-6 h-6 text-primary" />
+                </div>
+                <div>
+                  <h1 className="text-xl font-bold" style={{ fontFamily: 'Fraunces, serif' }}>Financial Advisor</h1>
+                  <p className="text-xs text-muted-foreground" style={{ fontFamily: 'JetBrains Mono, monospace' }}>Your trusted finance buddy with AI predictions</p>
+                </div>
               </div>
-              <div>
-                <h1 className="text-xl font-bold" style={{ fontFamily: 'Fraunces, serif' }}>Financial Advisor</h1>
-                <p className="text-xs text-muted-foreground" style={{ fontFamily: 'JetBrains Mono, monospace' }}>Your trusted finance buddy</p>
+              
+              {/* View Switcher */}
+              <div className="flex items-center gap-2 bg-secondary p-1 rounded-lg">
+                <Button
+                  data-testid="chat-view-btn"
+                  variant={activeView === "chat" ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setActiveView("chat")}
+                  className="gap-2"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  Chat
+                </Button>
+                <Button
+                  data-testid="stocks-view-btn"
+                  variant={activeView === "stocks" ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setActiveView("stocks")}
+                  className="gap-2"
+                >
+                  <BarChart3 className="w-4 h-4" />
+                  Stock Predictions
+                </Button>
               </div>
             </div>
           </div>
