@@ -1,0 +1,126 @@
+{
+  "identity": {
+    "name": "E1",
+    "archetype": "The Anti-AI Designer",
+    "core_philosophy": "Fusion over Imitation. Emotion First. Content is King.",
+    "vibe": "The Glass Vault - High-Security Swiss Bank meets Cyberpunk Terminal"
+  },
+  "typography": {
+    "headings": {
+      "family": "Fraunces, 'Playfair Display', serif",
+      "usage": "Headings (h1-h3), Hero Text",
+      "weights": "Light (300) for elegance, Black (900) for impact",
+      "tracking": "tight (-0.02em)"
+    },
+    "body": {
+      "family": "Inter, system-ui, sans-serif",
+      "usage": "Paragraphs, UI elements, Inputs",
+      "weights": "Regular (400), Medium (500)"
+    },
+    "mono": {
+      "family": "'JetBrains Mono', monospace",
+      "usage": "Financial Data, Numbers, Code Blocks, Tickers",
+      "weights": "Medium (500)"
+    }
+  },
+  "colors": {
+    "light_mode": {
+      "background": "#FDFCF8",
+      "foreground": "#1A1A1A",
+      "primary": "#0F5132",
+      "secondary": "#F4F4F5",
+      "accent": "#D4AF37",
+      "muted": "#737373",
+      "border": "#E5E5E5"
+    },
+    "dark_mode": {
+      "background": "#050505",
+      "foreground": "#E5E5E5",
+      "primary": "#10B981",
+      "secondary": "#1F1F1F",
+      "accent": "#F59E0B",
+      "muted": "#A3A3A3",
+      "border": "#262626"
+    },
+    "semantic": {
+      "success": "#10B981",
+      "warning": "#F59E0B",
+      "error": "#EF4444",
+      "info": "#3B82F6",
+      "guardrail": "#F59E0B"
+    }
+  },
+  "layout": {
+    "spacing_scale": "p-1, p-2, p-4, p-6, p-8, p-12, p-16, p-20, p-24, p-32",
+    "container_padding": "px-6 md:px-12 lg:px-24",
+    "grid_system": {
+      "marketing": "grid-cols-1 md:grid-cols-12 gap-8 (The Tetris Grid)",
+      "dashboard": "grid-cols-1 md:grid-cols-4 gap-6 (The Control Room)"
+    },
+    "border_radius": {
+      "default": "rounded-lg",
+      "card": "rounded-xl",
+      "button": "rounded-full"
+    }
+  },
+  "components": {
+    "chat_interface": {
+      "style": "Stream of Cards",
+      "user_message": {
+        "align": "right",
+        "bg": "bg-primary text-primary-foreground",
+        "shape": "rounded-2xl rounded-tr-sm"
+      },
+      "bot_message": {
+        "align": "left",
+        "bg": "bg-secondary text-secondary-foreground",
+        "shape": "rounded-2xl rounded-tl-sm",
+        "features": "Structured Data, Charts, Markdown Support"
+      },
+      "input_area": {
+        "style": "Floating Command Bar",
+        "position": "fixed bottom-8 left-1/2 -translate-x-1/2 w-[90%] max-w-3xl",
+        "visual": "Glassmorphism (backdrop-blur-xl), border-t border-white/20 shadow-2xl"
+      }
+    },
+    "guardrails": {
+      "visual": "Amber/Yellow Border + Warning Icon",
+      "animation": "Shake on trigger",
+      "text_style": "font-mono text-xs text-warning uppercase tracking-widest"
+    },
+    "buttons": {
+      "primary": "bg-primary text-primary-foreground hover:opacity-90 shadow-lg hover:shadow-xl transition-all duration-300",
+      "secondary": "bg-transparent border border-input hover:bg-accent hover:text-accent-foreground"
+    }
+  },
+  "assets": {
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1589936009537-bda4341d578f?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzV8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBvZmZpY2UlMjBhcmNoaXRlY3R1cmUlMjBnbGFzcyUyMHN0ZWVsfGVufDB8fHx8MTc2NDg1MDQyOHww&ixlib=rb-4.1.0&q=85",
+        "category": "hero_background",
+        "description": "Modern glass architecture for trust and transparency"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1567457483108-c71174599bc6?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1Nzl8MHwxfHNlYXJjaHwyfHxhYnN0cmFjdCUyMGdlb21ldHJpYyUyMHNoYXBlcyUyMG1pbmltYWwlMjBmaW5hbmNlfGVufDB8fHx8MTc2NDg1MDQyNnww&ixlib=rb-4.1.0&q=85",
+        "category": "texture",
+        "description": "Clean white texture for card backgrounds"
+      }
+    ],
+    "icons": "Lucide React (default), Phosphor Icons (for finance specifics)"
+  },
+  "motion": {
+    "transitions": "transition-all duration-300 ease-out",
+    "entrance": "animate-in fade-in slide-in-from-bottom-4 duration-500",
+    "hover": "hover:-translate-y-1 hover:shadow-lg"
+  },
+  "universal_guidelines": [
+    "Do NOT use gradients for text.",
+    "Do NOT use 'Inter' for Headings.",
+    "Do NOT center everything. Use asymmetry.",
+    "Use 2-3x more spacing than typical designs.",
+    "All interactive elements MUST have data-testid.",
+    "Use 'sonner' for toasts.",
+    "Use 'shadcn' components but customize them heavily."
+  ],
+  "instructions_to_main_agent": "Implement the 'Glass Vault' theme. Use the provided colors and fonts. Build the chat interface as a 'Stream of Cards' with a floating command bar. Ensure the guardrails are visually distinct (Amber/Yellow). Use the provided images for backgrounds/textures."
+}
