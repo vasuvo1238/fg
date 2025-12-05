@@ -415,6 +415,36 @@ export default function EnhancedOptionsBuilder() {
             ✓ Live price fetched for {lastFetchedSymbol}
           </p>
         )}
+        
+        {/* Options Chain Viewer Button */}
+        {availableExpiries.length > 0 && (
+          <div className="mt-4 pt-4 border-t">
+            <div className="flex items-center gap-3">
+              <div className="flex-1">
+                <Label className="text-xs">View Real-Time Options Chain</Label>
+                <Select value={selectedExpiry} onValueChange={setSelectedExpiry}>
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder="Select expiry" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableExpiries.slice(0, 10).map((expiry) => (
+                      <SelectItem key={expiry} value={expiry}>{expiry}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <Button
+                onClick={fetchOptionsChain}
+                disabled={loadingOptionsChain || !selectedExpiry}
+                className="mt-5"
+                variant="outline"
+              >
+                <Table className="w-4 h-4 mr-2" />
+                {showOptionsChain ? 'Refresh' : 'View'} Options Chain
+              </Button>
+            </div>
+          </div>
+        )}
       </Card>
 
       {/* Strategy Selection - Visual Cards */}
