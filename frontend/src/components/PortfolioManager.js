@@ -381,9 +381,80 @@ export default function PortfolioManager() {
                   <Zap className="w-4 h-4 mr-2" />
                   Optimize Portfolio
                 </Button>
+                <Button
+                  onClick={() => setShowLoadDialog(true)}
+                  variant="outline"
+                  disabled={savedPortfolios.length === 0}
+                  title={savedPortfolios.length === 0 ? "No saved portfolios" : "Load portfolio"}
+                >
+                  <Shield className="w-4 h-4 mr-2" />
+                  Load
+                </Button>
               </div>
             </div>
           </Card>
+          
+          {/* Save/Load Portfolio Dialogs */}
+          {showSaveDialog && (
+            <Card className="p-6 bg-green-50 border-2 border-green-300">
+              <h3 className="text-lg font-bold mb-4">💾 Save Portfolio</h3>
+              <div className="space-y-4">
+                <div>
+                  <Label>Portfolio Name</Label>
+                  <Input
+                    placeholder="My Optimized Portfolio"
+                    value={portfolioName}
+                    onChange={(e) => setPortfolioName(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && savePortfolio()}
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <Button onClick={savePortfolio} className="flex-1">
+                    Save Portfolio
+                  </Button>
+                  <Button onClick={() => setShowSaveDialog(false)} variant="outline">
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          )}
+
+          {showLoadDialog && savedPortfolios.length > 0 && (
+            <Card className="p-6 bg-blue-50 border-2 border-blue-300">
+              <h3 className="text-lg font-bold mb-4">📂 Load Saved Portfolio</h3>
+              <div className="space-y-2 max-h-96 overflow-y-auto">
+                {savedPortfolios.map((portfolio) => (
+                  <div key={portfolio.id} className="flex items-center justify-between p-4 bg-white rounded-lg border">
+                    <div className="flex-1">
+                      <p className="font-bold">{portfolio.name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {portfolio.symbols?.join(', ')} • Return: {(portfolio.expected_return * 100).toFixed(2)}% • Sharpe: {portfolio.sharpe_ratio?.toFixed(2)}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        Saved: {new Date(portfolio.created_at).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button onClick={() => loadPortfolio(portfolio)} size="sm">
+                        Load
+                      </Button>
+                      <Button 
+                        onClick={() => deletePortfolio(portfolio.id)} 
+                        size="sm" 
+                        variant="destructive"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <Button onClick={() => setShowLoadDialog(false)} variant="outline" className="w-full mt-4">
+                Close
+              </Button>
+            </Card>
+          )}
 
           {optimizationResult && (
             <div className="space-y-6">
