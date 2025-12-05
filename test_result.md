@@ -240,6 +240,21 @@ frontend:
           agent: "testing"
           comment: "✅ PASSED - Expiry Date Picker working flawlessly. Date input field functional with calendar icon. Successfully changed date from 2026-01-04 to 2025-08-15. Days to Expiry field automatically updates in real-time (updated to 1 day when changed to past date). Calculation logic working correctly with proper date math. Field properly disabled to show it's auto-calculated."
 
+  - task: "Enhanced Options Builder - Live Stock Price Fetching"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/EnhancedOptionsBuilder.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+          agent: "testing"
+          comment: "Testing live stock price fetching feature as requested in review - AAPL/MSFT symbol entry, refresh button functionality, loading spinner, spot price auto-fill, success messages, error handling for invalid symbols, manual price override capability"
+        - working: true
+          agent: "testing"
+          comment: "✅ PASSED - Live stock price fetching working excellently. All test scenarios completed successfully: 1) Navigation to Options tab smooth, 2) AAPL price fetch: auto-filled $280.70 with success message '✓ Live price fetched for AAPL', 3) Loading spinner (refresh icon) animates during fetch, 4) MSFT price fetch: updated to $480.84 with success message, 5) Error handling working: API returns 404 for invalid symbols (XYZ123, INVALIDXYZ) with proper console logging, 6) Manual override functional: can change auto-filled price to custom value ($999.99). Feature meets all requirements from review request with realistic current market prices and excellent user experience."
+
   - task: "Portfolio Manager Pro - Navigation and Interface"
     implemented: true
     working: true
