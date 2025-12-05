@@ -260,39 +260,48 @@ def get_earnings_calendar(symbol: str) -> Dict:
         
         # Get calendar data
         calendar = ticker.calendar
+        info = ticker.info
         
-        if calendar is None or calendar.empty:
-            # Try to get from info
-            info = ticker.info
-            earnings_date = info.get('earningsDate')
-            
-            if earnings_date:
-                return {
-                    "symbol": symbol.upper(),
-                    "next_earnings_date": str(earnings_date),
-                    "estimated": True,
-                    "timestamp": datetime.now().isoformat()
-                }
-            else:
-                return {"error": f"No earnings data available for {symbol}"}
-        
-        # Parse calendar data
+        # Initialize result
         result = {
             "symbol": symbol.upper(),
             "timestamp": datetime.now().isoformat()
         }
         
-        # Extract earnings date
-        if 'Earnings Date' in calendar.index:
-            earnings_date = calendar.loc['Earnings Date'].values[0]
-            result["next_earnings_date"] = str(earnings_date)
+        # Try to extract from calendar if available
+        if calendar is not None and isinstance(calendar, pd.DataFrame) and not calendar.empty:
+            # Extract earnings date
+            if 'Earnings Date' in calendar.index:
+                earnings_date = calendar.loc['Earnings Date'].values[0]
+                result["next_earnings_date"] = str(earnings_date)
+            
+            # Extract EPS estimates
+            if 'EPS Estimate' in calendar.index:
+                result["eps_estimate"] = float(calendar.loc['EPS Estimate'].values[0])
+            
+            if 'Revenue Estimate' in calendar.index:
+                result["revenue_estimate"] = float(calendar.loc['Revenue Estimate'].values[0])
+        elif calendar is not None and isinstance(calendar, dict):
+            # Calendar might be a dict in newer yfinance versions
+            if 'Earnings Date' in calendar:
+                result["next_earnings_date"] = str(calendar['Earnings Date'])
+            if 'EPS Estimate' in calendar:
+                result["eps_estimate"] = float(calendar['EPS Estimate'])
+            if 'Revenue Estimate' in calendar:
+                result["revenue_estimate"] = float(calendar['Revenue Estimate'])
+        else:
+            # Fallback to info
+            earnings_date = info.get('earningsDate')
+            if earnings_date:
+                # earnings_date might be a list
+                if isinstance(earnings_date, list) and len(earnings_date) > 0:
+                    result["next_earnings_date"] = str(earnings_date[0])
+                else:
+                    result["next_earnings_date"] = str(earnings_date)
         
-        # Extract EPS estimates
-        if 'EPS Estimate' in calendar.index:
-            result["eps_estimate"] = float(calendar.loc['EPS Estimate'].values[0])
-        
-        if 'Revenue Estimate' in calendar.index:
-            result["revenue_estimate"] = float(calendar.loc['Revenue Estimate'].values[0])
+        # If we got no earnings date, return error
+        if "next_earnings_date" not in result:
+            return {"error": f"No earnings data available for {symbol}"}
         
         return result
         
