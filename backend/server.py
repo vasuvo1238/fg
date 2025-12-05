@@ -52,6 +52,16 @@ from portfolio_optimizer import (
     calculate_position_size_kelly,
     calculate_margin_leverage,
     optimal_leverage
+
+from upstox_integration import (
+    get_authorization_url,
+    exchange_code_for_token,
+    get_market_quote,
+    get_historical_candles,
+    get_portfolio_holdings,
+    get_popular_indian_stocks
+)
+
 )
 from risk_metrics import (
     portfolio_risk_analysis,
