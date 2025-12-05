@@ -80,6 +80,12 @@ export default function PortfolioManager() {
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [showLoadDialog, setShowLoadDialog] = useState(false);
 
+
+
+  useEffect(() => {
+    loadSavedPortfolios();
+  }, []);
+
   const addSymbol = () => {
     if (symbolInput && !symbols.includes(symbolInput.toUpperCase())) {
       setSymbols([...symbols, symbolInput.toUpperCase()]);
