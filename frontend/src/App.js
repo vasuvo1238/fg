@@ -207,6 +207,14 @@ function App() {
                   <Activity className="w-4 h-4" />
                   Technical
                 </Button>
+                <Button
+                  variant={activeView === "indian" ? "default" : "ghost"}
+                  onClick={() => setActiveView("indian")}
+                  className="gap-2"
+                >
+                  <TrendingUp className="w-4 h-4" />
+                  Indian Markets
+                </Button>
               </div>
             </div>
           </div>
