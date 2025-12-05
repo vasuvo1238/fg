@@ -288,7 +288,18 @@ def get_earnings_calendar(symbol: str) -> Dict:
         elif calendar is not None and isinstance(calendar, dict):
             # Calendar might be a dict in newer yfinance versions
             if 'Earnings Date' in calendar:
-                result["next_earnings_date"] = str(calendar['Earnings Date'])
+                earnings_date = calendar['Earnings Date']
+                # Format the date properly
+                if hasattr(earnings_date, 'strftime'):
+                    result["next_earnings_date"] = earnings_date.strftime('%Y-%m-%d')
+                elif isinstance(earnings_date, list) and len(earnings_date) > 0:
+                    date_obj = earnings_date[0]
+                    if hasattr(date_obj, 'strftime'):
+                        result["next_earnings_date"] = date_obj.strftime('%Y-%m-%d')
+                    else:
+                        result["next_earnings_date"] = str(date_obj)
+                else:
+                    result["next_earnings_date"] = str(earnings_date)
             if 'EPS Estimate' in calendar:
                 result["eps_estimate"] = float(calendar['EPS Estimate'])
             if 'Revenue Estimate' in calendar:
