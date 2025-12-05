@@ -147,6 +147,22 @@ export default function StockPrediction({ sessionId }) {
 
   return (
     <div className="stock-prediction-container p-6" data-testid="stock-prediction">
+      {/* Disclaimer Banner */}
+      <Card className="p-4 mb-6 bg-red-50 border-red-200">
+        <div className="flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+          <div className="text-sm text-red-800">
+            <p className="font-bold mb-1">⚠️ Important: Educational Tool Only</p>
+            <p className="text-xs">
+              This stock prediction tool uses machine learning models for educational purposes only. 
+              Predictions are based on historical data and mathematical models which may not reflect actual market conditions. 
+              <strong> This is NOT financial advice. Do not use this for actual trading decisions. 
+              Always consult a licensed financial advisor before investing.</strong>
+            </p>
+          </div>
+        </div>
+      </Card>
+
       {/* Search Bar */}
       <Card className="p-6 mb-6">
         <div className="flex items-center gap-4">
