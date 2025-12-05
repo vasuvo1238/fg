@@ -464,6 +464,27 @@ async def stock_historical(symbol: str, period: str = "3mo"):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@api_router.get("/stocks/{symbol}/analyst-targets")
+async def get_analyst_targets(symbol: str):
+    """Get analyst target prices and recommendations"""
+    try:
+        loop = asyncio.get_event_loop()
+        analyst_data = await loop.run_in_executor(executor, get_analyst_recommendations, symbol.upper())
+        
+        if not analyst_data.get("has_data"):
+            raise HTTPException(
+                status_code=404, 
+                detail="No analyst data available for this symbol"
+            )
+        
+        return analyst_data
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching analyst targets for {symbol}: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @api_router.post("/stocks/{symbol}/predict")
 async def predict_stock(symbol: str, request: StockPredictionRequest):
     """Get AI-powered stock prediction with statistical analysis"""
