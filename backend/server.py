@@ -1619,6 +1619,89 @@ async def get_options_summary_endpoint(symbol: str, expiry: Optional[str] = None
         raise HTTPException(status_code=500, detail=str(e))
 
 
+# ============== Technical Analysis (TA-Lib, VIX, Earnings) ==============
+
+@api_router.get("/technical-analysis/{symbol}")
+async def technical_analysis_endpoint(symbol: str, period: str = "6mo"):
+    """Get complete technical analysis with all indicators"""
+    try:
+        loop = asyncio.get_event_loop()
+        result = await loop.run_in_executor(
+            executor,
+            get_technical_indicators,
+            symbol.upper(),
+            period
+        )
+        
+        if "error" in result:
+            raise HTTPException(status_code=404, detail=result["error"])
+        
+        return result
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Technical analysis error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@api_router.get("/market/vix")
+async def vix_data_endpoint():
+    """Get VIX (Volatility Index) data and interpretation"""
+    try:
+        loop = asyncio.get_event_loop()
+        result = await loop.run_in_executor(executor, get_vix_data)
+        
+        if "error" in result:
+            raise HTTPException(status_code=404, detail=result["error"])
+        
+        return result
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"VIX data error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@api_router.get("/earnings/{symbol}")
+async def earnings_calendar_endpoint(symbol: str):
+    """Get earnings calendar for a symbol"""
+    try:
+        loop = asyncio.get_event_loop()
+        result = await loop.run_in_executor(
+            executor,
+            get_earnings_calendar,
+            symbol.upper()
+        )
+        
+        if "error" in result:
+            raise HTTPException(status_code=404, detail=result["error"])
+        
+        return result
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Earnings calendar error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@api_router.get("/market/overview")
+async def market_overview_endpoint():
+    """Get market overview with major indices"""
+    try:
+        loop = asyncio.get_event_loop()
+        result = await loop.run_in_executor(executor, get_market_overview)
+        
+        if "error" in result:
+            raise HTTPException(status_code=404, detail=result["error"])
+        
+        return result
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Market overview error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 # ============== Data Persistence (Save/Load Portfolios & Strategies) ==============
 
 @api_router.post("/portfolios/save")
