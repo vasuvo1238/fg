@@ -1897,53 +1897,49 @@ async def get_indian_stock_historical(
     from_date: str = None,
     to_date: str = None
 ):
-    """Get historical data for Indian stock"""
+    """Get historical data for Indian stock using yfinance"""
     try:
-        # Mock historical data for demonstration
-        # In production with auth: get_historical_candles(symbol, token, interval, from_date, to_date)
+        import yfinance as yf
         
         if not to_date:
             to_date = datetime.now().strftime("%Y-%m-%d")
         if not from_date:
             from_date = (datetime.now() - timedelta(days=30)).strftime("%Y-%m-%d")
         
-        # Generate mock candles
-        mock_candles = []
-        base_price = 2500 if symbol.upper() == "RELIANCE" else 3500
-        current_date = datetime.strptime(from_date, "%Y-%m-%d")
-        end_date = datetime.strptime(to_date, "%Y-%m-%d")
+        # Add .NS suffix for NSE stocks
+        ticker_symbol = f"{symbol.upper()}.NS"
         
-        while current_date <= end_date:
-            # Skip weekends
-            if current_date.weekday() < 5:
-                variation = (hash(current_date.isoformat()) % 100) - 50
-                open_price = base_price + variation
-                close_price = open_price + ((hash(str(current_date) + "close") % 20) - 10)
-                high_price = max(open_price, close_price) + (hash(str(current_date) + "high") % 10)
-                low_price = min(open_price, close_price) - (hash(str(current_date) + "low") % 10)
-                
-                mock_candles.append({
-                    "timestamp": current_date.isoformat(),
-                    "open": round(open_price, 2),
-                    "high": round(high_price, 2),
-                    "low": round(low_price, 2),
-                    "close": round(close_price, 2),
-                    "volume": 1000000 + (hash(str(current_date) + "vol") % 500000)
+        # Fetch historical data from yfinance
+        loop = asyncio.get_event_loop()
+        hist_data = await loop.run_in_executor(
+            executor,
+            lambda: yf.download(ticker_symbol, start=from_date, end=to_date, progress=False)
+        )
+        
+        # Convert to candles format
+        candles = []
+        if not hist_data.empty:
+            for idx, row in hist_data.iterrows():
+                candles.append({
+                    "timestamp": idx.isoformat(),
+                    "open": float(row['Open']),
+                    "high": float(row['High']),
+                    "low": float(row['Low']),
+                    "close": float(row['Close']),
+                    "volume": int(row['Volume'])
                 })
-            
-            current_date += timedelta(days=1)
         
         return {
             "symbol": symbol.upper(),
             "interval": interval,
             "from_date": from_date,
             "to_date": to_date,
-            "candles": mock_candles,
-            "note": "Demo data - Connect your Upstox account for real historical data"
+            "candles": candles,
+            "note": "Real historical data from Yahoo Finance"
         }
     except Exception as e:
         logger.error(f"Error fetching historical data for {symbol}: {str(e)}")
-        raise HTTPException(status_code=500, detail="Failed to fetch historical data")
+        raise HTTPException(status_code=500, detail=f"Failed to fetch historical data: {str(e)}")
 
 @api_router.get("/upstox/popular-stocks")
 async def get_popular_indian_stocks_list():
