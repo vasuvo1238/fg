@@ -52,6 +52,11 @@ from portfolio_optimizer import (
     calculate_margin_leverage,
     optimal_leverage
 )
+from risk_metrics import (
+    portfolio_risk_analysis,
+    monte_carlo_simulation,
+    portfolio_rebalancing_advice
+)
 from options_pricing import (
     OptionsStrategy,
     STRATEGY_TEMPLATES,
