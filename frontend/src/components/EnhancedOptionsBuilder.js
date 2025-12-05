@@ -696,10 +696,12 @@ export default function EnhancedOptionsBuilder() {
                     ))}
                   </div>
                 </div>
-              </TabsContent>
+                </div>
+              )}
 
-              {/* Strategy Chart Tab - P&L over time */}
-              <TabsContent value="chart" className="mt-6">
+              {/* Strategy Chart View - P&L over time */}
+              {activeView === "chart" && (
+                <div className="mt-6">
                 <h4 className="font-bold mb-4">Target Day P&L Analysis</h4>
                 {targetDays && (
                   <ResponsiveContainer width="100%" height={400}>
