@@ -60,14 +60,14 @@ from risk_metrics import (
 from options_pricing import (
     OptionsStrategy,
     STRATEGY_TEMPLATES,
+    black_scholes,
+    calculate_greeks
 )
 from options_chain import (
     get_options_chain,
     get_atm_options,
     get_available_expiries,
     get_options_summary
-    black_scholes,
-    calculate_greeks
 )
 
 
