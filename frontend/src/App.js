@@ -12,6 +12,7 @@ import EnhancedOptionsBuilder from "@/components/EnhancedOptionsBuilder";
 import AdvancedAnalytics from "@/components/AdvancedAnalytics";
 import PortfolioManager from "@/components/PortfolioManager";
 import RiskAnalysis from "@/components/RiskAnalysis";
+import TechnicalAnalysis from "@/components/TechnicalAnalysis";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
