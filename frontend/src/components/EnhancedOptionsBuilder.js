@@ -167,9 +167,10 @@ export default function EnhancedOptionsBuilder() {
   };
 
   const handleSymbolBlur = () => {
-    // Auto-fetch price when user leaves symbol field
+    // Auto-fetch price and expiries when user leaves symbol field
     if (symbol && symbol !== lastFetchedSymbol) {
       fetchLivePrice(symbol);
+      fetchOptionsExpiries(symbol);
     }
   };
 
