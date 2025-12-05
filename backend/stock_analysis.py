@@ -40,6 +40,146 @@ def get_stock_info(symbol: str) -> Dict:
         raise
 
 
+
+def get_analyst_recommendations(symbol: str) -> Dict:
+    """Get analyst target prices and recommendations"""
+    try:
+        ticker = yf.Ticker(symbol)
+        info = ticker.info
+        
+        # Get recommendation data
+        current_price = info.get("currentPrice") or info.get("regularMarketPrice", 0)
+        target_high = info.get("targetHighPrice")
+        target_low = info.get("targetLowPrice")
+        target_mean = info.get("targetMeanPrice")
+        target_median = info.get("targetMedianPrice")
+        
+        # Get recommendation counts
+        recommendation_key = info.get("recommendationKey", "hold")
+        
+        # Try to get detailed recommendations
+        try:
+            recommendations = ticker.recommendations
+            if recommendations is not None and not recommendations.empty:
+                # Get recent recommendations (last 3 months)
+                recent_recs = recommendations.tail(10) if len(recommendations) >= 10 else recommendations
+                
+                # Count recommendations
+                rec_counts = {
+                    "strongBuy": 0,
+                    "buy": 0,
+                    "hold": 0,
+                    "sell": 0,
+                    "strongSell": 0
+                }
+                
+                for _, row in recent_recs.iterrows():
+                    grade = str(row.get('To Grade', '')).lower()
+                    if 'strong buy' in grade or 'outperform' in grade:
+                        rec_counts["strongBuy"] += 1
+                    elif 'buy' in grade or 'overweight' in grade:
+                        rec_counts["buy"] += 1
+                    elif 'sell' in grade or 'underweight' in grade:
+                        rec_counts["sell"] += 1
+                    elif 'strong sell' in grade:
+                        rec_counts["strongSell"] += 1
+                    else:
+                        rec_counts["hold"] += 1
+                
+                # Get upgrade/downgrade trend
+                upgrades = sum(1 for _, row in recent_recs.iterrows() 
+                              if 'buy' in str(row.get('To Grade', '')).lower() 
+                              and 'hold' in str(row.get('From Grade', '')).lower())
+                downgrades = sum(1 for _, row in recent_recs.iterrows() 
+                                if 'sell' in str(row.get('To Grade', '')).lower() 
+                                or ('hold' in str(row.get('To Grade', '')).lower() 
+                                    and 'buy' in str(row.get('From Grade', '')).lower()))
+            else:
+                # Fallback to info data
+                rec_counts = {
+                    "strongBuy": info.get("recommendationStrong Buy", 0) or 0,
+                    "buy": info.get("recommendationBuy", 0) or 0,
+                    "hold": info.get("recommendationHold", 0) or 0,
+                    "sell": info.get("recommendationSell", 0) or 0,
+                    "strongSell": info.get("recommendationStrong Sell", 0) or 0
+                }
+                upgrades = 0
+                downgrades = 0
+        except:
+            # Fallback if recommendations unavailable
+            rec_counts = {
+                "strongBuy": 0,
+                "buy": 0,
+                "hold": 0,
+                "sell": 0,
+                "strongSell": 0
+            }
+            upgrades = 0
+            downgrades = 0
+        
+        # Calculate upside/downside
+        upside_to_mean = None
+        upside_to_high = None
+        downside_to_low = None
+        
+        if current_price and target_mean:
+            upside_to_mean = ((target_mean - current_price) / current_price) * 100
+        if current_price and target_high:
+            upside_to_high = ((target_high - current_price) / current_price) * 100
+        if current_price and target_low:
+            downside_to_low = ((target_low - current_price) / current_price) * 100
+        
+        # Determine consensus
+        total_recs = sum(rec_counts.values())
+        if total_recs > 0:
+            buy_pct = (rec_counts["strongBuy"] + rec_counts["buy"]) / total_recs * 100
+            if buy_pct >= 60:
+                consensus = "Strong Buy"
+            elif buy_pct >= 40:
+                consensus = "Buy"
+            elif rec_counts["sell"] + rec_counts["strongSell"] > rec_counts["buy"] + rec_counts["strongBuy"]:
+                consensus = "Sell"
+            else:
+                consensus = "Hold"
+        else:
+            consensus = recommendation_key.title()
+        
+        # Get number of analysts
+        num_analysts = info.get("numberOfAnalystOpinions", 0)
+        
+        return {
+            "symbol": symbol.upper(),
+            "current_price": current_price,
+            "target_prices": {
+                "high": target_high,
+                "mean": target_mean,
+                "median": target_median,
+                "low": target_low
+            },
+            "upside_downside": {
+                "upside_to_mean_percent": upside_to_mean,
+                "upside_to_high_percent": upside_to_high,
+                "downside_to_low_percent": downside_to_low
+            },
+            "recommendations": rec_counts,
+            "consensus": consensus,
+            "recommendation_trend": {
+                "recent_upgrades": upgrades,
+                "recent_downgrades": downgrades,
+                "net_trend": upgrades - downgrades
+            },
+            "number_of_analysts": num_analysts,
+            "has_data": bool(target_mean or total_recs > 0)
+        }
+    except Exception as e:
+        logger.error(f"Error fetching analyst recommendations for {symbol}: {str(e)}")
+        return {
+            "symbol": symbol.upper(),
+            "error": str(e),
+            "has_data": False
+        }
+
+
 def get_historical_data(symbol: str, period: str = "1y") -> pd.DataFrame:
     """Get historical stock data"""
     try:
