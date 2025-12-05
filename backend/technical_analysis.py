@@ -35,10 +35,10 @@ def get_technical_indicators(symbol: str, period: str = "6mo") -> Dict:
         if df.empty:
             return {"error": f"No data available for {symbol}"}
         
-        close = df['Close'].values
-        high = df['High'].values
-        low = df['Low'].values
-        volume = df['Volume'].values
+        close = df['Close'].values.astype(np.float64)
+        high = df['High'].values.astype(np.float64)
+        low = df['Low'].values.astype(np.float64)
+        volume = df['Volume'].values.astype(np.float64)
         
         # Get current price
         current_price = float(close[-1])
