@@ -142,11 +142,11 @@ export default function EnhancedOptionsBuilder() {
     
     setFetchingPrice(true);
     try {
-      const response = await axios.get(`${API}/stock/${symbolToFetch.toUpperCase()}`);
+      const response = await axios.get(`${API}/stocks/${symbolToFetch.toUpperCase()}/info`);
       const price = response.data.current_price;
-      setSpotPrice(price.toString());
+      setSpotPrice(price.toFixed(2));
       setLastFetchedSymbol(symbolToFetch.toUpperCase());
-      toast.success(`Fetched live price: $${price.toFixed(2)}`);
+      toast.success(`✓ Live price: $${price.toFixed(2)}`);
     } catch (error) {
       toast.error("Failed to fetch price. Please enter manually.");
       console.error(error);
