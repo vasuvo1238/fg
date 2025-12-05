@@ -1838,31 +1838,57 @@ async def upstox_callback(code: str = None):
 @api_router.get("/upstox/quote/{symbol}")
 async def get_indian_stock_quote(symbol: str):
     """
-    Get real-time quote for Indian stock (read-only, no auth required for demo)
-    In production, this would require user authentication and stored token
+    Get real-time quote for Indian stock using yfinance
     """
     try:
-        # For demo/read-only mode, we'll use a mock response
-        # In production with user auth, use: get_market_quote(symbol, user_access_token)
+        import yfinance as yf
         
-        # Mock response for demonstration
+        # Add .NS suffix for NSE stocks
+        ticker_symbol = f"{symbol.upper()}.NS"
+        
+        # Fetch data from yfinance
+        loop = asyncio.get_event_loop()
+        ticker = await loop.run_in_executor(executor, yf.Ticker, ticker_symbol)
+        info = await loop.run_in_executor(executor, lambda: ticker.info)
+        
+        # Get current price and OHLC
+        current_price = info.get('currentPrice') or info.get('regularMarketPrice', 0)
+        open_price = info.get('regularMarketOpen', current_price)
+        high_price = info.get('dayHigh', current_price)
+        low_price = info.get('dayLow', current_price)
+        prev_close = info.get('previousClose', current_price)
+        volume = info.get('volume', 0)
+        
         quote_data = {
             "symbol": symbol.upper(),
-            "last_price": 2500.00 if symbol.upper() == "RELIANCE" else 3500.00,
-            "open": 2490.00 if symbol.upper() == "RELIANCE" else 3480.00,
-            "high": 2520.00 if symbol.upper() == "RELIANCE" else 3530.00,
-            "low": 2480.00 if symbol.upper() == "RELIANCE" else 3460.00,
-            "close": 2500.00 if symbol.upper() == "RELIANCE" else 3500.00,
-            "volume": 1000000,
+            "last_price": current_price,
+            "open": open_price,
+            "high": high_price,
+            "low": low_price,
+            "close": prev_close,
+            "volume": volume,
             "timestamp": datetime.now().isoformat(),
             "exchange": "NSE",
-            "note": "Demo data - Connect your Upstox account for real-time data"
+            "note": "Real-time data from Yahoo Finance"
         }
         
         return quote_data
     except Exception as e:
         logger.error(f"Error fetching Indian stock quote for {symbol}: {str(e)}")
-        raise HTTPException(status_code=500, detail="Failed to fetch quote")
+        # Fallback to basic response
+        return {
+            "symbol": symbol.upper(),
+            "last_price": 0,
+            "open": 0,
+            "high": 0,
+            "low": 0,
+            "close": 0,
+            "volume": 0,
+            "timestamp": datetime.now().isoformat(),
+            "exchange": "NSE",
+            "error": "Could not fetch real-time data",
+            "note": "Please check if symbol is valid (e.g., RELIANCE, TCS, INFY)"
+        }
 
 @api_router.get("/upstox/historical/{symbol}")
 async def get_indian_stock_historical(
