@@ -315,20 +315,33 @@ export default function EnhancedOptionsBuilder() {
       <Card className="p-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
-            <Label>Symbol (Optional)</Label>
-            <Input
-              placeholder="e.g., AAPL"
-              value={symbol}
-              onChange={(e) => setSymbol(e.target.value.toUpperCase())}
-            />
+            <Label>Stock Symbol *</Label>
+            <div className="flex gap-2">
+              <Input
+                placeholder="e.g., AAPL"
+                value={symbol}
+                onChange={(e) => handleSymbolChange(e.target.value)}
+                onBlur={handleSymbolBlur}
+              />
+              <Button 
+                size="icon"
+                variant="outline"
+                onClick={() => fetchLivePrice(symbol)}
+                disabled={!symbol || fetchingPrice}
+                title="Fetch live price"
+              >
+                <RefreshCcw className={`w-4 h-4 ${fetchingPrice ? 'animate-spin' : ''}`} />
+              </Button>
+            </div>
           </div>
           <div>
             <Label>Spot Price *</Label>
             <Input
               type="number"
-              placeholder="100.00"
+              placeholder="Auto-filled"
               value={spotPrice}
               onChange={(e) => setSpotPrice(e.target.value)}
+              disabled={fetchingPrice}
             />
           </div>
           <div>
@@ -352,6 +365,11 @@ export default function EnhancedOptionsBuilder() {
             />
           </div>
         </div>
+        {lastFetchedSymbol && (
+          <p className="text-xs text-muted-foreground mt-2">
+            ✓ Live price fetched for {lastFetchedSymbol}
+          </p>
+        )}
       </Card>
 
       {/* Strategy Selection - Visual Cards */}
