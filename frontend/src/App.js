@@ -197,6 +197,8 @@ function App() {
             <EnhancedOptionsBuilder />
           ) : activeView === "analytics" ? (
             <AdvancedAnalytics />
+          ) : activeView === "portfolio" ? (
+            <PortfolioManager />
           ) : (
             <div>
           {showWelcome && messages.length === 0 && (
