@@ -137,6 +137,35 @@ export default function EnhancedOptionsBuilder() {
     }
   }, [expiryDate]);
 
+  const fetchLivePrice = async (symbolToFetch) => {
+    if (!symbolToFetch || symbolToFetch.length < 1) return;
+    
+    setFetchingPrice(true);
+    try {
+      const response = await axios.get(`${API}/stock/${symbolToFetch.toUpperCase()}`);
+      const price = response.data.current_price;
+      setSpotPrice(price.toString());
+      setLastFetchedSymbol(symbolToFetch.toUpperCase());
+      toast.success(`Fetched live price: $${price.toFixed(2)}`);
+    } catch (error) {
+      toast.error("Failed to fetch price. Please enter manually.");
+      console.error(error);
+    } finally {
+      setFetchingPrice(false);
+    }
+  };
+
+  const handleSymbolChange = (value) => {
+    setSymbol(value.toUpperCase());
+  };
+
+  const handleSymbolBlur = () => {
+    // Auto-fetch price when user leaves symbol field
+    if (symbol && symbol !== lastFetchedSymbol) {
+      fetchLivePrice(symbol);
+    }
+  };
+
   const buildStrategy = async (templateId) => {
     if (!spotPrice) {
       toast.error("Please enter spot price");
