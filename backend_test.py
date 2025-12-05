@@ -1286,20 +1286,27 @@ class FinancialChatbotTester:
             return False
 
     def test_options_chain_invalid(self):
-        """Test GET /api/options-chain/INVALID/expiries - Invalid symbol should return error"""
+        """Test GET /api/options-chain/INVALID/expiries - Invalid symbol should return empty expiries"""
         try:
             start_time = time.time()
             response = requests.get(f"{self.api_url}/options-chain/INVALID/expiries", timeout=30)
             latency = time.time() - start_time
             
-            # Should return error for invalid symbol
-            success = response.status_code in [404, 500]
+            success = response.status_code == 200
             details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
             
-            if not success:
-                details += ", Should return error for invalid symbol"
+            if success:
+                data = response.json()
+                if "expiries" not in data:
+                    success = False
+                    details += ", Missing expiries field"
+                elif len(data["expiries"]) > 0:
+                    success = False
+                    details += f", Should return empty expiries for invalid symbol, got {len(data['expiries'])}"
+                else:
+                    details += ", Correctly returned empty expiries for invalid symbol"
             else:
-                details += ", Correctly handled invalid symbol"
+                details += ", Should return 200 with empty expiries"
                         
             self.log_test("Options Chain - Invalid Symbol", success, details)
             return success
