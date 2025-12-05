@@ -643,10 +643,12 @@ export default function EnhancedOptionsBuilder() {
                     </tbody>
                   </table>
                 </div>
-              </TabsContent>
+                </div>
+              )}
 
-              {/* Greeks Tab */}
-              <TabsContent value="greeks" className="mt-6">
+              {/* Greeks View */}
+              {activeView === "greeks" && (
+                <div className="mt-6">
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
                   {Object.entries(strategyResult.greeks).map(([greek, value]) => (
                     <div key={greek} className="p-4 bg-secondary rounded-lg">
