@@ -226,7 +226,12 @@ metadata:
   test_sequence: 2
 
 test_plan:
-  current_focus: []
+  current_focus:
+    - "Enhanced Options Builder - Navigation and Interface"
+    - "Enhanced Options Builder - Strategy Card Selection"
+    - "Enhanced Options Builder - View Tabs"
+    - "Enhanced Options Builder - Custom Strategy Builder"
+    - "Enhanced Options Builder - Expiry Date Picker"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
