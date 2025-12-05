@@ -446,6 +446,156 @@ export default function StockPrediction({ sessionId }) {
         </Card>
       )}
 
+      {/* Analyst Target Prices Card */}
+      {analystData && analystData.has_data && (
+        <Card className="p-6 mb-6 bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-300">
+          <div className="flex items-center gap-3 mb-4">
+            <Target className="w-6 h-6 text-blue-600" />
+            <div>
+              <h3 className="text-xl font-bold" style={{ fontFamily: 'Fraunces, serif' }}>
+                📊 Analyst Consensus & Price Targets
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                Based on {analystData.number_of_analysts || 'multiple'} analyst{analystData.number_of_analysts !== 1 ? 's' : ''}
+              </p>
+            </div>
+          </div>
+
+          {/* Consensus Badge */}
+          <div className="mb-6 text-center">
+            <div className={`inline-flex items-center px-6 py-3 rounded-full text-2xl font-bold ${
+              analystData.consensus === 'Strong Buy' ? 'bg-green-500 text-white' :
+              analystData.consensus === 'Buy' ? 'bg-green-400 text-white' :
+              analystData.consensus === 'Hold' ? 'bg-gray-400 text-white' :
+              analystData.consensus === 'Sell' ? 'bg-red-400 text-white' :
+              'bg-gray-300 text-gray-800'
+            }`}>
+              {analystData.consensus}
+            </div>
+          </div>
+
+          {/* Target Prices */}
+          {(analystData.target_prices.mean || analystData.target_prices.high) && (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              <div className="p-4 bg-white rounded-lg shadow">
+                <p className="text-xs text-muted-foreground mb-1">Current Price</p>
+                <p className="text-2xl font-bold text-gray-700" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+                  {formatPrice(analystData.current_price)}
+                </p>
+              </div>
+
+              {analystData.target_prices.mean && (
+                <div className="p-4 bg-white rounded-lg shadow">
+                  <p className="text-xs text-muted-foreground mb-1">Target (Mean)</p>
+                  <p className="text-2xl font-bold text-blue-600" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+                    {formatPrice(analystData.target_prices.mean)}
+                  </p>
+                  {analystData.upside_downside.upside_to_mean_percent && (
+                    <p className={`text-xs font-bold ${analystData.upside_downside.upside_to_mean_percent >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                      {analystData.upside_downside.upside_to_mean_percent >= 0 ? '↑' : '↓'} {Math.abs(analystData.upside_downside.upside_to_mean_percent).toFixed(1)}%
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {analystData.target_prices.high && (
+                <div className="p-4 bg-green-50 rounded-lg border border-green-200 shadow">
+                  <p className="text-xs text-muted-foreground mb-1">Target (High)</p>
+                  <p className="text-2xl font-bold text-green-600" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+                    {formatPrice(analystData.target_prices.high)}
+                  </p>
+                  {analystData.upside_downside.upside_to_high_percent && (
+                    <p className="text-xs font-bold text-green-600">
+                      ↑ {analystData.upside_downside.upside_to_high_percent.toFixed(1)}%
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {analystData.target_prices.low && (
+                <div className="p-4 bg-red-50 rounded-lg border border-red-200 shadow">
+                  <p className="text-xs text-muted-foreground mb-1">Target (Low)</p>
+                  <p className="text-2xl font-bold text-red-600" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+                    {formatPrice(analystData.target_prices.low)}
+                  </p>
+                  {analystData.upside_downside.downside_to_low_percent && (
+                    <p className="text-xs font-bold text-red-600">
+                      ↓ {Math.abs(analystData.upside_downside.downside_to_low_percent).toFixed(1)}%
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Recommendation Breakdown */}
+          {Object.values(analystData.recommendations).some(v => v > 0) && (
+            <div className="p-4 bg-white rounded-lg shadow">
+              <h4 className="font-bold mb-3 text-sm">Analyst Recommendations Breakdown</h4>
+              <div className="grid grid-cols-5 gap-2 mb-3">
+                <div className="text-center">
+                  <div className="w-full bg-green-500 text-white rounded py-2 font-bold text-lg">
+                    {analystData.recommendations.strongBuy}
+                  </div>
+                  <p className="text-xs mt-1">Strong Buy</p>
+                </div>
+                <div className="text-center">
+                  <div className="w-full bg-green-300 text-white rounded py-2 font-bold text-lg">
+                    {analystData.recommendations.buy}
+                  </div>
+                  <p className="text-xs mt-1">Buy</p>
+                </div>
+                <div className="text-center">
+                  <div className="w-full bg-gray-300 text-white rounded py-2 font-bold text-lg">
+                    {analystData.recommendations.hold}
+                  </div>
+                  <p className="text-xs mt-1">Hold</p>
+                </div>
+                <div className="text-center">
+                  <div className="w-full bg-orange-300 text-white rounded py-2 font-bold text-lg">
+                    {analystData.recommendations.sell}
+                  </div>
+                  <p className="text-xs mt-1">Sell</p>
+                </div>
+                <div className="text-center">
+                  <div className="w-full bg-red-500 text-white rounded py-2 font-bold text-lg">
+                    {analystData.recommendations.strongSell}
+                  </div>
+                  <p className="text-xs mt-1">Strong Sell</p>
+                </div>
+              </div>
+              
+              {/* Trend Indicator */}
+              {(analystData.recommendation_trend.recent_upgrades > 0 || analystData.recommendation_trend.recent_downgrades > 0) && (
+                <div className="flex items-center justify-center gap-4 text-sm">
+                  {analystData.recommendation_trend.recent_upgrades > 0 && (
+                    <div className="flex items-center gap-1 text-green-600">
+                      <TrendingUp className="w-4 h-4" />
+                      <span className="font-bold">{analystData.recommendation_trend.recent_upgrades} Upgrade{analystData.recommendation_trend.recent_upgrades > 1 ? 's' : ''}</span>
+                    </div>
+                  )}
+                  {analystData.recommendation_trend.recent_downgrades > 0 && (
+                    <div className="flex items-center gap-1 text-red-600">
+                      <TrendingDown className="w-4 h-4" />
+                      <span className="font-bold">{analystData.recommendation_trend.recent_downgrades} Downgrade{analystData.recommendation_trend.recent_downgrades > 1 ? 's' : ''}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Disclaimer */}
+          <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <p className="text-xs text-yellow-800">
+              <strong>Note:</strong> Analyst ratings and price targets are opinions and should not be considered as investment advice. 
+              Past accuracy of analyst predictions varies. Always conduct your own research.
+            </p>
+          </div>
+        </Card>
+      )}
+
+
       {/* Price Charts - Show when we have historical data */}
       {(historicalData && stockData) && (
         <div className="mb-6 space-y-4">
