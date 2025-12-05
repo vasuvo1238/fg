@@ -383,11 +383,10 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Enhanced Options Builder - Navigation and Interface"
-    - "Enhanced Options Builder - Strategy Card Selection"
-    - "Enhanced Options Builder - View Tabs"
-    - "Enhanced Options Builder - Custom Strategy Builder"
-    - "Enhanced Options Builder - Expiry Date Picker"
+    - "Portfolio Manager Pro - Navigation and Interface"
+    - "Portfolio Manager Pro - Portfolio Optimizer Tab"
+    - "Portfolio Manager Pro - Kelly Criterion Tab"
+    - "Portfolio Manager Pro - Margin/Leverage Tab"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
