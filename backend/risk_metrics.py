@@ -293,7 +293,8 @@ def portfolio_risk_analysis(
         
         # Maximum drawdown
         portfolio_prices = (1 + portfolio_returns).cumprod() * portfolio_value
-        max_dd = calculate_max_drawdown(portfolio_prices)
+        # Convert prices to plain Series to avoid timestamp comparison issues
+        max_dd = calculate_max_drawdown(pd.Series(portfolio_prices.values))
         
         # VaR in dollar terms
         var_dollar = var_95 * portfolio_value
