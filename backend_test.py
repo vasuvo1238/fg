@@ -992,6 +992,405 @@ class FinancialChatbotTester:
             self.log_test("LLM Integration Quality", False, str(e))
             return False
 
+    # ============== NEW PRIORITY 1 API ENDPOINTS ==============
+    
+    def test_analyst_targets_aapl(self):
+        """Test GET /api/stocks/AAPL/analyst-targets - Analyst target prices for AAPL"""
+        try:
+            start_time = time.time()
+            response = requests.get(f"{self.api_url}/stocks/AAPL/analyst-targets", timeout=30)
+            latency = time.time() - start_time
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if success:
+                data = response.json()
+                required_fields = ["symbol", "current_price", "target_prices", "upside_downside", 
+                                 "recommendations", "consensus", "number_of_analysts", "has_data"]
+                missing_fields = [field for field in required_fields if field not in data]
+                
+                if missing_fields:
+                    success = False
+                    details += f", Missing fields: {missing_fields}"
+                elif data.get("symbol") != "AAPL":
+                    success = False
+                    details += f", Symbol mismatch: expected AAPL, got {data.get('symbol')}"
+                elif not data.get("has_data"):
+                    success = False
+                    details += ", No analyst data available"
+                else:
+                    # Check target_prices structure
+                    target_prices = data.get("target_prices", {})
+                    price_fields = ["high", "mean", "low"]
+                    missing_price_fields = [field for field in price_fields if field not in target_prices]
+                    
+                    if missing_price_fields:
+                        success = False
+                        details += f", Missing target price fields: {missing_price_fields}"
+                    else:
+                        details += f", Current: ${data['current_price']:.2f}, Target: ${target_prices['mean']:.2f}, Analysts: {data['number_of_analysts']}"
+                        
+            self.log_test("Analyst Targets - AAPL", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Analyst Targets - AAPL", False, str(e))
+            return False
+
+    def test_analyst_targets_tsla(self):
+        """Test GET /api/stocks/TSLA/analyst-targets - Analyst target prices for TSLA"""
+        try:
+            start_time = time.time()
+            response = requests.get(f"{self.api_url}/stocks/TSLA/analyst-targets", timeout=30)
+            latency = time.time() - start_time
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if success:
+                data = response.json()
+                required_fields = ["symbol", "current_price", "target_prices", "upside_downside", 
+                                 "recommendations", "consensus", "number_of_analysts", "has_data"]
+                missing_fields = [field for field in required_fields if field not in data]
+                
+                if missing_fields:
+                    success = False
+                    details += f", Missing fields: {missing_fields}"
+                elif data.get("symbol") != "TSLA":
+                    success = False
+                    details += f", Symbol mismatch: expected TSLA, got {data.get('symbol')}"
+                elif not data.get("has_data"):
+                    success = False
+                    details += ", No analyst data available"
+                else:
+                    details += f", Current: ${data['current_price']:.2f}, Analysts: {data['number_of_analysts']}"
+                        
+            self.log_test("Analyst Targets - TSLA", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Analyst Targets - TSLA", False, str(e))
+            return False
+
+    def test_analyst_targets_invalid(self):
+        """Test GET /api/stocks/XYZ123/analyst-targets - Invalid symbol should return error"""
+        try:
+            start_time = time.time()
+            response = requests.get(f"{self.api_url}/stocks/XYZ123/analyst-targets", timeout=30)
+            latency = time.time() - start_time
+            
+            # Should return 404 for invalid symbol
+            success = response.status_code == 404
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if not success:
+                details += ", Should return 404 for invalid symbol"
+            else:
+                details += ", Correctly handled invalid symbol"
+                        
+            self.log_test("Analyst Targets - Invalid Symbol", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Analyst Targets - Invalid Symbol", False, str(e))
+            return False
+
+    def test_earnings_calendar_aapl(self):
+        """Test GET /api/earnings/AAPL - Earnings calendar with proper date format"""
+        try:
+            start_time = time.time()
+            response = requests.get(f"{self.api_url}/earnings/AAPL", timeout=30)
+            latency = time.time() - start_time
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if success:
+                data = response.json()
+                required_fields = ["symbol", "earnings_date"]
+                missing_fields = [field for field in required_fields if field not in data]
+                
+                if missing_fields:
+                    success = False
+                    details += f", Missing fields: {missing_fields}"
+                elif data.get("symbol") != "AAPL":
+                    success = False
+                    details += f", Symbol mismatch: expected AAPL, got {data.get('symbol')}"
+                else:
+                    # Check date format - should be YYYY-MM-DD, not raw datetime object
+                    earnings_date = data.get("earnings_date")
+                    if isinstance(earnings_date, str):
+                        # Check if it's in proper YYYY-MM-DD format
+                        import re
+                        if re.match(r'^\d{4}-\d{2}-\d{2}$', earnings_date):
+                            details += f", Earnings date: {earnings_date} (proper format)"
+                        else:
+                            success = False
+                            details += f", Invalid date format: {earnings_date} (should be YYYY-MM-DD)"
+                    else:
+                        success = False
+                        details += f", Date should be string, got: {type(earnings_date)} - {earnings_date}"
+                        
+            self.log_test("Earnings Calendar - AAPL", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Earnings Calendar - AAPL", False, str(e))
+            return False
+
+    def test_earnings_calendar_msft(self):
+        """Test GET /api/earnings/MSFT - Earnings calendar for MSFT"""
+        try:
+            start_time = time.time()
+            response = requests.get(f"{self.api_url}/earnings/MSFT", timeout=30)
+            latency = time.time() - start_time
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if success:
+                data = response.json()
+                if data.get("symbol") != "MSFT":
+                    success = False
+                    details += f", Symbol mismatch: expected MSFT, got {data.get('symbol')}"
+                else:
+                    earnings_date = data.get("earnings_date")
+                    if isinstance(earnings_date, str):
+                        details += f", Earnings date: {earnings_date}"
+                    else:
+                        success = False
+                        details += f", Date format issue: {earnings_date}"
+                        
+            self.log_test("Earnings Calendar - MSFT", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Earnings Calendar - MSFT", False, str(e))
+            return False
+
+    def test_earnings_calendar_invalid(self):
+        """Test GET /api/earnings/INVALID - Invalid symbol should return error"""
+        try:
+            start_time = time.time()
+            response = requests.get(f"{self.api_url}/earnings/INVALID", timeout=30)
+            latency = time.time() - start_time
+            
+            # Should return error for invalid symbol
+            success = response.status_code in [404, 500]
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if not success:
+                details += ", Should return error for invalid symbol"
+            else:
+                details += ", Correctly handled invalid symbol"
+                        
+            self.log_test("Earnings Calendar - Invalid Symbol", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Earnings Calendar - Invalid Symbol", False, str(e))
+            return False
+
+    def test_options_chain_expiries(self):
+        """Test GET /api/options-chain/AAPL/expiries - Get available expiration dates"""
+        try:
+            start_time = time.time()
+            response = requests.get(f"{self.api_url}/options-chain/AAPL/expiries", timeout=30)
+            latency = time.time() - start_time
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if success:
+                data = response.json()
+                required_fields = ["symbol", "expiries"]
+                missing_fields = [field for field in required_fields if field not in data]
+                
+                if missing_fields:
+                    success = False
+                    details += f", Missing fields: {missing_fields}"
+                elif data.get("symbol") != "AAPL":
+                    success = False
+                    details += f", Symbol mismatch: expected AAPL, got {data.get('symbol')}"
+                elif not isinstance(data.get("expiries"), list):
+                    success = False
+                    details += ", Expiries should be a list"
+                elif len(data["expiries"]) == 0:
+                    success = False
+                    details += ", No expiration dates found"
+                else:
+                    details += f", Found {len(data['expiries'])} expiration dates"
+                        
+            self.log_test("Options Chain - Expiries", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Options Chain - Expiries", False, str(e))
+            return False
+
+    def test_options_chain_atm(self):
+        """Test GET /api/options-chain/AAPL/atm - Get ATM options with all required fields"""
+        try:
+            # First get expiries to use a valid expiry date
+            expiry_response = requests.get(f"{self.api_url}/options-chain/AAPL/expiries", timeout=30)
+            if expiry_response.status_code != 200:
+                self.log_test("Options Chain - ATM", False, "Could not get expiries for ATM test")
+                return False
+            
+            expiry_data = expiry_response.json()
+            if not expiry_data.get("expiries"):
+                self.log_test("Options Chain - ATM", False, "No expiries available for ATM test")
+                return False
+            
+            first_expiry = expiry_data["expiries"][0]
+            
+            start_time = time.time()
+            response = requests.get(f"{self.api_url}/options-chain/AAPL/atm?expiry={first_expiry}&num_strikes=10", timeout=30)
+            latency = time.time() - start_time
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if success:
+                data = response.json()
+                required_fields = ["symbol", "underlying_price", "calls", "puts"]
+                missing_fields = [field for field in required_fields if field not in data]
+                
+                if missing_fields:
+                    success = False
+                    details += f", Missing fields: {missing_fields}"
+                elif not isinstance(data.get("calls"), list) or not isinstance(data.get("puts"), list):
+                    success = False
+                    details += ", Calls and puts should be lists"
+                elif len(data["calls"]) == 0 or len(data["puts"]) == 0:
+                    success = False
+                    details += ", No options data found"
+                else:
+                    # Check option structure
+                    call_option = data["calls"][0]
+                    required_option_fields = ["strike", "bid", "ask", "lastPrice", "volume", "impliedVolatility", "openInterest", "inTheMoney"]
+                    missing_option_fields = [field for field in required_option_fields if field not in call_option]
+                    
+                    if missing_option_fields:
+                        success = False
+                        details += f", Option missing fields: {missing_option_fields}"
+                    else:
+                        details += f", Underlying: ${data['underlying_price']:.2f}, Calls: {len(data['calls'])}, Puts: {len(data['puts'])}"
+                        
+            self.log_test("Options Chain - ATM", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Options Chain - ATM", False, str(e))
+            return False
+
+    def test_options_chain_invalid(self):
+        """Test GET /api/options-chain/INVALID/expiries - Invalid symbol should return error"""
+        try:
+            start_time = time.time()
+            response = requests.get(f"{self.api_url}/options-chain/INVALID/expiries", timeout=30)
+            latency = time.time() - start_time
+            
+            # Should return error for invalid symbol
+            success = response.status_code in [404, 500]
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if not success:
+                details += ", Should return error for invalid symbol"
+            else:
+                details += ", Correctly handled invalid symbol"
+                        
+            self.log_test("Options Chain - Invalid Symbol", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Options Chain - Invalid Symbol", False, str(e))
+            return False
+
+    def test_portfolio_save_load_delete(self):
+        """Test Portfolio Save/Load/Delete API - Complete workflow"""
+        try:
+            # Step 1: Save a test portfolio
+            portfolio_data = {
+                "name": "Test Portfolio AAPL MSFT",
+                "symbols": ["AAPL", "MSFT"],
+                "weights": [0.6, 0.4],
+                "expected_return": 0.12,
+                "volatility": 0.18,
+                "sharpe_ratio": 0.67
+            }
+            
+            start_time = time.time()
+            save_response = requests.post(
+                f"{self.api_url}/portfolios/save",
+                json=portfolio_data,
+                headers={"Content-Type": "application/json"},
+                timeout=30
+            )
+            save_latency = time.time() - start_time
+            
+            if save_response.status_code != 200:
+                self.log_test("Portfolio Save/Load/Delete", False, f"Save failed: {save_response.status_code}")
+                return False
+            
+            save_data = save_response.json()
+            if "id" not in save_data:
+                self.log_test("Portfolio Save/Load/Delete", False, "Save response missing ID")
+                return False
+            
+            portfolio_id = save_data["id"]
+            
+            # Step 2: List portfolios to verify it was saved
+            list_response = requests.get(f"{self.api_url}/portfolios/list", timeout=30)
+            if list_response.status_code != 200:
+                self.log_test("Portfolio Save/Load/Delete", False, f"List failed: {list_response.status_code}")
+                return False
+            
+            list_data = list_response.json()
+            if "portfolios" not in list_data:
+                self.log_test("Portfolio Save/Load/Delete", False, "List response missing portfolios field")
+                return False
+            
+            # Find our portfolio in the list
+            found_portfolio = None
+            for portfolio in list_data["portfolios"]:
+                if portfolio.get("id") == portfolio_id:
+                    found_portfolio = portfolio
+                    break
+            
+            if not found_portfolio:
+                self.log_test("Portfolio Save/Load/Delete", False, "Saved portfolio not found in list")
+                return False
+            
+            # Verify portfolio fields
+            required_fields = ["name", "symbols", "weights", "expected_return", "volatility", "sharpe_ratio"]
+            missing_fields = [field for field in required_fields if field not in found_portfolio]
+            
+            if missing_fields:
+                self.log_test("Portfolio Save/Load/Delete", False, f"Portfolio missing fields: {missing_fields}")
+                return False
+            
+            # Step 3: Delete the portfolio
+            delete_response = requests.delete(f"{self.api_url}/portfolios/{portfolio_id}", timeout=30)
+            if delete_response.status_code != 200:
+                self.log_test("Portfolio Save/Load/Delete", False, f"Delete failed: {delete_response.status_code}")
+                return False
+            
+            delete_data = delete_response.json()
+            if not delete_data.get("success"):
+                self.log_test("Portfolio Save/Load/Delete", False, "Delete did not return success")
+                return False
+            
+            total_latency = save_latency
+            details = f"Save/List/Delete workflow completed, Latency: {total_latency:.2f}s, Portfolio: {found_portfolio['name']}"
+            self.log_test("Portfolio Save/Load/Delete", True, details)
+            return True
+            
+        except Exception as e:
+            self.log_test("Portfolio Save/Load/Delete", False, str(e))
+            return False
+
     def run_all_tests(self):
         """Run all tests in sequence"""
         print("🚀 Starting Comprehensive Financial Advisor API Tests")
@@ -1002,6 +1401,18 @@ class FinancialChatbotTester:
         tests = [
             # Basic API tests
             self.test_api_root,
+            
+            # NEW PRIORITY 1 ENDPOINTS - Testing the 4 newly implemented features
+            self.test_analyst_targets_aapl,
+            self.test_analyst_targets_tsla,
+            self.test_analyst_targets_invalid,
+            self.test_earnings_calendar_aapl,
+            self.test_earnings_calendar_msft,
+            self.test_earnings_calendar_invalid,
+            self.test_options_chain_expiries,
+            self.test_options_chain_atm,
+            self.test_options_chain_invalid,
+            self.test_portfolio_save_load_delete,
             
             # Chat functionality tests
             self.test_chat_finance_question,
