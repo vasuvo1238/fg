@@ -196,6 +196,16 @@ function App() {
                   <Shield className="w-4 h-4" />
                   Risk
                 </Button>
+                <Button
+                  data-testid="technical-view-btn"
+                  variant={activeView === "technical" ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setActiveView("technical")}
+                  className="gap-2"
+                >
+                  <Activity className="w-4 h-4" />
+                  Technical
+                </Button>
               </div>
             </div>
           </div>
