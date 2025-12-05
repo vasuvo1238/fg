@@ -1430,6 +1430,158 @@ async def optimal_leverage_endpoint(request: OptimalLeverageRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+# ============== Advanced Risk Metrics ==============
+
+class RiskAnalysisRequest(BaseModel):
+    symbols: List[str]
+    weights: List[float]
+    portfolio_value: float
+    period: str = "1y"
+    confidence_level: float = 0.95
+
+
+@api_router.post("/portfolio/risk-analysis")
+async def risk_analysis_endpoint(request: RiskAnalysisRequest):
+    """Comprehensive portfolio risk analysis (VaR, CVaR, Max Drawdown, etc.)"""
+    try:
+        if len(request.symbols) != len(request.weights):
+            raise HTTPException(status_code=400, detail="Symbols and weights must have same length")
+        
+        if abs(sum(request.weights) - 1.0) > 0.01:
+            raise HTTPException(status_code=400, detail="Weights must sum to 1.0")
+        
+        loop = asyncio.get_event_loop()
+        result = await loop.run_in_executor(
+            executor,
+            portfolio_risk_analysis,
+            request.symbols,
+            request.weights,
+            request.portfolio_value,
+            request.period,
+            request.confidence_level
+        )
+        return result
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Risk analysis error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+class MonteCarloRequest(BaseModel):
+    initial_value: float
+    expected_return: float
+    volatility: float
+    days: int = 252
+    simulations: int = 1000
+
+
+@api_router.post("/portfolio/monte-carlo")
+async def monte_carlo_endpoint(request: MonteCarloRequest):
+    """Run Monte Carlo simulation for portfolio"""
+    try:
+        loop = asyncio.get_event_loop()
+        result = await loop.run_in_executor(
+            executor,
+            monte_carlo_simulation,
+            request.initial_value,
+            request.expected_return,
+            request.volatility,
+            request.days,
+            request.simulations
+        )
+        return result
+    except Exception as e:
+        logger.error(f"Monte Carlo simulation error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+class RebalancingRequest(BaseModel):
+    current_weights: Dict[str, float]
+    target_weights: Dict[str, float]
+    portfolio_value: float
+    threshold: float = 0.05
+
+
+@api_router.post("/portfolio/rebalancing-advice")
+async def rebalancing_advice_endpoint(request: RebalancingRequest):
+    """Get portfolio rebalancing recommendations"""
+    try:
+        result = portfolio_rebalancing_advice(
+            request.current_weights,
+            request.target_weights,
+            request.portfolio_value,
+            request.threshold
+        )
+        return result
+    except Exception as e:
+        logger.error(f"Rebalancing advice error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ============== Data Persistence (Save/Load Portfolios & Strategies) ==============
+
+@api_router.post("/portfolios/save")
+async def save_portfolio(portfolio_data: Dict[str, Any]):
+    """Save portfolio configuration"""
+    try:
+        portfolio_data["created_at"] = datetime.now(timezone.utc).isoformat()
+        portfolio_data["id"] = portfolio_data.get("id", str(uuid.uuid4()))
+        
+        # Upsert (update if exists, insert if not)
+        await db.portfolios.update_one(
+            {"id": portfolio_data["id"]},
+            {"$set": portfolio_data},
+            upsert=True
+        )
+        
+        return {"success": True, "id": portfolio_data["id"], "message": "Portfolio saved successfully"}
+    except Exception as e:
+        logger.error(f"Save portfolio error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@api_router.get("/portfolios/list")
+async def list_portfolios():
+    """List all saved portfolios"""
+    try:
+        portfolios = await db.portfolios.find({}, {"_id": 0}).sort("created_at", -1).to_list(100)
+        return {"portfolios": portfolios}
+    except Exception as e:
+        logger.error(f"List portfolios error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@api_router.get("/portfolios/{portfolio_id}")
+async def get_portfolio(portfolio_id: str):
+    """Load a specific portfolio"""
+    try:
+        portfolio = await db.portfolios.find_one({"id": portfolio_id}, {"_id": 0})
+        if not portfolio:
+            raise HTTPException(status_code=404, detail="Portfolio not found")
+        return portfolio
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Get portfolio error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@api_router.delete("/portfolios/{portfolio_id}")
+async def delete_portfolio(portfolio_id: str):
+    """Delete a portfolio"""
+    try:
+        result = await db.portfolios.delete_one({"id": portfolio_id})
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Portfolio not found")
+        return {"success": True, "message": "Portfolio deleted successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Delete portfolio error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 # Include the router in the main app
 app.include_router(api_router)
 
