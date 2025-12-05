@@ -45,6 +45,13 @@ from prediction_reasoning import (
     explain_technical_indicators
 )
 from autohedge_agents import run_autohedge_analysis, TradeRecommendation
+from portfolio_optimizer import (
+    optimize_portfolio,
+    generate_efficient_frontier,
+    calculate_position_size_kelly,
+    calculate_margin_leverage,
+    optimal_leverage
+)
 from options_pricing import (
     OptionsStrategy,
     STRATEGY_TEMPLATES,
