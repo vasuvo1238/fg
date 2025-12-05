@@ -1108,7 +1108,7 @@ class FinancialChatbotTester:
             
             if success:
                 data = response.json()
-                required_fields = ["symbol", "earnings_date"]
+                required_fields = ["symbol", "next_earnings_date"]  # Fixed field name
                 missing_fields = [field for field in required_fields if field not in data]
                 
                 if missing_fields:
@@ -1119,7 +1119,7 @@ class FinancialChatbotTester:
                     details += f", Symbol mismatch: expected AAPL, got {data.get('symbol')}"
                 else:
                     # Check date format - should be YYYY-MM-DD, not raw datetime object
-                    earnings_date = data.get("earnings_date")
+                    earnings_date = data.get("next_earnings_date")
                     if isinstance(earnings_date, str):
                         # Check if it's in proper YYYY-MM-DD format
                         import re
