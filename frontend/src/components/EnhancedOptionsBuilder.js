@@ -518,13 +518,40 @@ export default function EnhancedOptionsBuilder() {
 
           {/* View Tabs */}
           <Card className="p-6">
-            <Tabs value={activeView} onValueChange={setActiveView} className="w-full">
-              <TabsList className="grid w-full grid-cols-4 mb-6">
-                <TabsTrigger value="payoff" className="cursor-pointer">Payoff Graph</TabsTrigger>
-                <TabsTrigger value="table" className="cursor-pointer">P&L Table</TabsTrigger>
-                <TabsTrigger value="greeks" className="cursor-pointer">Greeks</TabsTrigger>
-                <TabsTrigger value="chart" className="cursor-pointer">Strategy Chart</TabsTrigger>
-              </TabsList>
+            <div className="mb-4">
+              <div className="flex gap-2 border-b">
+                <Button
+                  variant={activeView === "payoff" ? "default" : "ghost"}
+                  onClick={() => setActiveView("payoff")}
+                  className="rounded-b-none"
+                >
+                  Payoff Graph
+                </Button>
+                <Button
+                  variant={activeView === "table" ? "default" : "ghost"}
+                  onClick={() => setActiveView("table")}
+                  className="rounded-b-none"
+                >
+                  P&L Table
+                </Button>
+                <Button
+                  variant={activeView === "greeks" ? "default" : "ghost"}
+                  onClick={() => setActiveView("greeks")}
+                  className="rounded-b-none"
+                >
+                  Greeks
+                </Button>
+                <Button
+                  variant={activeView === "chart" ? "default" : "ghost"}
+                  onClick={() => setActiveView("chart")}
+                  className="rounded-b-none"
+                >
+                  Strategy Chart
+                </Button>
+              </div>
+            </div>
+            
+            <div className="w-full">
 
               {/* Payoff Graph Tab */}
               <TabsContent value="payoff" className="mt-6">
