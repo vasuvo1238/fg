@@ -118,6 +118,13 @@ export default function EnhancedOptionsBuilder() {
 
   // Target day analysis
   const [targetDays, setTargetDays] = useState(null);
+  
+  // Options chain state
+  const [optionsChainData, setOptionsChainData] = useState(null);
+  const [availableExpiries, setAvailableExpiries] = useState([]);
+  const [selectedExpiry, setSelectedExpiry] = useState("");
+  const [loadingOptionsChain, setLoadingOptionsChain] = useState(false);
+  const [showOptionsChain, setShowOptionsChain] = useState(false);
 
   useEffect(() => {
     // Set default expiry date (30 days from now)
