@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import StockPrediction from "@/components/StockPrediction";
 import EnhancedOptionsBuilder from "@/components/EnhancedOptionsBuilder";
 import AdvancedAnalytics from "@/components/AdvancedAnalytics";
+import PortfolioManager from "@/components/PortfolioManager";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
