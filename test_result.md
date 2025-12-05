@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Test the Enhanced Options Strategy Builder Pro with strategy cards, view tabs, custom strategy builder, and expiry date picker"
+user_problem_statement: "Test the Portfolio Manager Pro feature comprehensively with Portfolio Optimizer, Kelly Criterion, and Margin/Leverage tabs"
 
 frontend:
   - task: "Advanced Analytics - Navigation and Tab Structure"
