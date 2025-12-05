@@ -24,7 +24,7 @@ function App() {
   const [sessionId, setSessionId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
-  const [activeView, setActiveView] = useState("chat"); // "chat", "stocks", "options", "analytics", "portfolio", "risk", "technical"
+  const [activeView, setActiveView] = useState("chat"); // "chat", "stocks", "options", "analytics", "portfolio", "risk", "technical", "indian"
   const scrollRef = useRef(null);
   const inputRef = useRef(null);
 
