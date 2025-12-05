@@ -223,6 +223,8 @@ function App() {
             <PortfolioManager />
           ) : activeView === "risk" ? (
             <RiskAnalysis />
+          ) : activeView === "technical" ? (
+            <TechnicalAnalysis />
           ) : (
             <div>
           {showWelcome && messages.length === 0 && (
