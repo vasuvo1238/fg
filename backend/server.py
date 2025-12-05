@@ -1311,6 +1311,120 @@ async def predict_with_custom_weights(symbol: str, request: StockPredictionReque
         logger.error(f"Error in custom weights prediction: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
+# ============== Portfolio Optimization & Kelly Criterion ==============
+
+@api_router.post("/portfolio/optimize")
+async def optimize_portfolio_endpoint(symbols: List[str], period: str = "1y"):
+    """Optimize portfolio using Modern Portfolio Theory"""
+    try:
+        if len(symbols) < 2:
+            raise HTTPException(status_code=400, detail="At least 2 symbols required")
+        
+        loop = asyncio.get_event_loop()
+        result = await loop.run_in_executor(
+            executor,
+            optimize_portfolio,
+            symbols,
+            period
+        )
+        return result
+    except Exception as e:
+        logger.error(f"Portfolio optimization error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@api_router.post("/portfolio/efficient-frontier")
+async def efficient_frontier_endpoint(symbols: List[str], period: str = "1y", num_portfolios: int = 100):
+    """Generate efficient frontier"""
+    try:
+        if len(symbols) < 2:
+            raise HTTPException(status_code=400, detail="At least 2 symbols required")
+        
+        loop = asyncio.get_event_loop()
+        result = await loop.run_in_executor(
+            executor,
+            generate_efficient_frontier,
+            symbols,
+            period,
+            num_portfolios
+        )
+        return result
+    except Exception as e:
+        logger.error(f"Efficient frontier error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+class KellyRequest(BaseModel):
+    account_balance: float
+    win_probability: float
+    avg_win: float
+    avg_loss: float
+    fraction: float = 0.5
+
+
+@api_router.post("/portfolio/kelly-criterion")
+async def kelly_criterion_endpoint(request: KellyRequest):
+    """Calculate optimal position size using Kelly Criterion"""
+    try:
+        result = calculate_position_size_kelly(
+            request.account_balance,
+            request.win_probability,
+            request.avg_win,
+            request.avg_loss,
+            request.fraction
+        )
+        return result
+    except Exception as e:
+        logger.error(f"Kelly criterion error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+class MarginRequest(BaseModel):
+    account_balance: float
+    position_size: float
+    maintenance_margin: float = 0.25
+    initial_margin: float = 0.5
+
+
+@api_router.post("/portfolio/margin-calculator")
+async def margin_calculator_endpoint(request: MarginRequest):
+    """Calculate margin requirements and leverage"""
+    try:
+        result = calculate_margin_leverage(
+            request.account_balance,
+            request.position_size,
+            request.maintenance_margin,
+            request.initial_margin
+        )
+        return result
+    except Exception as e:
+        logger.error(f"Margin calculator error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+class OptimalLeverageRequest(BaseModel):
+    account_balance: float
+    expected_return: float
+    volatility: float
+    risk_free_rate: float = 0.02
+
+
+@api_router.post("/portfolio/optimal-leverage")
+async def optimal_leverage_endpoint(request: OptimalLeverageRequest):
+    """Calculate optimal leverage"""
+    try:
+        result = optimal_leverage(
+            request.account_balance,
+            request.expected_return,
+            request.volatility,
+            request.risk_free_rate
+        )
+        return result
+    except Exception as e:
+        logger.error(f"Optimal leverage error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 # Include the router in the main app
 app.include_router(api_router)
 
