@@ -505,6 +505,16 @@ export default function PortfolioManager() {
                 </Card>
               </div>
 
+              {/* Save Portfolio Button */}
+              {!showSaveDialog && (
+                <div className="flex justify-end">
+                  <Button onClick={() => setShowSaveDialog(true)} className="gap-2">
+                    <DollarSign className="w-4 h-4" />
+                    Save This Portfolio
+                  </Button>
+                </div>
+              )}
+
               {/* Optimal Weights */}
               <Card className="p-6">
                 <h3 className="text-lg font-bold mb-4" style={{ fontFamily: 'Fraunces, serif' }}>
