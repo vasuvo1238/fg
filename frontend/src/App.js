@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AlertCircle, Send, Sparkles, TrendingUp, DollarSign, PieChart, BarChart3, MessageCircle, Microscope } from "lucide-react";
 import { toast } from "sonner";
 import StockPrediction from "@/components/StockPrediction";
-import OptionsStrategyBuilder from "@/components/OptionsStrategyBuilder";
+import EnhancedOptionsBuilder from "@/components/EnhancedOptionsBuilder";
 import AdvancedAnalytics from "@/components/AdvancedAnalytics";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
