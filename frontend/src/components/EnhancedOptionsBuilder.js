@@ -738,6 +738,25 @@ export default function EnhancedOptionsBuilder() {
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
         </div>
       )}
+
+      {/* Disclaimer */}
+      <Card className="p-4 bg-yellow-50 border-yellow-200">
+        <div className="flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+          <div className="text-sm text-yellow-800">
+            <p className="font-bold mb-1">⚠️ Educational Purpose Only - Not Financial Advice</p>
+            <p className="text-xs">
+              This Options Strategy Builder is provided for educational and informational purposes only. 
+              It is not intended as investment advice, financial advice, trading advice, or any other type of advice. 
+              The calculations are theoretical and based on the Black-Scholes model with simplified assumptions. 
+              Real-world trading involves additional risks including but not limited to: liquidity risk, execution risk, 
+              market risk, and model risk. Past performance does not guarantee future results. 
+              <strong> Always consult with a licensed financial advisor before making any investment decisions. 
+              Trading options involves substantial risk and is not suitable for all investors.</strong>
+            </p>
+          </div>
+        </div>
+      </Card>
     </div>
   );
 }
