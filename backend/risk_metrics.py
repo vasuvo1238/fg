@@ -83,7 +83,9 @@ def calculate_max_drawdown(prices: pd.Series) -> Dict:
     
     # Recovery (if recovered)
     recovery_idx = None
-    if max_dd_idx < len(cumulative) - 1:
+    # Get position in index instead of comparing values
+    max_dd_pos = cumulative.index.get_loc(max_dd_idx)
+    if max_dd_pos < len(cumulative) - 1:
         post_dd = cumulative[max_dd_idx:]
         recovered = post_dd[post_dd >= cumulative[peak_idx]]
         if len(recovered) > 0:
