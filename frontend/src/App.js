@@ -316,6 +316,18 @@ function App() {
         </p>
         </div>
       )}
+
+      {/* Global Footer Disclaimer - Shows on all views */}
+      {activeView !== "chat" && (
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[90%] max-w-4xl z-10">
+          <div className="p-3 bg-gray-900/95 backdrop-blur-xl border border-gray-700 rounded-lg shadow-2xl">
+            <p className="text-center text-xs text-gray-300" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+              ⚠️ <strong>Disclaimer:</strong> For educational purposes only. Not financial advice. 
+              Consult a licensed financial advisor before making any investment decisions.
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
