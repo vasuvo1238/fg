@@ -180,6 +180,76 @@ export default function PortfolioManager() {
     }
   };
 
+
+
+  const savePortfolio = async () => {
+    if (!portfolioName.trim()) {
+      toast.error("Please enter a portfolio name");
+      return;
+    }
+    
+    if (!optimizationResult || symbols.length === 0) {
+      toast.error("Please optimize a portfolio first");
+      return;
+    }
+
+    try {
+      const portfolioData = {
+        name: portfolioName,
+        symbols: symbols,
+        weights: optimizationResult.optimal_weights,
+        expected_return: optimizationResult.expected_return,
+        volatility: optimizationResult.volatility,
+        sharpe_ratio: optimizationResult.sharpe_ratio,
+        period: period
+      };
+
+      await axios.post(`${API}/portfolios/save`, portfolioData);
+      toast.success(`Portfolio "${portfolioName}" saved successfully!`);
+      setShowSaveDialog(false);
+      setPortfolioName("");
+      await loadSavedPortfolios();
+    } catch (error) {
+      toast.error("Failed to save portfolio");
+      console.error(error);
+    }
+  };
+
+  const loadSavedPortfolios = async () => {
+    try {
+      const response = await axios.get(`${API}/portfolios/list`);
+      setSavedPortfolios(response.data.portfolios || []);
+    } catch (error) {
+      console.error("Failed to load portfolios", error);
+    }
+  };
+
+  const loadPortfolio = async (portfolio) => {
+    try {
+      setSymbols(portfolio.symbols);
+      setPeriod(portfolio.period || "1y");
+      toast.success(`Loaded portfolio "${portfolio.name}"`);
+      setShowLoadDialog(false);
+      
+      // Trigger optimization with loaded data
+      await optimizePortfolio();
+    } catch (error) {
+      toast.error("Failed to load portfolio");
+      console.error(error);
+    }
+  };
+
+  const deletePortfolio = async (portfolioId) => {
+    try {
+      await axios.delete(`${API}/portfolios/${portfolioId}`);
+      toast.success("Portfolio deleted");
+      await loadSavedPortfolios();
+    } catch (error) {
+      toast.error("Failed to delete portfolio");
+      console.error(error);
+    }
+  };
+
   const formatCurrency = (value) => {
     return `$${Math.abs(value).toFixed(2)}`;
   };
