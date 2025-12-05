@@ -295,9 +295,18 @@ def get_earnings_calendar(symbol: str) -> Dict:
             if earnings_date:
                 # earnings_date might be a list
                 if isinstance(earnings_date, list) and len(earnings_date) > 0:
-                    result["next_earnings_date"] = str(earnings_date[0])
+                    # Format the datetime object properly
+                    date_obj = earnings_date[0]
+                    if hasattr(date_obj, 'strftime'):
+                        result["next_earnings_date"] = date_obj.strftime('%Y-%m-%d')
+                    else:
+                        result["next_earnings_date"] = str(date_obj)
                 else:
-                    result["next_earnings_date"] = str(earnings_date)
+                    # Single date value
+                    if hasattr(earnings_date, 'strftime'):
+                        result["next_earnings_date"] = earnings_date.strftime('%Y-%m-%d')
+                    else:
+                        result["next_earnings_date"] = str(earnings_date)
         
         # If we got no earnings date, return error
         if "next_earnings_date" not in result:
