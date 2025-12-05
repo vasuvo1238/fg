@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select";
 import { 
   Plus, Trash2, TrendingUp, TrendingDown, Calendar,
-  DollarSign, Target, Shield, Table, BarChart3, Info, AlertCircle
+  DollarSign, Target, Shield, Table, BarChart3, Info, AlertCircle, RefreshCcw
 } from "lucide-react";
 import { toast } from "sonner";
 import {
