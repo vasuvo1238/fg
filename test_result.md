@@ -458,10 +458,10 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Portfolio Manager Pro - Navigation and Interface"
-    - "Portfolio Manager Pro - Portfolio Optimizer Tab"
-    - "Portfolio Manager Pro - Kelly Criterion Tab"
-    - "Portfolio Manager Pro - Margin/Leverage Tab"
+    - "Analyst Target Prices API"
+    - "Earnings Calendar API (Fixed)"
+    - "Options Chain API"
+    - "Portfolio Save/Load API"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
