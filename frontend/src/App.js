@@ -202,6 +202,17 @@ function App() {
                   Ask me anything about finance, investing, budgeting, or economics. 
                   I'm here to provide professional guidance with a personal touch.
                 </p>
+                
+                {/* Disclaimer Badge */}
+                <div className="mt-6 max-w-2xl mx-auto">
+                  <div className="flex items-center justify-center gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                    <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0" />
+                    <p className="text-xs text-amber-900">
+                      <strong>Educational Purpose Only:</strong> This platform is for learning and research. 
+                      Not financial advice. Consult a licensed advisor before investing.
+                    </p>
+                  </div>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
