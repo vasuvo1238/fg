@@ -185,6 +185,16 @@ function App() {
                   <Wallet className="w-4 h-4" />
                   Portfolio
                 </Button>
+                <Button
+                  data-testid="risk-view-btn"
+                  variant={activeView === "risk" ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setActiveView("risk")}
+                  className="gap-2"
+                >
+                  <Shield className="w-4 h-4" />
+                  Risk
+                </Button>
               </div>
             </div>
           </div>
