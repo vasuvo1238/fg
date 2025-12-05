@@ -210,6 +210,8 @@ function App() {
             <AdvancedAnalytics />
           ) : activeView === "portfolio" ? (
             <PortfolioManager />
+          ) : activeView === "risk" ? (
+            <RiskAnalysis />
           ) : (
             <div>
           {showWelcome && messages.length === 0 && (
