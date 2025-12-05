@@ -273,7 +273,11 @@ def get_earnings_calendar(symbol: str) -> Dict:
             # Extract earnings date
             if 'Earnings Date' in calendar.index:
                 earnings_date = calendar.loc['Earnings Date'].values[0]
-                result["next_earnings_date"] = str(earnings_date)
+                # Format the date properly
+                if hasattr(earnings_date, 'strftime'):
+                    result["next_earnings_date"] = earnings_date.strftime('%Y-%m-%d')
+                else:
+                    result["next_earnings_date"] = str(earnings_date)
             
             # Extract EPS estimates
             if 'EPS Estimate' in calendar.index:
