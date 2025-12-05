@@ -165,6 +165,66 @@ frontend:
           agent: "testing"
           comment: "✅ PASSED - Backtesting tab UI rendering correctly. Stock Symbol input field visible and functional. Timeframe dropdown with options (3 Months, 6 Months, 1 Year, 2 Years) working properly. Run Backtest button present. Appropriate message displayed about requiring evaluated predictions for selected symbol."
 
+  - task: "Enhanced Options Builder - Navigation and Interface"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/EnhancedOptionsBuilder.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "testing"
+          comment: "Starting testing of Enhanced Options Strategy Builder Pro - verifying navigation to Options tab and enhanced interface loads correctly"
+
+  - task: "Enhanced Options Builder - Strategy Card Selection"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/EnhancedOptionsBuilder.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "testing"
+          comment: "Testing strategy card selection with Bull Call Spread - spot price entry, strategy building, summary cards display"
+
+  - task: "Enhanced Options Builder - View Tabs"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/EnhancedOptionsBuilder.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "testing"
+          comment: "Testing all view tabs - Payoff Graph, P&L Table, Greeks, Strategy Chart functionality and data display"
+
+  - task: "Enhanced Options Builder - Custom Strategy Builder"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/EnhancedOptionsBuilder.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "testing"
+          comment: "Testing custom strategy creation - Add Leg functionality, configuration options, Build Custom Strategy button"
+
+  - task: "Enhanced Options Builder - Expiry Date Picker"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/EnhancedOptionsBuilder.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "testing"
+          comment: "Testing expiry date picker functionality and automatic Days to Expiry calculation"
+
 backend:
   - task: "Advanced Analytics API Endpoints"
     implemented: true
