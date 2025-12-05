@@ -234,6 +234,8 @@ function App() {
             <RiskAnalysis />
           ) : activeView === "technical" ? (
             <TechnicalAnalysis />
+          ) : activeView === "indian" ? (
+            <IndianMarkets />
           ) : (
             <div>
           {showWelcome && messages.length === 0 && (
