@@ -518,10 +518,10 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Analyst Target Prices API"
-    - "Earnings Calendar API (Fixed)"
-    - "Options Chain API"
-    - "Portfolio Save/Load API"
+    - "Analyst Target Prices UI (Stock Prediction Page)"
+    - "Real-Time Options Chain UI (Options Pro Tab)"
+    - "Earnings Calendar UI (Technical Analysis Page)"
+    - "Save/Load Portfolio UI (Portfolio Manager Tab)"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
