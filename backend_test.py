@@ -1254,7 +1254,7 @@ class FinancialChatbotTester:
             
             if success:
                 data = response.json()
-                required_fields = ["symbol", "underlying_price", "calls", "puts"]
+                required_fields = ["symbol", "current_price", "calls", "puts"]  # Fixed field name
                 missing_fields = [field for field in required_fields if field not in data]
                 
                 if missing_fields:
@@ -1267,16 +1267,16 @@ class FinancialChatbotTester:
                     success = False
                     details += ", No options data found"
                 else:
-                    # Check option structure
+                    # Check option structure - using actual field names from API response
                     call_option = data["calls"][0]
-                    required_option_fields = ["strike", "bid", "ask", "lastPrice", "volume", "impliedVolatility", "openInterest", "inTheMoney"]
+                    required_option_fields = ["strike", "bid", "ask", "last_price", "volume", "implied_volatility", "open_interest", "in_the_money"]
                     missing_option_fields = [field for field in required_option_fields if field not in call_option]
                     
                     if missing_option_fields:
                         success = False
                         details += f", Option missing fields: {missing_option_fields}"
                     else:
-                        details += f", Underlying: ${data['underlying_price']:.2f}, Calls: {len(data['calls'])}, Puts: {len(data['puts'])}"
+                        details += f", Underlying: ${data['current_price']:.2f}, Calls: {len(data['calls'])}, Puts: {len(data['puts'])}"
                         
             self.log_test("Options Chain - ATM", success, details)
             return success
