@@ -20,8 +20,30 @@ logger = logging.getLogger(__name__)
 def fetch_historical_returns(symbols: List[str], period: str = "1y") -> pd.DataFrame:
     """Fetch historical price data and calculate returns"""
     try:
-        data = yf.download(symbols, period=period, progress=False)['Adj Close']
+        # Download data
+        raw_data = yf.download(symbols, period=period, progress=False)
         
+        # Handle different data structures based on number of symbols
+        if len(symbols) == 1:
+            # Single symbol - data might be a DataFrame with columns like 'Adj Close', 'Close', etc.
+            if 'Adj Close' in raw_data.columns:
+                data = raw_data['Adj Close']
+            else:
+                data = raw_data['Close']
+            data = data.to_frame(columns=[symbols[0]])
+        else:
+            # Multiple symbols - data should be MultiIndex DataFrame
+            if isinstance(raw_data.columns, pd.MultiIndex):
+                # MultiIndex columns - extract 'Adj Close' level
+                if 'Adj Close' in raw_data.columns.get_level_values(0):
+                    data = raw_data['Adj Close']
+                else:
+                    data = raw_data['Close']
+            else:
+                # Single level columns - assume it's already the price data
+                data = raw_data
+        
+        # Ensure we have a DataFrame
         if isinstance(data, pd.Series):
             data = data.to_frame()
         
