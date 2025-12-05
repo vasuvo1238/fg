@@ -69,6 +69,12 @@ from options_chain import (
     get_available_expiries,
     get_options_summary
 )
+from technical_analysis import (
+    get_technical_indicators,
+    get_vix_data,
+    get_earnings_calendar,
+    get_market_overview
+)
 
 
 ROOT_DIR = Path(__file__).parent
