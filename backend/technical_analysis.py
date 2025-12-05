@@ -220,8 +220,9 @@ def get_vix_data() -> Dict:
         
         # Historical data for chart
         historical = []
-        for i in range(min(30, len(vix_history))):
-            idx = -(30 - i)
+        num_points = min(30, len(vix_history))
+        for i in range(num_points):
+            idx = len(vix_history) - num_points + i
             historical.append({
                 "date": vix_history.index[idx].strftime("%Y-%m-%d"),
                 "value": float(vix_history['Close'].iloc[idx])
