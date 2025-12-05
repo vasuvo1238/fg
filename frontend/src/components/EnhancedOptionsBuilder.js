@@ -863,6 +863,154 @@ export default function EnhancedOptionsBuilder() {
         </div>
       )}
 
+      {/* Real-Time Options Chain */}
+      {showOptionsChain && optionsChainData && (
+        <Card className="p-6 bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-300">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="text-xl font-bold" style={{ fontFamily: 'Fraunces, serif' }}>
+                📈 Real-Time Options Chain
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                Live Bid/Ask/LTP prices for {optionsChainData.symbol} - Expiry: {optionsChainData.expiry_date}
+              </p>
+            </div>
+            <div className="text-right">
+              <p className="text-xs text-muted-foreground">Spot Price</p>
+              <p className="text-2xl font-bold text-purple-600" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+                ${optionsChainData.underlying_price?.toFixed(2)}
+              </p>
+            </div>
+          </div>
+
+          {/* Calls and Puts Side by Side */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {/* Calls */}
+            <div>
+              <h4 className="font-bold mb-3 text-green-700 flex items-center gap-2">
+                <TrendingUp className="w-5 h-5" />
+                CALL Options
+              </h4>
+              <div className="space-y-2">
+                {optionsChainData.calls && optionsChainData.calls.length > 0 ? (
+                  optionsChainData.calls.map((call, i) => (
+                    <Card key={i} className={`p-3 ${call.inTheMoney ? 'bg-green-50 border-green-300' : 'bg-white'}`}>
+                      <div className="flex items-center justify-between mb-2">
+                        <div>
+                          <span className="font-bold text-lg" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+                            ${call.strike}
+                          </span>
+                          {call.inTheMoney && <span className="ml-2 px-2 py-0.5 bg-green-500 text-white text-xs rounded">ITM</span>}
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm font-bold">${call.lastPrice?.toFixed(2) || 'N/A'}</p>
+                          <p className={`text-xs ${call.change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                            {call.change >= 0 ? '+' : ''}{call.change?.toFixed(2)} ({call.percentChange?.toFixed(1)}%)
+                          </p>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-3 gap-2 text-xs">
+                        <div>
+                          <p className="text-muted-foreground">Bid</p>
+                          <p className="font-bold">${call.bid?.toFixed(2) || '-'}</p>
+                        </div>
+                        <div>
+                          <p className="text-muted-foreground">Ask</p>
+                          <p className="font-bold">${call.ask?.toFixed(2) || '-'}</p>
+                        </div>
+                        <div>
+                          <p className="text-muted-foreground">Vol</p>
+                          <p className="font-bold">{call.volume || 0}</p>
+                        </div>
+                      </div>
+                      {call.impliedVolatility && (
+                        <div className="mt-2 text-xs">
+                          <span className="text-muted-foreground">IV: </span>
+                          <span className="font-bold">{(call.impliedVolatility * 100).toFixed(1)}%</span>
+                          <span className="text-muted-foreground ml-3">OI: </span>
+                          <span className="font-bold">{call.openInterest || 0}</span>
+                        </div>
+                      )}
+                    </Card>
+                  ))
+                ) : (
+                  <p className="text-sm text-muted-foreground">No call options data available</p>
+                )}
+              </div>
+            </div>
+
+            {/* Puts */}
+            <div>
+              <h4 className="font-bold mb-3 text-red-700 flex items-center gap-2">
+                <TrendingDown className="w-5 h-5" />
+                PUT Options
+              </h4>
+              <div className="space-y-2">
+                {optionsChainData.puts && optionsChainData.puts.length > 0 ? (
+                  optionsChainData.puts.map((put, i) => (
+                    <Card key={i} className={`p-3 ${put.inTheMoney ? 'bg-red-50 border-red-300' : 'bg-white'}`}>
+                      <div className="flex items-center justify-between mb-2">
+                        <div>
+                          <span className="font-bold text-lg" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+                            ${put.strike}
+                          </span>
+                          {put.inTheMoney && <span className="ml-2 px-2 py-0.5 bg-red-500 text-white text-xs rounded">ITM</span>}
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm font-bold">${put.lastPrice?.toFixed(2) || 'N/A'}</p>
+                          <p className={`text-xs ${put.change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                            {put.change >= 0 ? '+' : ''}{put.change?.toFixed(2)} ({put.percentChange?.toFixed(1)}%)
+                          </p>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-3 gap-2 text-xs">
+                        <div>
+                          <p className="text-muted-foreground">Bid</p>
+                          <p className="font-bold">${put.bid?.toFixed(2) || '-'}</p>
+                        </div>
+                        <div>
+                          <p className="text-muted-foreground">Ask</p>
+                          <p className="font-bold">${put.ask?.toFixed(2) || '-'}</p>
+                        </div>
+                        <div>
+                          <p className="text-muted-foreground">Vol</p>
+                          <p className="font-bold">{put.volume || 0}</p>
+                        </div>
+                      </div>
+                      {put.impliedVolatility && (
+                        <div className="mt-2 text-xs">
+                          <span className="text-muted-foreground">IV: </span>
+                          <span className="font-bold">{(put.impliedVolatility * 100).toFixed(1)}%</span>
+                          <span className="text-muted-foreground ml-3">OI: </span>
+                          <span className="font-bold">{put.openInterest || 0}</span>
+                        </div>
+                      )}
+                    </Card>
+                  ))
+                ) : (
+                  <p className="text-sm text-muted-foreground">No put options data available</p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Legend */}
+          <div className="mt-4 p-3 bg-white rounded-lg text-xs">
+            <p className="font-bold mb-2">Legend:</p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              <p><strong>Bid:</strong> Highest buy price</p>
+              <p><strong>Ask:</strong> Lowest sell price</p>
+              <p><strong>LTP:</strong> Last traded price</p>
+              <p><strong>Vol:</strong> Volume traded today</p>
+              <p><strong>IV:</strong> Implied Volatility</p>
+              <p><strong>OI:</strong> Open Interest</p>
+              <p><strong>ITM:</strong> In The Money</p>
+            </div>
+          </div>
+        </Card>
+      )}
+
+
       {/* Disclaimer */}
       <Card className="p-4 bg-yellow-50 border-yellow-200">
         <div className="flex items-start gap-3">
