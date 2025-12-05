@@ -19,7 +19,8 @@ from stock_analysis import (
     calculate_technical_indicators,
     statistical_prediction,
     generate_trading_signals,
-    compare_stocks
+    compare_stocks,
+    get_analyst_recommendations
 )
 from lstm_models import lstm_prediction
 from mean_reversion import (
