@@ -727,8 +727,9 @@ export default function EnhancedOptionsBuilder() {
                     Actual P&L will vary based on price movement, volatility changes, and other factors.
                   </p>
                 </Card>
-              </TabsContent>
-            </Tabs>
+                </div>
+              )}
+            </div>
           </Card>
         </div>
       )}
