@@ -89,13 +89,27 @@ def calculate_max_drawdown(prices: pd.Series) -> Dict:
         if len(recovered) > 0:
             recovery_idx = recovered.index[0]
     
+    # Calculate duration
+    duration_days = 0
+    try:
+        if peak_idx is not None and max_dd_idx is not None:
+            duration = max_dd_idx - peak_idx
+            # Check if it's a timedelta
+            if hasattr(duration, 'days'):
+                duration_days = duration.days
+            else:
+                # It's an integer (number of data points)
+                duration_days = int(duration)
+    except:
+        duration_days = 0
+    
     return {
         "max_drawdown": float(max_dd),
         "max_drawdown_percent": float(max_dd * 100),
         "peak_date": str(peak_idx) if peak_idx is not None else None,
         "trough_date": str(max_dd_idx) if max_dd_idx is not None else None,
         "recovery_date": str(recovery_idx) if recovery_idx is not None else None,
-        "drawdown_duration_days": (max_dd_idx - peak_idx).days if peak_idx and max_dd_idx else 0
+        "drawdown_duration_days": duration_days
     }
 
 
