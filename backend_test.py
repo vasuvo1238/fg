@@ -1155,7 +1155,7 @@ class FinancialChatbotTester:
                     success = False
                     details += f", Symbol mismatch: expected MSFT, got {data.get('symbol')}"
                 else:
-                    earnings_date = data.get("earnings_date")
+                    earnings_date = data.get("next_earnings_date")  # Fixed field name
                     if isinstance(earnings_date, str):
                         details += f", Earnings date: {earnings_date}"
                     else:
