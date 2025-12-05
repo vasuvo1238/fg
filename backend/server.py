@@ -1525,6 +1525,94 @@ async def rebalancing_advice_endpoint(request: RebalancingRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+# ============== Options Chain Data (Real-time Bid/Ask/LTP) ==============
+
+@api_router.get("/options-chain/{symbol}")
+async def get_options_chain_endpoint(symbol: str, expiry: Optional[str] = None):
+    """Get complete options chain with Bid/Ask/LTP"""
+    try:
+        loop = asyncio.get_event_loop()
+        result = await loop.run_in_executor(
+            executor,
+            get_options_chain,
+            symbol.upper(),
+            expiry
+        )
+        
+        if "error" in result:
+            raise HTTPException(status_code=404, detail=result["error"])
+        
+        return result
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Options chain error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@api_router.get("/options-chain/{symbol}/atm")
+async def get_atm_options_endpoint(symbol: str, expiry: Optional[str] = None, num_strikes: int = 5):
+    """Get ATM options and nearby strikes"""
+    try:
+        loop = asyncio.get_event_loop()
+        result = await loop.run_in_executor(
+            executor,
+            get_atm_options,
+            symbol.upper(),
+            expiry,
+            num_strikes
+        )
+        
+        if "error" in result:
+            raise HTTPException(status_code=404, detail=result["error"])
+        
+        return result
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"ATM options error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@api_router.get("/options-chain/{symbol}/expiries")
+async def get_expiries_endpoint(symbol: str):
+    """Get available expiration dates for a symbol"""
+    try:
+        loop = asyncio.get_event_loop()
+        expiries = await loop.run_in_executor(
+            executor,
+            get_available_expiries,
+            symbol.upper()
+        )
+        return {"symbol": symbol.upper(), "expiries": expiries}
+    except Exception as e:
+        logger.error(f"Get expiries error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@api_router.get("/options-chain/{symbol}/summary")
+async def get_options_summary_endpoint(symbol: str, expiry: Optional[str] = None):
+    """Get options chain summary (volume, OI, PCR, IV)"""
+    try:
+        loop = asyncio.get_event_loop()
+        result = await loop.run_in_executor(
+            executor,
+            get_options_summary,
+            symbol.upper(),
+            expiry
+        )
+        
+        if "error" in result:
+            raise HTTPException(status_code=404, detail=result["error"])
+        
+        return result
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Options summary error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 # ============== Data Persistence (Save/Load Portfolios & Strategies) ==============
 
 @api_router.post("/portfolios/save")
