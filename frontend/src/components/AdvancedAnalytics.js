@@ -169,6 +169,22 @@ export default function AdvancedAnalytics() {
         </p>
       </div>
 
+      {/* Disclaimer Banner */}
+      <Card className="p-4 bg-blue-50 border-blue-200">
+        <div className="flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+          <div className="text-sm text-blue-800">
+            <p className="font-bold mb-1">📚 Educational Research Tool</p>
+            <p className="text-xs">
+              These analytics tools are for research and educational purposes only. Model performance metrics are based on historical data 
+              and do not guarantee future results. Pairs trading and backtesting results are theoretical and do not account for real-world 
+              factors such as slippage, commissions, liquidity, or market impact. <strong>This is not investment advice. 
+              Consult a licensed financial professional before making any trading decisions.</strong>
+            </p>
+          </div>
+        </div>
+      </Card>
+
       {/* Tab Navigation */}
       <div className="flex gap-2 border-b">
         <Button
