@@ -183,7 +183,7 @@ function App() {
           {activeView === "stocks" ? (
             <StockPrediction sessionId={sessionId} />
           ) : activeView === "options" ? (
-            <OptionsStrategyBuilder />
+            <EnhancedOptionsBuilder />
           ) : activeView === "analytics" ? (
             <AdvancedAnalytics />
           ) : (
