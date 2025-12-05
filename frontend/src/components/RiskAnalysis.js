@@ -22,7 +22,8 @@ import {
   TrendingUp,
   Shield,
   Target,
-  Zap
+  Zap,
+  Trash2
 } from "lucide-react";
 import { toast } from "sonner";
 import {
