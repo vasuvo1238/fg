@@ -272,6 +272,43 @@ export default function EnhancedOptionsBuilder() {
     setLegs(newLegs);
   };
 
+
+  const fetchOptionsExpiries = async (symbolToFetch) => {
+    if (!symbolToFetch) return;
+    
+    try {
+      const response = await axios.get(`${API}/options-chain/${symbolToFetch.toUpperCase()}/expiries`);
+      setAvailableExpiries(response.data.expiries || []);
+      if (response.data.expiries && response.data.expiries.length > 0) {
+        setSelectedExpiry(response.data.expiries[0]);
+      }
+    } catch (error) {
+      console.error("Failed to fetch expiries", error);
+      toast.error("Failed to fetch expiration dates");
+    }
+  };
+
+  const fetchOptionsChain = async () => {
+    if (!symbol || !selectedExpiry) {
+      toast.error("Please enter a symbol and select expiry date");
+      return;
+    }
+
+    setLoadingOptionsChain(true);
+    try {
+      const response = await axios.get(`${API}/options-chain/${symbol.toUpperCase()}/atm?expiry=${selectedExpiry}&num_strikes=10`);
+      setOptionsChainData(response.data);
+      setShowOptionsChain(true);
+      toast.success("Options chain loaded!");
+    } catch (error) {
+      toast.error("Failed to fetch options chain");
+      console.error(error);
+    } finally {
+      setLoadingOptionsChain(false);
+    }
+  };
+
+
   const formatCurrency = (value) => {
     if (typeof value === 'string') return value;
     return `$${Math.abs(value).toFixed(2)}`;
