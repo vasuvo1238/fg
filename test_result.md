@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Test the new Advanced Analytics feature with Model Performance, Pairs Trading, and Backtesting tabs"
+user_problem_statement: "Test the Enhanced Options Strategy Builder Pro with strategy cards, view tabs, custom strategy builder, and expiry date picker"
 
 frontend:
   - task: "Advanced Analytics - Navigation and Tab Structure"
