@@ -1796,21 +1796,6 @@ async def delete_portfolio(portfolio_id: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# Include the router in the main app
-app.include_router(api_router)
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-@app.on_event("shutdown")
-async def shutdown_db_client():
-    pass
-
 # ==================== UPSTOX INTEGRATION (INDIAN MARKETS) ====================
 
 @api_router.get("/upstox/auth/login")
@@ -1970,3 +1955,18 @@ async def search_indian_stocks(search_query: dict):
     }
 
     client.close()
+# Include the router in the main app
+app.include_router(api_router)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_credentials=True,
+    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@app.on_event("shutdown")
+async def shutdown_db_client():
+    pass
+
