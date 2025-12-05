@@ -553,8 +553,9 @@ export default function EnhancedOptionsBuilder() {
             
             <div className="w-full">
 
-              {/* Payoff Graph Tab */}
-              <TabsContent value="payoff" className="mt-6">
+              {/* Payoff Graph View */}
+              {activeView === "payoff" && (
+                <div className="mt-6">
                 <ResponsiveContainer width="100%" height={400}>
                   <LineChart 
                     data={strategyResult.payoff_diagram.prices.map((price, i) => ({
