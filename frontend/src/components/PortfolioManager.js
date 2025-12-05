@@ -73,6 +73,12 @@ export default function PortfolioManager() {
   const [maintenanceMargin, setMaintenanceMargin] = useState("25");
   const [initialMargin, setInitialMargin] = useState("50");
   const [marginResult, setMarginResult] = useState(null);
+  
+  // Save/Load Portfolio state
+  const [portfolioName, setPortfolioName] = useState("");
+  const [savedPortfolios, setSavedPortfolios] = useState([]);
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const [showLoadDialog, setShowLoadDialog] = useState(false);
 
   const addSymbol = () => {
     if (symbolInput && !symbols.includes(symbolInput.toUpperCase())) {
