@@ -603,10 +603,12 @@ export default function EnhancedOptionsBuilder() {
                     />
                   </LineChart>
                 </ResponsiveContainer>
-              </TabsContent>
+                </div>
+              )}
 
-              {/* P&L Table Tab */}
-              <TabsContent value="table" className="mt-6">
+              {/* P&L Table View */}
+              {activeView === "table" && (
+                <div className="mt-6">
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead className="bg-secondary">
