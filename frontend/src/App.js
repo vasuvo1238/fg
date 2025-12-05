@@ -174,6 +174,16 @@ function App() {
                   <Microscope className="w-4 h-4" />
                   Analytics
                 </Button>
+                <Button
+                  data-testid="portfolio-view-btn"
+                  variant={activeView === "portfolio" ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setActiveView("portfolio")}
+                  className="gap-2"
+                >
+                  <Wallet className="w-4 h-4" />
+                  Portfolio
+                </Button>
               </div>
             </div>
           </div>
