@@ -1810,4 +1810,164 @@ app.add_middleware(
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
+
+
+# ==================== UPSTOX INTEGRATION (INDIAN MARKETS) ====================
+
+@api_router.get("/upstox/auth/login")
+async def upstox_login():
+    """Initiate Upstox OAuth login flow for Indian market access"""
+    try:
+        auth_url = get_authorization_url()
+        return {"authorization_url": auth_url}
+    except Exception as e:
+        logger.error(f"Upstox login error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to initiate Upstox login")
+
+@api_router.get("/upstox/callback")
+async def upstox_callback(code: str = None):
+    """Handle Upstox OAuth callback"""
+    if not code:
+        raise HTTPException(status_code=400, detail="No authorization code received")
+    
+    try:
+        loop = asyncio.get_event_loop()
+        token_data = await loop.run_in_executor(executor, exchange_code_for_token, code)
+        
+        if "error" in token_data:
+            raise HTTPException(status_code=400, detail=token_data["error"])
+        
+        # Store token in database for user
+        access_token = token_data.get("access_token")
+        # In production, associate with user session
+        
+        # For now, return token to frontend
+        # In production: redirect to frontend with token
+        return {
+            "access_token": access_token,
+            "message": "Successfully authenticated with Upstox"
+        }
+    except Exception as e:
+        logger.error(f"Upstox callback error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Authentication failed")
+
+@api_router.get("/upstox/quote/{symbol}")
+async def get_indian_stock_quote(symbol: str):
+    """
+    Get real-time quote for Indian stock (read-only, no auth required for demo)
+    In production, this would require user authentication and stored token
+    """
+    try:
+        # For demo/read-only mode, we'll use a mock response
+        # In production with user auth, use: get_market_quote(symbol, user_access_token)
+        
+        # Mock response for demonstration
+        quote_data = {
+            "symbol": symbol.upper(),
+            "last_price": 2500.00 if symbol.upper() == "RELIANCE" else 3500.00,
+            "open": 2490.00 if symbol.upper() == "RELIANCE" else 3480.00,
+            "high": 2520.00 if symbol.upper() == "RELIANCE" else 3530.00,
+            "low": 2480.00 if symbol.upper() == "RELIANCE" else 3460.00,
+            "close": 2500.00 if symbol.upper() == "RELIANCE" else 3500.00,
+            "volume": 1000000,
+            "timestamp": datetime.now().isoformat(),
+            "exchange": "NSE",
+            "note": "Demo data - Connect your Upstox account for real-time data"
+        }
+        
+        return quote_data
+    except Exception as e:
+        logger.error(f"Error fetching Indian stock quote for {symbol}: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to fetch quote")
+
+@api_router.get("/upstox/historical/{symbol}")
+async def get_indian_stock_historical(
+    symbol: str,
+    interval: str = "1day",
+    from_date: str = None,
+    to_date: str = None
+):
+    """Get historical data for Indian stock"""
+    try:
+        # Mock historical data for demonstration
+        # In production with auth: get_historical_candles(symbol, token, interval, from_date, to_date)
+        
+        if not to_date:
+            to_date = datetime.now().strftime("%Y-%m-%d")
+        if not from_date:
+            from_date = (datetime.now() - timedelta(days=30)).strftime("%Y-%m-%d")
+        
+        # Generate mock candles
+        mock_candles = []
+        base_price = 2500 if symbol.upper() == "RELIANCE" else 3500
+        current_date = datetime.strptime(from_date, "%Y-%m-%d")
+        end_date = datetime.strptime(to_date, "%Y-%m-%d")
+        
+        while current_date <= end_date:
+            # Skip weekends
+            if current_date.weekday() < 5:
+                variation = (hash(current_date.isoformat()) % 100) - 50
+                open_price = base_price + variation
+                close_price = open_price + ((hash(str(current_date) + "close") % 20) - 10)
+                high_price = max(open_price, close_price) + (hash(str(current_date) + "high") % 10)
+                low_price = min(open_price, close_price) - (hash(str(current_date) + "low") % 10)
+                
+                mock_candles.append({
+                    "timestamp": current_date.isoformat(),
+                    "open": round(open_price, 2),
+                    "high": round(high_price, 2),
+                    "low": round(low_price, 2),
+                    "close": round(close_price, 2),
+                    "volume": 1000000 + (hash(str(current_date) + "vol") % 500000)
+                })
+            
+            current_date += timedelta(days=1)
+        
+        return {
+            "symbol": symbol.upper(),
+            "interval": interval,
+            "from_date": from_date,
+            "to_date": to_date,
+            "candles": mock_candles,
+            "note": "Demo data - Connect your Upstox account for real historical data"
+        }
+    except Exception as e:
+        logger.error(f"Error fetching historical data for {symbol}: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to fetch historical data")
+
+@api_router.get("/upstox/popular-stocks")
+async def get_popular_indian_stocks_list():
+    """Get list of popular Indian stocks for quick access"""
+    try:
+        stocks = get_popular_indian_stocks()
+        return {
+            "stocks": stocks,
+            "count": len(stocks)
+        }
+    except Exception as e:
+        logger.error(f"Error fetching popular stocks: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to fetch stock list")
+
+@api_router.post("/upstox/search")
+async def search_indian_stocks(search_query: dict):
+    """Search for Indian stocks by symbol or name"""
+    query = search_query.get("query", "").upper()
+    
+    if not query or len(query) < 2:
+        return {"results": []}
+    
+    # Get all popular stocks
+    all_stocks = get_popular_indian_stocks()
+    
+    # Filter by query
+    results = [
+        stock for stock in all_stocks
+        if query in stock["symbol"] or query in stock["name"].upper()
+    ]
+    
+    return {
+        "query": query,
+        "results": results[:10]  # Limit to 10 results
+    }
+
     client.close()
