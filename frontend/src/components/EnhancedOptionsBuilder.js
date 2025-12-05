@@ -518,12 +518,12 @@ export default function EnhancedOptionsBuilder() {
 
           {/* View Tabs */}
           <Card className="p-6">
-            <Tabs value={activeView} onValueChange={setActiveView}>
-              <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="payoff">Payoff Graph</TabsTrigger>
-                <TabsTrigger value="table">P&L Table</TabsTrigger>
-                <TabsTrigger value="greeks">Greeks</TabsTrigger>
-                <TabsTrigger value="chart">Strategy Chart</TabsTrigger>
+            <Tabs value={activeView} onValueChange={setActiveView} className="w-full">
+              <TabsList className="grid w-full grid-cols-4 mb-6">
+                <TabsTrigger value="payoff" className="cursor-pointer">Payoff Graph</TabsTrigger>
+                <TabsTrigger value="table" className="cursor-pointer">P&L Table</TabsTrigger>
+                <TabsTrigger value="greeks" className="cursor-pointer">Greeks</TabsTrigger>
+                <TabsTrigger value="chart" className="cursor-pointer">Strategy Chart</TabsTrigger>
               </TabsList>
 
               {/* Payoff Graph Tab */}
