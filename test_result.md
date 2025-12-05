@@ -304,6 +304,24 @@ frontend:
           comment: "✅ PASSED - Margin/Leverage tab working excellently. Successfully filled form with all required inputs. Calculate Margin & Leverage button responds correctly. All result cards displayed: Current Leverage (1.50x), Buying Power ($20000.00), Required Margin ($7500.00), Risk Level (LOW). Margin Analysis section shows detailed breakdown with Account Balance, Position Size, Max Leverage, Safe Position Size. Safety assessment correctly identifies 'High Risk Position' with appropriate warning message and recommendations."
 
 backend:
+  - task: "Portfolio Manager API Endpoints"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+          agent: "testing"
+          comment: "Starting testing of Portfolio Manager API endpoints - portfolio optimization, Kelly criterion, margin calculator APIs"
+        - working: false
+          agent: "testing"
+          comment: "❌ FAILED - Portfolio optimization endpoint failing due to yfinance API data structure change. Error: 'Adj Close' key error in portfolio_optimizer.py. Fixed by updating fetch_historical_returns function to handle different yfinance data structures (single vs multiple symbols, MultiIndex vs single level columns)."
+        - working: true
+          agent: "testing"
+          comment: "✅ PASSED - All Portfolio Manager API endpoints working correctly after fix. /api/portfolio/optimize returns proper optimization results with expected_return, volatility, sharpe_ratio, optimal_weights. /api/portfolio/efficient-frontier generates random portfolios and min variance portfolio. /api/portfolio/kelly-criterion calculates position sizing correctly. /api/portfolio/margin-calculator computes leverage and margin requirements accurately. All endpoints return valid JSON with proper calculations."
+
   - task: "Advanced Analytics API Endpoints"
     implemented: true
     working: false
