@@ -101,9 +101,11 @@ export default function EnhancedOptionsBuilder() {
   const [symbol, setSymbol] = useState("");
   const [spotPrice, setSpotPrice] = useState("");
   const [loading, setLoading] = useState(false);
+  const [fetchingPrice, setFetchingPrice] = useState(false);
   const [strategyResult, setStrategyResult] = useState(null);
   const [selectedStrategy, setSelectedStrategy] = useState(null);
   const [activeView, setActiveView] = useState("payoff"); // payoff, table, greeks, chart
+  const [lastFetchedSymbol, setLastFetchedSymbol] = useState("");
   
   // Date and expiry
   const [expiryDate, setExpiryDate] = useState("");
