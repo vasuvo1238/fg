@@ -257,7 +257,19 @@ def portfolio_risk_analysis(
     """
     try:
         # Fetch historical data
-        data = yf.download(symbols, period=period, progress=False)['Adj Close']
+        raw_data = yf.download(symbols, period=period, progress=False)
+        
+        # Handle different return structures from yfinance
+        if len(symbols) == 1:
+            # Single symbol returns DataFrame without multi-index
+            data = raw_data[['Adj Close']].copy() if 'Adj Close' in raw_data.columns else raw_data[['Close']].copy()
+            data.columns = symbols
+        else:
+            # Multiple symbols return multi-index DataFrame
+            if 'Adj Close' in raw_data.columns.get_level_values(0):
+                data = raw_data['Adj Close']
+            else:
+                data = raw_data['Close']
         
         if isinstance(data, pd.Series):
             data = data.to_frame()
