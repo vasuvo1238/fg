@@ -148,7 +148,12 @@ export default function PredictionMarkets() {
             <Label>Kelly Fraction</Label>
             <Select value={kellyFraction.toString()} onValueChange={(v) => setKellyFraction(parseFloat(v))}>
               <SelectTrigger>
-                <SelectValue />
+                <SelectValue>
+                  {kellyFraction === 0.125 && "1/8 Kelly (Very Conservative)"}
+                  {kellyFraction === 0.25 && "1/4 Kelly (Conservative)"}
+                  {kellyFraction === 0.5 && "1/2 Kelly (Moderate)"}
+                  {kellyFraction === 1.0 && "Full Kelly (Aggressive)"}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="0.125">1/8 Kelly (Very Conservative)</SelectItem>
