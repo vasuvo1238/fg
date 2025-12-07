@@ -274,6 +274,29 @@ export default function PredictionMarkets() {
             </h3>
           </div>
 
+          {/* Phase 1 Enhancements Badge */}
+          {optimization.enhancements_applied && (
+            <div className="mb-4 p-3 bg-purple-100 border border-purple-300 rounded-lg">
+              <div className="flex items-center gap-2 mb-2">
+                <Badge variant="default" className="bg-purple-600">Phase 1 Enhancements Active</Badge>
+              </div>
+              <div className="flex flex-wrap gap-2 text-xs">
+                {optimization.enhancements_applied.correlation_penalty && (
+                  <Badge variant="outline">✓ Correlation Analysis</Badge>
+                )}
+                {optimization.enhancements_applied.liquidity_constraints && (
+                  <Badge variant="outline">✓ Liquidity Constraints</Badge>
+                )}
+                {optimization.enhancements_applied.time_decay && (
+                  <Badge variant="outline">✓ Time Decay</Badge>
+                )}
+                {optimization.enhancements_applied.spread_adjustment && (
+                  <Badge variant="outline">✓ Spread Adjustment</Badge>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Portfolio Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             <div className="p-4 bg-white rounded-lg shadow">
@@ -295,9 +318,16 @@ export default function PredictionMarkets() {
               </p>
             </div>
             <div className="p-4 bg-white rounded-lg shadow">
-              <p className="text-xs text-muted-foreground mb-1">Markets</p>
-              <p className="text-2xl font-bold text-gray-700">
-                {optimization.portfolio_stats.num_markets}
+              <p className="text-xs text-muted-foreground mb-1">Diversification</p>
+              <p className="text-2xl font-bold text-green-600">
+                {optimization.portfolio_stats.diversification_score ? 
+                  (optimization.portfolio_stats.diversification_score * 100).toFixed(0) + '%' : 
+                  optimization.portfolio_stats.num_markets}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {optimization.portfolio_stats.average_correlation ? 
+                  `Avg Corr: ${(optimization.portfolio_stats.average_correlation * 100).toFixed(0)}%` :
+                  `${optimization.portfolio_stats.num_markets} markets`}
               </p>
             </div>
           </div>
