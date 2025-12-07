@@ -14,6 +14,7 @@ import PortfolioManager from "@/components/PortfolioManager";
 import RiskAnalysis from "@/components/RiskAnalysis";
 import TechnicalAnalysis from "@/components/TechnicalAnalysis";
 import IndianMarkets from "@/components/IndianMarkets";
+import PredictionMarkets from "@/components/PredictionMarkets";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
