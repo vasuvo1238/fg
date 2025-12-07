@@ -1977,6 +1977,13 @@ async def search_indian_stocks(search_query: dict):
     }
 
     client.close()
+
+
+# ==================== PREDICTION MARKETS ====================
+from routes.prediction_markets import router as prediction_markets_router
+api_router.include_router(prediction_markets_router, prefix="/prediction-markets", tags=["prediction-markets"])
+
+
 # Include the router in the main app
 app.include_router(api_router)
 
