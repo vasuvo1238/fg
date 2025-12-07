@@ -216,6 +216,14 @@ function App() {
                   <TrendingUp className="w-4 h-4" />
                   Indian Markets
                 </Button>
+                <Button
+                  variant={activeView === "prediction" ? "default" : "ghost"}
+                  onClick={() => setActiveView("prediction")}
+                  className="gap-2"
+                >
+                  <Target className="w-4 h-4" />
+                  Prediction Markets
+                </Button>
               </div>
             </div>
           </div>
