@@ -184,11 +184,22 @@ class PredictionMarketOptimizer:
     """
     Portfolio optimizer for prediction markets using Kelly Criterion
     and expected value calculations
+    
+    Phase 1 Enhancements:
+    - Market correlation analysis
+    - Liquidity-weighted optimization
+    - Time decay adjustment
+    - Market maker spread analysis
     """
     
     def __init__(self):
         self.polymarket = PolymarketClient()
         self.kalshi = KalshiClient()
+        
+        # Phase 1 enhancement parameters
+        self.max_liquidity_pct = 0.05  # Max 5% of market liquidity
+        self.correlation_penalty = 0.5  # Reduce Kelly by 50% for correlated markets
+        self.spread_cost_factor = 1.5  # Increase required edge by 1.5x spread
         
     async def fetch_all_markets(self, sources: List[str] = ['polymarket', 'kalshi']) -> pd.DataFrame:
         """
