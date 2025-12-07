@@ -543,11 +543,18 @@ class PredictionMarketOptimizer:
             kelly_fraction: Fraction of Kelly to use (0.25 = quarter Kelly)
             max_markets: Maximum number of markets to bet on
             min_ev: Minimum expected value to consider a market
+            enable_enhancements: Apply Phase 1 enhancements (correlation, liquidity, time decay, spread)
             
         Returns:
             Dictionary with allocation recommendations
         """
         recommendations = []
+        enhancements_applied = {
+            'correlation_penalty': False,
+            'liquidity_constraints': False,
+            'time_decay': False,
+            'spread_adjustment': False
+        }
         
         for market_id, user_prob in user_probabilities.items():
             # Find market in dataframe
