@@ -210,19 +210,21 @@ function App() {
                 </Button>
                 <Button
                   variant={activeView === "indian" ? "default" : "ghost"}
+                  size="sm"
                   onClick={() => setActiveView("indian")}
                   className="gap-2"
                 >
                   <TrendingUp className="w-4 h-4" />
-                  Indian Markets
+                  Indian
                 </Button>
                 <Button
                   variant={activeView === "prediction" ? "default" : "ghost"}
+                  size="sm"
                   onClick={() => setActiveView("prediction")}
                   className="gap-2"
                 >
                   <Target className="w-4 h-4" />
-                  Prediction Markets
+                  Prediction
                 </Button>
               </div>
             </div>
