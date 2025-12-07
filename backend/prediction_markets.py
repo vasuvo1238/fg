@@ -566,13 +566,33 @@ class PredictionMarketOptimizer:
             
             market = market.iloc[0]
             
-            # Calculate for YES position
-            yes_ev = self.calculate_expected_value(user_prob, market['yes_price'], 'yes')
-            yes_kelly = self.calculate_fractional_kelly(user_prob, market['yes_price'], 'yes', kelly_fraction)
+            # PHASE 1 ENHANCEMENT #4: Spread Adjustment
+            if enable_enhancements:
+                # Estimate bid-ask spread (assume 2% spread if not provided)
+                spread = 0.02
+                bid_price = market['yes_price'] - spread / 2
+                ask_price = market['yes_price'] + spread / 2
+                
+                yes_ev_adj, yes_spread_cost = self.calculate_spread_adjusted_ev(user_prob, bid_price, ask_price, 'yes')
+                no_ev_adj, no_spread_cost = self.calculate_spread_adjusted_ev(user_prob, bid_price, ask_price, 'no')
+                
+                yes_ev = yes_ev_adj
+                no_ev = no_ev_adj
+                enhancements_applied['spread_adjustment'] = True
+            else:
+                # Standard EV calculation
+                yes_ev = self.calculate_expected_value(user_prob, market['yes_price'], 'yes')
+                no_ev = self.calculate_expected_value(user_prob, market['yes_price'], 'no')
             
-            # Calculate for NO position
-            no_ev = self.calculate_expected_value(user_prob, market['yes_price'], 'no')
+            # Calculate Kelly fractions
+            yes_kelly = self.calculate_fractional_kelly(user_prob, market['yes_price'], 'yes', kelly_fraction)
             no_kelly = self.calculate_fractional_kelly(user_prob, market['yes_price'], 'no', kelly_fraction)
+            
+            # PHASE 1 ENHANCEMENT #3: Time Decay Adjustment
+            if enable_enhancements and market.get('end_date'):
+                yes_kelly = self.apply_time_decay_adjustment(yes_kelly, market['end_date'])
+                no_kelly = self.apply_time_decay_adjustment(no_kelly, market['end_date'])
+                enhancements_applied['time_decay'] = True
             
             # Choose best position
             if yes_ev > no_ev and yes_ev > min_ev:
