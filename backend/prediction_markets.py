@@ -152,6 +152,29 @@ class KalshiClient:
                     logger.error(f"Kalshi API error: {response.status_code}")
                     return []
                     
+        except Exception as e:
+            logger.error(f"Error fetching Kalshi markets: {e}")
+            return []
+    
+    def parse_market_data(self, market: Dict) -> Dict:
+        """Parse Kalshi market data into standardized format"""
+        try:
+            yes_price = (market.get('yes_bid', 50) + market.get('yes_ask', 50)) / 200.0
+            
+            return {
+                'id': market.get('ticker', ''),
+                'title': market.get('title', 'Unknown'),
+                'yes_price': yes_price,
+                'no_price': 1.0 - yes_price,
+                'volume': float(market.get('volume', 0)),
+                'liquidity': float(market.get('open_interest', 0)),
+                'end_date': market.get('close_time', None),
+                'category': market.get('category', 'general'),
+                'source': 'kalshi'
+            }
+        except Exception as e:
+            logger.error(f"Error parsing Kalshi market: {e}")
+            return None
 
     
 class PredictionMarketOptimizer:
