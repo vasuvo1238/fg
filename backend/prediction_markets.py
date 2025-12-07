@@ -94,20 +94,41 @@ class PolymarketClient:
             }
         """
         try:
-            # Extract relevant data from market response
+            # Parse outcomePrices - it's a JSON string in the API response
+            outcome_prices_str = market.get('outcomePrices', '["0.5", "0.5"]')
+            if isinstance(outcome_prices_str, str):
+                import json
+                outcome_prices = json.loads(outcome_prices_str)
+            else:
+                outcome_prices = outcome_prices_str
+            
+            # Extract category from events if available
+            category = 'general'
+            events = market.get('events', [])
+            if events and len(events) > 0:
+                event = events[0]
+                # Try to extract category from event
+                category = event.get('category', 'general')
+            
+            # Use conditionId as the primary ID
+            market_id = market.get('conditionId', market.get('id', ''))
+            
             return {
-                'id': market.get('condition_id', market.get('id', '')),
-                'title': market.get('question', market.get('title', 'Unknown')),
-                'yes_price': float(market.get('outcome_prices', [0.5, 0.5])[0]),
-                'no_price': float(market.get('outcome_prices', [0.5, 0.5])[1]),
+                'id': market_id,
+                'title': market.get('question', 'Unknown'),
+                'yes_price': float(outcome_prices[0]),
+                'no_price': float(outcome_prices[1]),
                 'volume': float(market.get('volume', 0)),
                 'liquidity': float(market.get('liquidity', 0)),
-                'end_date': market.get('end_date_iso', None),
-                'category': market.get('tags', ['general'])[0] if market.get('tags') else 'general',
-                'source': 'polymarket'
+                'end_date': market.get('endDate', None),
+                'category': category,
+                'source': 'polymarket',
+                'slug': market.get('slug', ''),
+                'description': market.get('description', '')[:200] if market.get('description') else ''
             }
         except Exception as e:
             logger.error(f"Error parsing market data: {e}")
+            logger.error(f"Market data: {market}")
             return None
 
 
