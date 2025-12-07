@@ -152,6 +152,218 @@ class KalshiClient:
                     logger.error(f"Kalshi API error: {response.status_code}")
                     return []
                     
+
+    
+    # ==================== PHASE 1 ENHANCEMENTS ====================
+    
+    def calculate_market_correlations(self, markets: pd.DataFrame, selected_ids: List[str]) -> np.ndarray:
+        """
+        Calculate correlation matrix between selected markets based on category similarity
+        
+        Args:
+            markets: DataFrame with market data
+            selected_ids: List of market IDs to analyze
+            
+        Returns:
+            Correlation matrix (NxN numpy array)
+        """
+        n_markets = len(selected_ids)
+        correlation_matrix = np.eye(n_markets)
+        
+        # Get selected markets
+        selected_markets = markets[markets['id'].isin(selected_ids)]
+        
+        # Estimate correlations based on:
+        # 1. Same category = higher correlation
+        # 2. Similar prices = might be related events
+        # 3. Same source = might have overlapping traders
+        
+        for i in range(n_markets):
+            for j in range(i + 1, n_markets):
+                market_i = selected_markets.iloc[i]
+                market_j = selected_markets.iloc[j]
+                
+                correlation = 0.0
+                
+                # Category correlation (strongest signal)
+                if market_i['category'] == market_j['category']:
+                    correlation += 0.4
+                
+                # Price similarity correlation
+                price_diff = abs(market_i['yes_price'] - market_j['yes_price'])
+                if price_diff < 0.1:  # Within 10%
+                    correlation += 0.2
+                
+                # Same source = potentially correlated
+                if market_i['source'] == market_j['source']:
+                    correlation += 0.1
+                
+                # Title similarity (basic check for related events)
+                title_words_i = set(market_i['title'].lower().split())
+                title_words_j = set(market_j['title'].lower().split())
+                overlap = len(title_words_i & title_words_j) / max(len(title_words_i), len(title_words_j))
+                correlation += overlap * 0.3
+                
+                # Cap correlation at 0.9 (never perfectly correlated)
+                correlation = min(correlation, 0.9)
+                
+                correlation_matrix[i, j] = correlation
+                correlation_matrix[j, i] = correlation
+        
+        return correlation_matrix
+    
+    def apply_liquidity_constraint(
+        self, 
+        bet_amount: float, 
+        market_liquidity: float,
+        max_pct: float = 0.05
+    ) -> float:
+        """
+        Adjust bet size based on market liquidity to prevent slippage
+        
+        Args:
+            bet_amount: Original Kelly bet size
+            market_liquidity: Available market liquidity
+            max_pct: Maximum percentage of liquidity to use
+            
+        Returns:
+            Adjusted bet amount
+        """
+        if market_liquidity <= 0:
+            return 0.0
+        
+        max_bet = market_liquidity * max_pct
+        adjusted_bet = min(bet_amount, max_bet)
+        
+        # Calculate expected slippage if we exceed optimal size
+        if bet_amount > max_bet:
+            slippage_pct = ((bet_amount - max_bet) / market_liquidity) * 100
+            logger.info(f"Liquidity constraint: Reducing bet from ${bet_amount:.2f} to ${adjusted_bet:.2f} (potential {slippage_pct:.1f}% slippage avoided)")
+        
+        return adjusted_bet
+    
+    def apply_time_decay_adjustment(
+        self,
+        kelly_fraction: float,
+        end_date: str,
+        current_date: datetime = None
+    ) -> float:
+        """
+        Adjust Kelly fraction based on time until market resolution
+        
+        Args:
+            kelly_fraction: Original Kelly fraction
+            end_date: Market end date (ISO format)
+            current_date: Current date (defaults to now)
+            
+        Returns:
+            Time-adjusted Kelly fraction
+        """
+        if not end_date or not current_date:
+            current_date = datetime.now()
+        
+        try:
+            # Parse end date
+            if isinstance(end_date, str):
+                end_dt = datetime.fromisoformat(end_date.replace('Z', '+00:00'))
+            else:
+                end_dt = end_date
+            
+            # Calculate days remaining
+            days_remaining = (end_dt - current_date).days
+            
+            # Apply square root of time adjustment
+            # Short-term markets get reduced Kelly (less time to capture EV)
+            if days_remaining <= 0:
+                return 0.0  # Market already closed
+            elif days_remaining < 7:
+                time_factor = (days_remaining / 365.0) ** 0.5
+            else:
+                time_factor = min(1.0, (days_remaining / 365.0) ** 0.5)
+            
+            adjusted_kelly = kelly_fraction * time_factor
+            
+            logger.info(f"Time decay: {days_remaining} days remaining, Kelly adjusted from {kelly_fraction:.3f} to {adjusted_kelly:.3f}")
+            
+            return adjusted_kelly
+            
+        except Exception as e:
+            logger.warning(f"Could not parse end date {end_date}: {e}")
+            return kelly_fraction  # Return original if parsing fails
+    
+    def calculate_spread_adjusted_ev(
+        self,
+        true_probability: float,
+        bid_price: float,
+        ask_price: float,
+        position: str = 'yes'
+    ) -> Tuple[float, float]:
+        """
+        Calculate EV accounting for bid-ask spread
+        
+        Args:
+            true_probability: Your probability estimate
+            bid_price: Best bid price (what you get when selling)
+            ask_price: Best ask price (what you pay when buying)
+            position: 'yes' or 'no'
+            
+        Returns:
+            (spread_adjusted_ev, spread_cost)
+        """
+        spread = ask_price - bid_price
+        
+        if position == 'yes':
+            # Buying YES at ask price
+            naive_ev = (true_probability * (1 - ask_price)) - ((1 - true_probability) * ask_price)
+            # Spread cost is what you lose from crossing the spread
+            spread_cost = spread / 2  # Average cost of spread
+            adjusted_ev = naive_ev - spread_cost
+        else:
+            # Buying NO at ask price (which is 1 - bid_price for YES)
+            no_ask = 1 - bid_price
+            naive_ev = ((1 - true_probability) * (1 - no_ask)) - (true_probability * no_ask)
+            spread_cost = spread / 2
+            adjusted_ev = naive_ev - spread_cost
+        
+        return adjusted_ev, spread_cost
+    
+    def apply_correlation_penalty(
+        self,
+        positions: List[Dict],
+        correlation_matrix: np.ndarray
+    ) -> List[Dict]:
+        """
+        Apply correlation penalty to reduce position sizes in correlated markets
+        
+        Args:
+            positions: List of position dictionaries with bet amounts
+            correlation_matrix: NxN correlation matrix
+            
+        Returns:
+            Adjusted positions with correlation penalty applied
+        """
+        n = len(positions)
+        
+        for i in range(n):
+            max_correlation = 0.0
+            
+            # Find maximum correlation with other positions
+            for j in range(n):
+                if i != j:
+                    max_correlation = max(max_correlation, abs(correlation_matrix[i, j]))
+            
+            # Apply penalty if highly correlated with other positions
+            if max_correlation > 0.5:
+                penalty_factor = 1.0 - (max_correlation - 0.5)  # Scale from 1.0 to 0.5
+                original_bet = positions[i]['recommended_bet']
+                positions[i]['recommended_bet'] *= penalty_factor
+                positions[i]['correlation_penalty'] = max_correlation
+                positions[i]['penalty_applied'] = (1 - penalty_factor) * 100
+                
+                logger.info(f"Correlation penalty: Reducing bet on '{positions[i]['title'][:50]}' by {(1-penalty_factor)*100:.1f}% (correlation: {max_correlation:.2f})")
+        
+        return positions
+
         except Exception as e:
             logger.error(f"Error fetching Kalshi markets: {e}")
             return []
