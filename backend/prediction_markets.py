@@ -648,10 +648,29 @@ class PredictionMarketOptimizer:
         recommendations.sort(key=lambda x: x['expected_value'], reverse=True)
         recommendations = recommendations[:max_markets]
         
+        # PHASE 1 ENHANCEMENT #1: Correlation Analysis & Penalty
+        if enable_enhancements and len(recommendations) > 1:
+            # Calculate correlations between selected markets
+            selected_ids = [r['market_id'] for r in recommendations]
+            correlation_matrix = self.calculate_market_correlations(markets, selected_ids)
+            
+            # Apply correlation penalty to reduce position sizes
+            recommendations = self.apply_correlation_penalty(recommendations, correlation_matrix)
+            enhancements_applied['correlation_penalty'] = True
+        
         # Calculate portfolio statistics
         total_allocated = sum(r['recommended_bet'] for r in recommendations)
         total_potential_profit = sum(r['potential_profit'] for r in recommendations)
         avg_ev = np.mean([r['expected_value'] for r in recommendations]) if recommendations else 0
+        
+        # Calculate average correlation (portfolio diversification metric)
+        avg_correlation = 0.0
+        if enable_enhancements and len(recommendations) > 1:
+            selected_ids = [r['market_id'] for r in recommendations]
+            correlation_matrix = self.calculate_market_correlations(markets, selected_ids)
+            # Average of off-diagonal elements
+            n = len(correlation_matrix)
+            avg_correlation = (correlation_matrix.sum() - n) / (n * (n - 1)) if n > 1 else 0
         
         return {
             'recommendations': recommendations,
@@ -660,8 +679,11 @@ class PredictionMarketOptimizer:
                 'total_potential_profit': total_potential_profit,
                 'average_ev': avg_ev,
                 'num_markets': len(recommendations),
-                'allocation_percentage': (total_allocated / bankroll) * 100 if bankroll > 0 else 0
-            }
+                'allocation_percentage': (total_allocated / bankroll) * 100 if bankroll > 0 else 0,
+                'average_correlation': avg_correlation,
+                'diversification_score': max(0, 1 - avg_correlation)  # Higher is better
+            },
+            'enhancements_applied': enhancements_applied
         }
     
     def calculate_portfolio_sharpe(
