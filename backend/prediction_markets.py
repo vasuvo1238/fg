@@ -530,7 +530,8 @@ class PredictionMarketOptimizer:
         bankroll: float,
         kelly_fraction: float = 0.25,
         max_markets: int = 10,
-        min_ev: float = 0.05
+        min_ev: float = 0.05,
+        enable_enhancements: bool = True
     ) -> Dict:
         """
         Optimize portfolio allocation across prediction markets
