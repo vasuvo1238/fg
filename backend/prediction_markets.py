@@ -596,6 +596,15 @@ class PredictionMarketOptimizer:
             
             # Choose best position
             if yes_ev > no_ev and yes_ev > min_ev:
+                base_bet = bankroll * yes_kelly
+                
+                # PHASE 1 ENHANCEMENT #2: Liquidity Constraint
+                if enable_enhancements:
+                    adjusted_bet = self.apply_liquidity_constraint(base_bet, market['liquidity'])
+                    enhancements_applied['liquidity_constraints'] = True
+                else:
+                    adjusted_bet = base_bet
+                
                 recommendations.append({
                     'market_id': market_id,
                     'title': market['title'],
@@ -604,11 +613,22 @@ class PredictionMarketOptimizer:
                     'user_probability': user_prob,
                     'expected_value': yes_ev,
                     'kelly_fraction': yes_kelly,
-                    'recommended_bet': bankroll * yes_kelly,
-                    'potential_profit': bankroll * yes_kelly * (1 / market['yes_price'] - 1),
-                    'source': market['source']
+                    'recommended_bet': adjusted_bet,
+                    'potential_profit': adjusted_bet * (1 / market['yes_price'] - 1),
+                    'source': market['source'],
+                    'liquidity': market['liquidity'],
+                    'end_date': market.get('end_date')
                 })
             elif no_ev > min_ev:
+                base_bet = bankroll * no_kelly
+                
+                # PHASE 1 ENHANCEMENT #2: Liquidity Constraint
+                if enable_enhancements:
+                    adjusted_bet = self.apply_liquidity_constraint(base_bet, market['liquidity'])
+                    enhancements_applied['liquidity_constraints'] = True
+                else:
+                    adjusted_bet = base_bet
+                
                 recommendations.append({
                     'market_id': market_id,
                     'title': market['title'],
@@ -617,9 +637,11 @@ class PredictionMarketOptimizer:
                     'user_probability': 1 - user_prob,
                     'expected_value': no_ev,
                     'kelly_fraction': no_kelly,
-                    'recommended_bet': bankroll * no_kelly,
-                    'potential_profit': bankroll * no_kelly * (1 / market['no_price'] - 1),
-                    'source': market['source']
+                    'recommended_bet': adjusted_bet,
+                    'potential_profit': adjusted_bet * (1 / market['no_price'] - 1),
+                    'source': market['source'],
+                    'liquidity': market['liquidity'],
+                    'end_date': market.get('end_date')
                 })
         
         # Sort by EV and take top N
