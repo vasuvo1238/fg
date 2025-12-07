@@ -346,7 +346,7 @@ export default function PredictionMarkets() {
                       <Badge variant="outline">{rec.source}</Badge>
                     </div>
                     <p className="font-bold text-sm">{rec.title}</p>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2 text-xs">
+                    <div className="grid grid-cols-2 md:grid-cols-5 gap-2 mt-2 text-xs">
                       <div>
                         <span className="text-muted-foreground">Market: </span>
                         <span className="font-bold">{formatPrice(rec.market_price)}</span>
@@ -363,7 +363,18 @@ export default function PredictionMarkets() {
                         <span className="text-muted-foreground">Kelly: </span>
                         <span className="font-bold">{(rec.kelly_fraction * 100).toFixed(1)}%</span>
                       </div>
+                      <div>
+                        <span className="text-muted-foreground">Liquidity: </span>
+                        <span className="font-bold">{formatCurrency(rec.liquidity || 0)}</span>
+                      </div>
                     </div>
+                    {rec.correlation_penalty && rec.correlation_penalty > 0.5 && (
+                      <div className="mt-2 flex items-center gap-2 text-xs">
+                        <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
+                          ⚠️ Correlated: {(rec.penalty_applied || 0).toFixed(0)}% reduction applied
+                        </Badge>
+                      </div>
+                    )}
                   </div>
                   <div className="text-right ml-4">
                     <div className="text-2xl font-bold text-green-600">
