@@ -202,6 +202,124 @@ class PredictionMarketOptimizer:
         logger.info(f"Fetched {len(df)} total markets from {sources}")
         return df
     
+    # ==================== PHASE 1 ENHANCEMENTS ====================
+    
+    def calculate_market_correlations(self, markets: pd.DataFrame, selected_ids: List[str]) -> np.ndarray:
+        """
+        Calculate correlation matrix between selected markets based on category similarity
+        
+        Args:
+            markets: DataFrame with market data
+            selected_ids: List of market IDs to analyze
+            
+        Returns:
+            Correlation matrix (NxN numpy array)
+        """
+        n_markets = len(selected_ids)
+        correlation_matrix = np.eye(n_markets)
+        
+        # Get selected markets
+        selected_markets = markets[markets['id'].isin(selected_ids)]
+        
+        for i in range(n_markets):
+            for j in range(i + 1, n_markets):
+                market_i = selected_markets.iloc[i]
+                market_j = selected_markets.iloc[j]
+                
+                correlation = 0.0
+                
+                # Category correlation
+                if market_i['category'] == market_j['category']:
+                    correlation += 0.4
+                
+                # Price similarity
+                price_diff = abs(market_i['yes_price'] - market_j['yes_price'])
+                if price_diff < 0.1:
+                    correlation += 0.2
+                
+                # Same source
+                if market_i['source'] == market_j['source']:
+                    correlation += 0.1
+                
+                # Title similarity
+                title_words_i = set(market_i['title'].lower().split())
+                title_words_j = set(market_j['title'].lower().split())
+                overlap = len(title_words_i & title_words_j) / max(len(title_words_i), len(title_words_j))
+                correlation += overlap * 0.3
+                
+                correlation = min(correlation, 0.9)
+                
+                correlation_matrix[i, j] = correlation
+                correlation_matrix[j, i] = correlation
+        
+        return correlation_matrix
+    
+    def apply_liquidity_constraint(self, bet_amount: float, market_liquidity: float, max_pct: float = 0.05) -> float:
+        """Adjust bet size based on market liquidity"""
+        if market_liquidity <= 0:
+            return 0.0
+        
+        max_bet = market_liquidity * max_pct
+        return min(bet_amount, max_bet)
+    
+    def apply_time_decay_adjustment(self, kelly_fraction: float, end_date: str, current_date: datetime = None) -> float:
+        """Adjust Kelly fraction based on time until resolution"""
+        if not end_date or not current_date:
+            current_date = datetime.now()
+        
+        try:
+            if isinstance(end_date, str):
+                end_dt = datetime.fromisoformat(end_date.replace('Z', '+00:00'))
+            else:
+                end_dt = end_date
+            
+            days_remaining = (end_dt - current_date).days
+            
+            if days_remaining <= 0:
+                return 0.0
+            elif days_remaining < 7:
+                time_factor = (days_remaining / 365.0) ** 0.5
+            else:
+                time_factor = min(1.0, (days_remaining / 365.0) ** 0.5)
+            
+            return kelly_fraction * time_factor
+        except:
+            return kelly_fraction
+    
+    def calculate_spread_adjusted_ev(self, true_probability: float, bid_price: float, ask_price: float, position: str = 'yes') -> Tuple[float, float]:
+        """Calculate EV accounting for bid-ask spread"""
+        spread = ask_price - bid_price
+        
+        if position == 'yes':
+            naive_ev = (true_probability * (1 - ask_price)) - ((1 - true_probability) * ask_price)
+            spread_cost = spread / 2
+            adjusted_ev = naive_ev - spread_cost
+        else:
+            no_ask = 1 - bid_price
+            naive_ev = ((1 - true_probability) * (1 - no_ask)) - (true_probability * no_ask)
+            spread_cost = spread / 2
+            adjusted_ev = naive_ev - spread_cost
+        
+        return adjusted_ev, spread_cost
+    
+    def apply_correlation_penalty(self, positions: List[Dict], correlation_matrix: np.ndarray) -> List[Dict]:
+        """Apply correlation penalty to reduce position sizes in correlated markets"""
+        n = len(positions)
+        
+        for i in range(n):
+            max_correlation = 0.0
+            for j in range(n):
+                if i != j:
+                    max_correlation = max(max_correlation, abs(correlation_matrix[i, j]))
+            
+            if max_correlation > 0.5:
+                penalty_factor = 1.0 - (max_correlation - 0.5)
+                positions[i]['recommended_bet'] *= penalty_factor
+                positions[i]['correlation_penalty'] = max_correlation
+                positions[i]['penalty_applied'] = (1 - penalty_factor) * 100
+        
+        return positions
+    
     def calculate_expected_value(
         self, 
         true_probability: float, 
