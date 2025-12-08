@@ -353,7 +353,7 @@ body {
 
 /* Stat Cards */
 .stat-card {
-  background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--muted) / 0.3) 100%);
+  background: hsl(var(--card));
   border: 1px solid hsl(var(--border));
   border-radius: 16px;
   padding: 20px;
