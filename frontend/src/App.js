@@ -259,6 +259,8 @@ function App() {
             <IndianMarkets />
           ) : activeView === "prediction" ? (
             <PredictionMarkets />
+          ) : activeView === "crypto" ? (
+            <CryptoAnalysis />
           ) : (
             <div>
           {showWelcome && messages.length === 0 && (
