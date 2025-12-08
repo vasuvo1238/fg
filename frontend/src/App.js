@@ -227,6 +227,15 @@ function App() {
                   <Target className="w-4 h-4" />
                   Prediction
                 </Button>
+                <Button
+                  variant={activeView === "crypto" ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setActiveView("crypto")}
+                  className="gap-2"
+                >
+                  <DollarSign className="w-4 h-4" />
+                  Crypto
+                </Button>
               </div>
             </div>
           </div>
