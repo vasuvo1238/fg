@@ -39,7 +39,7 @@ export default function CryptoAnalysis() {
 
   const fetchTrending = async () => {
     try {
-      const response = await axios.get(`${API}/api/crypto/trending`);
+      const response = await axios.get(`${API}/api/crypto/trending/list`);
       setTrending(response.data.trending || []);
     } catch (error) {
       console.error('Failed to fetch trending cryptos:', error);
