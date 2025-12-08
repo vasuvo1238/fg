@@ -2049,7 +2049,7 @@ async def get_crypto_chart(coin_id: str, days: int = 30):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@api_router.get("/crypto/trending")
+@api_router.get("/crypto/trending/list")
 async def get_trending():
     """Get trending cryptocurrencies"""
     from crypto_analysis import get_trending_cryptos
