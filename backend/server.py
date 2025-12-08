@@ -1995,6 +1995,85 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# News & Sentiment Routes
+@api_router.get("/news/{symbol}")
+async def get_news(symbol: str, limit: int = 10):
+    """Get latest news and sentiment for a stock"""
+    from news_sentiment import get_stock_news
+    try:
+        news = get_stock_news(symbol.upper(), limit=limit)
+        return {
+            "symbol": symbol.upper(),
+            "news": news,
+            "total": len(news)
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/news/{symbol}/sentiment")
+async def get_sentiment_summary(symbol: str):
+    """Get sentiment summary for a stock based on recent news"""
+    from news_sentiment import get_news_sentiment_summary
+    try:
+        sentiment = get_news_sentiment_summary(symbol.upper())
+        return {
+            "symbol": symbol.upper(),
+            "sentiment": sentiment
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Cryptocurrency Routes
+@api_router.get("/crypto/list")
+async def get_cryptos(limit: int = 100):
+    """Get list of top cryptocurrencies"""
+    from crypto_analysis import get_crypto_list
+    try:
+        cryptos = await get_crypto_list(limit=limit)
+        return {
+            "cryptos": cryptos,
+            "total": len(cryptos)
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/crypto/{coin_id}")
+async def get_crypto_info(coin_id: str):
+    """Get detailed information about a cryptocurrency"""
+    from crypto_analysis import get_crypto_details
+    try:
+        crypto = await get_crypto_details(coin_id)
+        if not crypto:
+            raise HTTPException(status_code=404, detail=f"Cryptocurrency {coin_id} not found")
+        return crypto
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/crypto/{coin_id}/chart")
+async def get_crypto_chart(coin_id: str, days: int = 30):
+    """Get historical price data for a cryptocurrency"""
+    from crypto_analysis import get_crypto_chart_data
+    try:
+        chart_data = await get_crypto_chart_data(coin_id, days=days)
+        return chart_data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/crypto/trending")
+async def get_trending():
+    """Get trending cryptocurrencies"""
+    from crypto_analysis import get_trending_cryptos
+    try:
+        trending = await get_trending_cryptos()
+        return {
+            "trending": trending,
+            "total": len(trending)
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.on_event("shutdown")
 async def shutdown_db_client():
     pass
