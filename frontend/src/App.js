@@ -154,7 +154,7 @@ function App() {
                   variant={activeView === "stocks" ? "default" : "ghost"}
                   size="sm"
                   onClick={() => setActiveView("stocks")}
-                  className="gap-2"
+                  className="gap-2 nav-pill"
                 >
                   <BarChart3 className="w-4 h-4" />
                   Stocks
@@ -164,7 +164,7 @@ function App() {
                   variant={activeView === "options" ? "default" : "ghost"}
                   size="sm"
                   onClick={() => setActiveView("options")}
-                  className="gap-2"
+                  className="gap-2 nav-pill"
                 >
                   <TrendingUp className="w-4 h-4" />
                   Options
@@ -174,7 +174,7 @@ function App() {
                   variant={activeView === "analytics" ? "default" : "ghost"}
                   size="sm"
                   onClick={() => setActiveView("analytics")}
-                  className="gap-2"
+                  className="gap-2 nav-pill"
                 >
                   <Microscope className="w-4 h-4" />
                   Analytics
@@ -184,7 +184,7 @@ function App() {
                   variant={activeView === "portfolio" ? "default" : "ghost"}
                   size="sm"
                   onClick={() => setActiveView("portfolio")}
-                  className="gap-2"
+                  className="gap-2 nav-pill"
                 >
                   <Wallet className="w-4 h-4" />
                   Portfolio
@@ -194,7 +194,7 @@ function App() {
                   variant={activeView === "risk" ? "default" : "ghost"}
                   size="sm"
                   onClick={() => setActiveView("risk")}
-                  className="gap-2"
+                  className="gap-2 nav-pill"
                 >
                   <Shield className="w-4 h-4" />
                   Risk
@@ -204,7 +204,7 @@ function App() {
                   variant={activeView === "technical" ? "default" : "ghost"}
                   size="sm"
                   onClick={() => setActiveView("technical")}
-                  className="gap-2"
+                  className="gap-2 nav-pill"
                 >
                   <Activity className="w-4 h-4" />
                   Technical
@@ -213,7 +213,7 @@ function App() {
                   variant={activeView === "indian" ? "default" : "ghost"}
                   size="sm"
                   onClick={() => setActiveView("indian")}
-                  className="gap-2"
+                  className="gap-2 nav-pill"
                 >
                   <TrendingUp className="w-4 h-4" />
                   Indian
@@ -222,7 +222,7 @@ function App() {
                   variant={activeView === "prediction" ? "default" : "ghost"}
                   size="sm"
                   onClick={() => setActiveView("prediction")}
-                  className="gap-2"
+                  className="gap-2 nav-pill"
                 >
                   <Target className="w-4 h-4" />
                   Prediction
@@ -231,7 +231,7 @@ function App() {
                   variant={activeView === "crypto" ? "default" : "ghost"}
                   size="sm"
                   onClick={() => setActiveView("crypto")}
-                  className="gap-2"
+                  className="gap-2 nav-pill"
                 >
                   <DollarSign className="w-4 h-4" />
                   Crypto
