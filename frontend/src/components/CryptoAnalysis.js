@@ -145,7 +145,7 @@ export default function CryptoAnalysis() {
               <Card><CardContent className="p-8 text-center">Loading cryptocurrencies...</CardContent></Card>
             ) : (
               filteredCryptos.map((crypto) => (
-                <Card key={crypto.id} className="hover:border-primary cursor-pointer transition-all" onClick={() => fetchCoinDetails(crypto.id)}>
+                <Card key={crypto.id} className="crypto-card" onClick={() => fetchCoinDetails(crypto.id)}>
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4 flex-1">
