@@ -3,7 +3,7 @@ import axios from "axios";
 import { Card } from "./ui/card";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import { Search, TrendingUp, TrendingDown, DollarSign, IndianRupee, Activity } from "lucide-react";
+import { Search, TrendingUp, TrendingDown, IndianRupee, Activity } from "lucide-react";
 import { toast } from "sonner";
 import {
   LineChart,
