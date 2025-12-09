@@ -15,8 +15,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
-
-const API = process.env.REACT_APP_BACKEND_URL || "http://localhost:8001";
+import { API } from "@/lib/api";
 
 export default function IndianMarkets() {
   const [symbol, setSymbol] = useState("RELIANCE");
