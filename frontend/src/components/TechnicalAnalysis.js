@@ -42,9 +42,7 @@ import {
   PolarRadiusAxis,
   Radar
 } from "recharts";
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+import { API } from "@/lib/api";
 
 export default function TechnicalAnalysis() {
   const [symbol, setSymbol] = useState("AAPL");
