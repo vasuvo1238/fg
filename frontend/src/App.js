@@ -3,7 +3,6 @@ import "@/App.css";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { AlertCircle, Send, Sparkles, TrendingUp, DollarSign, PieChart, BarChart3, MessageCircle, Microscope, Wallet, Shield, Activity, Target } from "lucide-react";
 import { toast } from "sonner";
 import StockPrediction from "@/components/StockPrediction";
