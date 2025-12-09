@@ -1922,11 +1922,11 @@ async def get_indian_stock_historical(
             for idx, row in hist_data.iterrows():
                 candles.append({
                     "timestamp": idx.isoformat(),
-                    "open": float(row['Open']),
-                    "high": float(row['High']),
-                    "low": float(row['Low']),
-                    "close": float(row['Close']),
-                    "volume": int(row['Volume'])
+                    "open": float(row['Open'].iloc[0]) if hasattr(row['Open'], 'iloc') else float(row['Open']),
+                    "high": float(row['High'].iloc[0]) if hasattr(row['High'], 'iloc') else float(row['High']),
+                    "low": float(row['Low'].iloc[0]) if hasattr(row['Low'], 'iloc') else float(row['Low']),
+                    "close": float(row['Close'].iloc[0]) if hasattr(row['Close'], 'iloc') else float(row['Close']),
+                    "volume": int(row['Volume'].iloc[0]) if hasattr(row['Volume'], 'iloc') else int(row['Volume'])
                 })
         
         return {
