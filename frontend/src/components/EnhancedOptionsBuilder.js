@@ -415,8 +415,8 @@ export default function EnhancedOptionsBuilder() {
             <Input
               type="number"
               value={daysToExpiry}
-              disabled
-              className="bg-secondary"
+              onChange={(e) => handleDaysChange(parseInt(e.target.value) || 1)}
+              min="1"
             />
           </div>
         </div>
