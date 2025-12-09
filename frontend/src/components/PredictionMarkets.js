@@ -6,7 +6,7 @@ import { Button } from "./ui/button";
 import { Label } from "./ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Badge } from "./ui/badge";
-import { Search, TrendingUp, DollarSign, Target, Calculator, AlertCircle } from "lucide-react";
+import { Search, DollarSign, Target, Calculator, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 
 const API = process.env.REACT_APP_BACKEND_URL || "http://localhost:8001";
