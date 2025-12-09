@@ -48,7 +48,7 @@ export default function PredictionMarkets() {
 
   const fetchArbitrage = async () => {
     try {
-      const response = await axios.get(`${API}/api/prediction-markets/arbitrage`);
+      const response = await axios.get(`${API}/prediction-markets/arbitrage`);
       setArbitrageOpps(response.data.opportunities || []);
     } catch (error) {
       console.error("Arbitrage fetch error:", error);
