@@ -1,6 +1,6 @@
 /**
  * Centralized API configuration
- * All components should import API from this file
+ * All components should import API or BACKEND_URL from this file
  */
 
 export const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
