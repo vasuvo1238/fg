@@ -26,7 +26,7 @@ export default function CryptoAnalysis() {
   const fetchCryptos = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API}/api/crypto/list?limit=50`);
+      const response = await axios.get(`${API}/crypto/list?limit=50`);
       setCryptos(response.data.cryptos || []);
     } catch (error) {
       toast.error('Failed to fetch crypto data');
