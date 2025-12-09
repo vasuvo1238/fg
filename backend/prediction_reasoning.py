@@ -174,7 +174,7 @@ def explain_ornstein_uhlenbeck(prediction: Dict) -> str:
     """Explain Ornstein-Uhlenbeck in simple terms"""
     theta = prediction.get('theta', 0)
     half_life = prediction.get('half_life_days')
-    trend = prediction['trend']
+    prediction['trend']
     
     explanation = f"""**What is Ornstein-Uhlenbeck (OU)?**
 Imagine a boat on water - when a wave pushes it away from its mooring, it drifts back. OU models how stocks "drift back" to their long-term average price.

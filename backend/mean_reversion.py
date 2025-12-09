@@ -34,7 +34,7 @@ def z_score_mean_reversion(df: pd.DataFrame, days_ahead: int = 30, window: int =
         # If Z-score is low (<-2), expect price to rise towards mean
         
         # Calculate expected reversion
-        reversion_strength = np.tanh(current_z)  # Bounded between -1 and 1
+        np.tanh(current_z)  # Bounded between -1 and 1
         
         # Generate prediction path
         predictions = []
@@ -160,7 +160,7 @@ def statistical_arbitrage_score(df: pd.DataFrame):
     """
     try:
         prices = df['Close'].values
-        returns = np.diff(np.log(prices))
+        np.diff(np.log(prices))
         
         # Augmented Dickey-Fuller test for stationarity
         adf_result = adfuller(prices)

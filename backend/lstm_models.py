@@ -173,7 +173,7 @@ def lstm_prediction(df: pd.DataFrame, days_ahead: int = 30, symbol: str = None):
             scaled_val_seq = scaler.transform(validation_sequence.reshape(-1, 1)).flatten()
             
             val_predictions = predict_with_lstm(model, scaler, scaled_val_seq, 30)
-            mae = np.mean(np.abs(np.array(val_predictions) - validation_data))
+            np.mean(np.abs(np.array(val_predictions) - validation_data))
             mape = np.mean(np.abs((validation_data - np.array(val_predictions)) / validation_data)) * 100
             confidence = max(0, 100 - mape)
         else:
