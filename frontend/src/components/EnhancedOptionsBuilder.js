@@ -29,9 +29,7 @@ import {
   Area,
   ComposedChart
 } from "recharts";
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+import { API } from "@/lib/api";
 
 // Strategy template cards with mini payoff curves
 const STRATEGY_CARDS = [
