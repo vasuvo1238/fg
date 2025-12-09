@@ -30,7 +30,7 @@ export default function PredictionMarkets() {
   const fetchMarkets = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API}/api/prediction-markets/markets`, {
+      const response = await axios.get(`${API}/prediction-markets/markets`, {
         params: {
           sources: source,
           limit: 100
