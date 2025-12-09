@@ -8,8 +8,7 @@ import { Badge } from './ui/badge';
 import { TrendingUp, TrendingDown, Search, Flame, Bitcoin } from 'lucide-react';
 import { toast } from 'sonner';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-
-const API = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
+import { API } from '@/lib/api';
 
 export default function CryptoAnalysis() {
   const [cryptos, setCryptos] = useState([]);
