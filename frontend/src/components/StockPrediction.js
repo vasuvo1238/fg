@@ -26,9 +26,7 @@ import {
   Legend,
   ResponsiveContainer
 } from "recharts";
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+import { API } from "@/lib/api";
 
 export default function StockPrediction({ sessionId }) {
   const [symbol, setSymbol] = useState("");
