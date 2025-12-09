@@ -52,7 +52,7 @@ export default function IndianMarkets() {
     
     setLoading(true);
     try {
-      const response = await axios.get(`${API}/api/upstox/quote/${symbol.toUpperCase()}`);
+      const response = await axios.get(`${API}/upstox/quote/${symbol.toUpperCase()}`);
       setQuoteData(response.data);
       toast.success(`Loaded ${symbol.toUpperCase()}`);
     } catch (error) {
