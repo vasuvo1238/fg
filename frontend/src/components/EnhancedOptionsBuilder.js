@@ -878,7 +878,7 @@ export default function EnhancedOptionsBuilder() {
             <div className="text-right">
               <p className="text-xs text-muted-foreground">Spot Price</p>
               <p className="text-2xl font-bold text-purple-600" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
-                ${optionsChainData.underlying_price?.toFixed(2)}
+                ${(optionsChainData.underlying_price || optionsChainData.current_price)?.toFixed(2)}
               </p>
             </div>
           </div>
