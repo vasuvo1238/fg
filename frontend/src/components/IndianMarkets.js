@@ -40,7 +40,7 @@ export default function IndianMarkets() {
 
   const fetchPopularStocks = async () => {
     try {
-      const response = await axios.get(`${API}/api/upstox/popular-stocks`);
+      const response = await axios.get(`${API}/upstox/popular-stocks`);
       setPopularStocks(response.data.stocks || []);
     } catch (error) {
       console.error("Failed to fetch popular stocks", error);
