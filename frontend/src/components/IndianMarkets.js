@@ -72,7 +72,7 @@ export default function IndianMarkets() {
       const fromDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
       
       const response = await axios.get(
-        `${API}/api/upstox/historical/${symbol.toUpperCase()}`,
+        `${API}/upstox/historical/${symbol.toUpperCase()}`,
         {
           params: {
             interval: "1day",
