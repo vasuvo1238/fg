@@ -8,8 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Badge } from "./ui/badge";
 import { Search, DollarSign, Target, Calculator, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
-
-const API = process.env.REACT_APP_BACKEND_URL || "http://localhost:8001";
+import { API } from "@/lib/api";
 
 export default function PredictionMarkets() {
   const [markets, setMarkets] = useState([]);
