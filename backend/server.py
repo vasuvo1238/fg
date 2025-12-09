@@ -1763,8 +1763,8 @@ async def list_portfolios():
 
 
 @api_router.get("/portfolios/{portfolio_id}")
-async def get_portfolio(portfolio_id: str):
-    """Load a specific portfolio"""
+async def get_saved_portfolio(portfolio_id: str):
+    """Load a specific saved portfolio"""
     try:
         portfolio = await db.portfolios.find_one({"id": portfolio_id}, {"_id": 0})
         if not portfolio:
