@@ -91,7 +91,7 @@ export default function PredictionMarkets() {
         probability: userProbabilities[m.id] || m.yes_price
       }));
 
-      const response = await axios.post(`${API}/api/prediction-markets/optimize`, {
+      const response = await axios.post(`${API}/prediction-markets/optimize`, {
         markets: marketInputs,
         bankroll: bankroll,
         kelly_fraction: kellyFraction,
