@@ -5,7 +5,7 @@ Provides crypto market data using CoinGecko API (100% free, no API key needed)
 import httpx
 from typing import List, Dict, Optional
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 

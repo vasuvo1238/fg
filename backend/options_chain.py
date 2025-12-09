@@ -8,7 +8,7 @@ Options Chain Data Module
 
 import yfinance as yf
 import pandas as pd
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Dict, List, Optional
 import logging
 

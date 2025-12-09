@@ -5,7 +5,6 @@ Similar to Sensibull's options calculator
 import numpy as np
 from scipy.stats import norm
 from typing import Dict, List, Optional, Tuple
-from datetime import datetime, timezone
 import logging
 
 logger = logging.getLogger(__name__)

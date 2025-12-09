@@ -5,7 +5,6 @@ Provides real-time quotes, historical data, and portfolio information for NSE/BS
 
 import os
 import httpx
-import asyncio
 from typing import Dict, List, Optional
 from datetime import datetime, timedelta
 import logging

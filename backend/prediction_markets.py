@@ -4,14 +4,11 @@ Optimizes portfolio allocation across prediction markets using Kelly Criterion
 and expected value calculations
 """
 
-import os
 import httpx
-import asyncio
 from typing import Dict, List, Optional, Tuple
 from datetime import datetime
 import logging
 import numpy as np
-from scipy.optimize import minimize
 import pandas as pd
 
 logger = logging.getLogger(__name__)

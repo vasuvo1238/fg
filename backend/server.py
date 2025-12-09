@@ -29,7 +29,7 @@ from mean_reversion import (
     statistical_arbitrage_score,
     pairs_trading_suggestion
 )
-from stock_ticker_extractor import extract_stock_tickers, detect_intent, validate_ticker
+from stock_ticker_extractor import detect_intent, validate_ticker
 from model_performance import (
     save_prediction,
     evaluate_predictions,
@@ -57,9 +57,6 @@ from portfolio_optimizer import (
 from upstox_integration import (
     get_authorization_url,
     exchange_code_for_token,
-    get_market_quote,
-    get_historical_candles,
-    get_portfolio_holdings,
     get_popular_indian_stocks
 )
 from risk_metrics import (

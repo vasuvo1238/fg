@@ -4,9 +4,9 @@ Stock analysis module with technical indicators and statistical predictions
 import yfinance as yf
 import pandas as pd
 import numpy as np
-from datetime import datetime, timedelta, timezone
+from datetime import timedelta
 from sklearn.linear_model import LinearRegression
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List
 import logging
 
 logger = logging.getLogger(__name__)

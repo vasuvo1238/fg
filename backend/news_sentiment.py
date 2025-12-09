@@ -3,10 +3,8 @@ News and Sentiment Analysis Module
 Provides real-time financial news and sentiment analysis using free data sources
 """
 import yfinance as yf
-from datetime import datetime
-from typing import List, Dict, Optional
+from typing import List, Dict
 import logging
-import re
 
 logger = logging.getLogger(__name__)
 

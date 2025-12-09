@@ -2,7 +2,7 @@
 Extract stock tickers from natural language queries
 """
 import re
-from typing import List, Optional, Dict
+from typing import List, Dict
 import yfinance as yf
 
 # Common company name to ticker mappings

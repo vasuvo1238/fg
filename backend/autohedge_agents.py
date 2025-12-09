@@ -2,10 +2,10 @@
 AutoHedge-style Multi-Agent Trading System
 Inspired by The Swarm Corporation's AutoHedge framework
 """
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Any
 from datetime import datetime, timezone
 import logging
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, ConfigDict
 from emergentintegrations.llm.chat import LlmChat, UserMessage
 import json
 

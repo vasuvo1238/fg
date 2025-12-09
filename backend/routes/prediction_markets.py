@@ -2,16 +2,15 @@
 API Routes for Prediction Market Portfolio Optimization
 """
 
-from fastapi import APIRouter, HTTPException, Query, BackgroundTasks
+from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel, Field
-from typing import List, Dict, Optional
+from typing import List, Optional
 from datetime import datetime
 import logging
 from prediction_markets import (
     PredictionMarketOptimizer,
     find_arbitrage_opportunities
 )
-import asyncio
 
 logger = logging.getLogger(__name__)
 router = APIRouter()

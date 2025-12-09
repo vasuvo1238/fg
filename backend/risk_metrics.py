@@ -11,9 +11,8 @@ Advanced Risk Metrics Module
 import numpy as np
 import pandas as pd
 from scipy import stats
-from typing import List, Dict, Tuple
+from typing import List, Dict
 import yfinance as yf
-from datetime import datetime, timedelta
 import logging
 
 logger = logging.getLogger(__name__)

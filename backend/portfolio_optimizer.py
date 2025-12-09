@@ -9,7 +9,6 @@ Portfolio Optimization Module
 import numpy as np
 import pandas as pd
 from scipy.optimize import minimize
-from datetime import datetime, timedelta
 import yfinance as yf
 from typing import List, Dict, Tuple
 import logging
