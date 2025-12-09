@@ -140,9 +140,19 @@ export default function EnhancedOptionsBuilder() {
       const expiry = new Date(expiryDate);
       const diffTime = expiry - today;
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      setDaysToExpiry(Math.max(1, diffDays));
+      if (diffDays !== daysToExpiry) {
+        setDaysToExpiry(Math.max(1, diffDays));
+      }
     }
   }, [expiryDate]);
+  
+  // Bidirectional sync: Update date when days change
+  const handleDaysChange = (newDays) => {
+    setDaysToExpiry(newDays);
+    const today = new Date();
+    const futureDate = new Date(today.getTime() + (newDays * 24 * 60 * 60 * 1000));
+    setExpiryDate(futureDate.toISOString().split('T')[0]);
+  };
 
   const fetchLivePrice = async (symbolToFetch) => {
     if (!symbolToFetch || symbolToFetch.length < 1) return;
