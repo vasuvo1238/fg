@@ -894,18 +894,18 @@ export default function EnhancedOptionsBuilder() {
               <div className="space-y-2">
                 {optionsChainData.calls && optionsChainData.calls.length > 0 ? (
                   optionsChainData.calls.map((call, i) => (
-                    <Card key={i} className={`p-3 ${call.inTheMoney ? 'bg-green-50 border-green-300' : 'bg-white'}`}>
+                    <Card key={i} className={`p-3 ${call.in_the_money || call.inTheMoney ? 'bg-green-50 border-green-300' : 'bg-white'}`}>
                       <div className="flex items-center justify-between mb-2">
                         <div>
                           <span className="font-bold text-lg" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
                             ${call.strike}
                           </span>
-                          {call.inTheMoney && <span className="ml-2 px-2 py-0.5 bg-green-500 text-white text-xs rounded">ITM</span>}
+                          {(call.in_the_money || call.inTheMoney) && <span className="ml-2 px-2 py-0.5 bg-green-500 text-white text-xs rounded">ITM</span>}
                         </div>
                         <div className="text-right">
-                          <p className="text-sm font-bold">${call.lastPrice?.toFixed(2) || 'N/A'}</p>
-                          <p className={`text-xs ${call.change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                            {call.change >= 0 ? '+' : ''}{call.change?.toFixed(2)} ({call.percentChange?.toFixed(1)}%)
+                          <p className="text-sm font-bold">${(call.last_price || call.lastPrice)?.toFixed(2) || 'N/A'}</p>
+                          <p className={`text-xs ${(call.change || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                            {(call.change || 0) >= 0 ? '+' : ''}{(call.change || 0)?.toFixed(2)} ({(call.percent_change || call.percentChange || 0)?.toFixed(1)}%)
                           </p>
                         </div>
                       </div>
@@ -923,12 +923,12 @@ export default function EnhancedOptionsBuilder() {
                           <p className="font-bold">{call.volume || 0}</p>
                         </div>
                       </div>
-                      {call.impliedVolatility && (
+                      {(call.implied_volatility || call.impliedVolatility) && (
                         <div className="mt-2 text-xs">
                           <span className="text-muted-foreground">IV: </span>
-                          <span className="font-bold">{(call.impliedVolatility * 100).toFixed(1)}%</span>
+                          <span className="font-bold">{((call.implied_volatility || call.impliedVolatility) * 100).toFixed(1)}%</span>
                           <span className="text-muted-foreground ml-3">OI: </span>
-                          <span className="font-bold">{call.openInterest || 0}</span>
+                          <span className="font-bold">{call.open_interest || call.openInterest || 0}</span>
                         </div>
                       )}
                     </Card>
