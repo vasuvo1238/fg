@@ -49,8 +49,8 @@ export default function CryptoAnalysis() {
     setLoading(true);
     try {
       const [detailsRes, chartRes] = await Promise.all([
-        axios.get(`${API}/api/crypto/${coinId}`),
-        axios.get(`${API}/api/crypto/${coinId}/chart?days=30`)
+        axios.get(`${API}/crypto/${coinId}`),
+        axios.get(`${API}/crypto/${coinId}/chart?days=30`)
       ]);
       
       setSelectedCoin(detailsRes.data);
