@@ -1992,6 +1992,7 @@ api_router.include_router(prediction_markets_router, prefix="/prediction-markets
 # ==================== AUTHENTICATION & USAGE ====================
 api_router.include_router(auth_router)
 api_router.include_router(usage_router)
+api_router.include_router(notification_router)
 
 # ==================== NEWS & SENTIMENT ====================
 @api_router.get("/news/{symbol}")
