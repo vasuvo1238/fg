@@ -333,7 +333,9 @@ function App() {
 
         {/* Content Area */}
         <div className="max-w-6xl mx-auto px-6 pt-8 pb-4">
-          {activeView === "stocks" ? (
+          {activeView === "settings" ? (
+            <NotificationSettings />
+          ) : activeView === "stocks" ? (
             <StockPrediction sessionId={sessionId} />
           ) : activeView === "options" ? (
             <EnhancedOptionsBuilder />
