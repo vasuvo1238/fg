@@ -287,8 +287,8 @@ function App() {
                     {user?.picture ? (
                       <img src={user.picture} alt="" className="w-8 h-8 rounded-full" />
                     ) : (
-                      <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                        <User className="w-4 h-4 text-emerald-400" />
+                      <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
+                        <User className="w-4 h-4 text-purple-400" />
                       </div>
                     )}
                   </button>
