@@ -84,6 +84,8 @@ from technical_analysis import (
 )
 from routes.auth import auth_router, set_database as set_auth_db
 from routes.usage import usage_router, set_database as set_usage_db
+from routes.notifications import notification_router, set_database as set_notif_db
+from services.email_service import set_database as set_email_db
 
 
 ROOT_DIR = Path(__file__).parent
@@ -94,9 +96,11 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
-# Set database for auth and usage modules
+# Set database for modules
 set_auth_db(db)
 set_usage_db(db)
+set_notif_db(db)
+set_email_db(db)
 
 # Create the main app without a prefix
 app = FastAPI()
