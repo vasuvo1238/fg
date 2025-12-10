@@ -1985,6 +1985,10 @@ async def search_indian_stocks(search_query: dict):
 from routes.prediction_markets import router as prediction_markets_router
 api_router.include_router(prediction_markets_router, prefix="/prediction-markets", tags=["prediction-markets"])
 
+# ==================== AUTHENTICATION & USAGE ====================
+api_router.include_router(auth_router)
+api_router.include_router(usage_router)
+
 # ==================== NEWS & SENTIMENT ====================
 @api_router.get("/news/{symbol}")
 async def get_news(symbol: str, limit: int = 10):
