@@ -272,6 +272,61 @@ function App() {
                   Crypto
                 </Button>
               </div>
+              
+              {/* User Actions */}
+              <div className="flex items-center gap-3">
+                <NotificationBell />
+                
+                {/* User Menu */}
+                <div className="relative" ref={userMenuRef}>
+                  <button
+                    onClick={() => setShowUserMenu(!showUserMenu)}
+                    className="flex items-center gap-2 p-2 rounded-lg hover:bg-slate-700/50 transition-colors"
+                  >
+                    {user?.picture ? (
+                      <img src={user.picture} alt="" className="w-8 h-8 rounded-full" />
+                    ) : (
+                      <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                        <User className="w-4 h-4 text-emerald-400" />
+                      </div>
+                    )}
+                  </button>
+                  
+                  {showUserMenu && (
+                    <div className="absolute right-0 mt-2 w-64 bg-slate-800 border border-slate-700 rounded-xl shadow-2xl overflow-hidden z-50">
+                      <div className="px-4 py-3 border-b border-slate-700">
+                        <p className="font-medium text-white">{user?.name || 'User'}</p>
+                        <p className="text-xs text-slate-400">{user?.email}</p>
+                        <div className="mt-2 flex items-center gap-2">
+                          <span className={`px-2 py-0.5 text-xs rounded-full ${
+                            user?.subscription_tier === 'pro' ? 'bg-purple-500/20 text-purple-400' :
+                            user?.subscription_tier === 'basic' ? 'bg-blue-500/20 text-blue-400' :
+                            'bg-slate-500/20 text-slate-400'
+                          }`}>
+                            {user?.subscription_tier?.toUpperCase() || 'FREE'}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="py-2">
+                        <button 
+                          onClick={() => { setActiveView('settings'); setShowUserMenu(false); }}
+                          className="w-full px-4 py-2 text-left text-sm text-slate-300 hover:bg-slate-700/50 flex items-center gap-2"
+                        >
+                          <Settings className="w-4 h-4" />
+                          Settings
+                        </button>
+                        <button 
+                          onClick={handleLogout}
+                          className="w-full px-4 py-2 text-left text-sm text-red-400 hover:bg-slate-700/50 flex items-center gap-2"
+                        >
+                          <LogOut className="w-4 h-4" />
+                          Sign Out
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>
