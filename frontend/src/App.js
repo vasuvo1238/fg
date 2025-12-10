@@ -16,6 +16,7 @@ import IndianMarkets from "@/components/IndianMarkets";
 import PredictionMarkets from "@/components/PredictionMarkets";
 import CryptoAnalysis from "@/components/CryptoAnalysis";
 import NotificationBell from "@/components/NotificationBell";
+import NotificationSettings from "@/components/NotificationSettings";
 import { API } from "@/lib/api";
 
 function App() {
