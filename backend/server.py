@@ -82,6 +82,8 @@ from technical_analysis import (
     get_earnings_calendar,
     get_market_overview
 )
+from routes.auth import auth_router, set_database as set_auth_db
+from routes.usage import usage_router, set_database as set_usage_db
 
 
 ROOT_DIR = Path(__file__).parent
@@ -91,6 +93,10 @@ load_dotenv(ROOT_DIR / '.env')
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
+
+# Set database for auth and usage modules
+set_auth_db(db)
+set_usage_db(db)
 
 # Create the main app without a prefix
 app = FastAPI()
