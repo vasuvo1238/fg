@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "@/index.css";
-import App from "@/App";
+import AppRouter from "@/AppRouter";
 
 // ============================================
 // RESIZEOBSERVER ERROR SUPPRESSION
@@ -72,7 +72,5 @@ window.onerror = function(message, source, lineno, colno, error) {
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <AppRouter />
 );
