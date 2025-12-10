@@ -3,8 +3,9 @@ import "@/App.css";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { AlertCircle, Send, Sparkles, TrendingUp, DollarSign, PieChart, BarChart3, MessageCircle, Microscope, Wallet, Shield, Activity, Target } from "lucide-react";
+import { AlertCircle, Send, Sparkles, TrendingUp, DollarSign, PieChart, BarChart3, MessageCircle, Microscope, Wallet, Shield, Activity, Target, LogOut, User, Settings } from "lucide-react";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 import StockPrediction from "@/components/StockPrediction";
 import EnhancedOptionsBuilder from "@/components/EnhancedOptionsBuilder";
 import AdvancedAnalytics from "@/components/AdvancedAnalytics";
@@ -14,25 +15,61 @@ import TechnicalAnalysis from "@/components/TechnicalAnalysis";
 import IndianMarkets from "@/components/IndianMarkets";
 import PredictionMarkets from "@/components/PredictionMarkets";
 import CryptoAnalysis from "@/components/CryptoAnalysis";
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+import NotificationBell from "@/components/NotificationBell";
+import { API } from "@/lib/api";
 
 function App() {
+  const navigate = useNavigate();
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [sessionId, setSessionId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
-  const [activeView, setActiveView] = useState("chat"); // "chat", "stocks", "options", "analytics", "portfolio", "risk", "technical", "indian", "prediction", "crypto"
+  const [activeView, setActiveView] = useState("chat");
+  const [user, setUser] = useState(null);
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const scrollRef = useRef(null);
   const inputRef = useRef(null);
+  const userMenuRef = useRef(null);
 
   useEffect(() => {
     // Generate session ID on mount
     const newSessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     setSessionId(newSessionId);
+    
+    // Fetch user data
+    fetchUser();
   }, []);
+  
+  // Close user menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+        setShowUserMenu(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+  
+  const fetchUser = async () => {
+    try {
+      const response = await axios.get(`${API}/auth/me`, { withCredentials: true });
+      setUser(response.data);
+    } catch (error) {
+      console.error('Failed to fetch user:', error);
+    }
+  };
+  
+  const handleLogout = async () => {
+    try {
+      await axios.post(`${API}/auth/logout`, {}, { withCredentials: true });
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout failed:', error);
+      navigate('/login');
+    }
+  };
 
   useEffect(() => {
     // Scroll to bottom when messages change
