@@ -586,6 +586,48 @@ backend:
           agent: "testing"
           comment: "❌ FAILED - Guardrails system not properly blocking non-finance questions. Test with 'Tell me a joke about cats' should trigger guardrails but returns 200 with normal response instead of guardrail message. Finance-related questions work correctly with proper LLM integration and context maintenance."
 
+  - task: "Payments API - Subscription Tiers"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+          agent: "testing"
+          comment: "Testing GET /api/payments/tiers endpoint - subscription tier structure, pricing, feature lists for Basic and Pro plans"
+        - working: true
+          agent: "testing"
+          comment: "✅ PASSED - Payments tiers API working perfectly. Returns proper JSON structure with 'basic' and 'pro' tiers, Basic Plan ($20/month) includes Daily Morning Reports, Portfolio Tracking, Real-time Market Data, Email Notifications, Basic Technical Analysis. Pro Plan ($99/month) includes Everything in Basic plus LSTM AI Predictions, AutoHedge Multi-Agent Analysis, Advanced Options Strategies, Priority Support, SMS/WhatsApp Notifications, Broker API Integration. Currency set to 'usd'. All data properly formatted and matches frontend display."
+
+  - task: "Trading API - Futures Data"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+          agent: "testing"
+          comment: "Testing GET /api/trading/futures endpoint - live futures data for S&P 500, Nasdaq, Dow, Russell 2000, Gold, Crude Oil, VIX with prices, changes, and signals"
+        - working: true
+          agent: "testing"
+          comment: "✅ PASSED - Trading futures API working excellently. Returns comprehensive futures data: S&P 500 (ES=F): 6819.75 (-0.05%), Nasdaq (NQ=F): 25312.25 (+0.87%), Dow (YM=F): 48450 (-0.02%), Russell 2000 (RTY=F): 2551.2 (+0.65%), Gold (GC=F): 4316 (+0.22%), Crude Oil (CL=F): 55.87 (-1.67%), VIX: 16.87 (+2.24%). All data includes name, price, change, change_percent, and signal (bullish/bearish/neutral). Data structure perfect for frontend consumption."
+
+  - task: "Trading API - Schedule Configuration"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+          agent: "testing"
+          comment: "Testing GET /api/trading/schedule endpoint - requires authentication, returns 'Not authenticated' for unauthenticated requests which is expected behavior. Endpoint exists and properly secured."
+
 metadata:
   created_by: "testing_agent"
   version: "1.0"
