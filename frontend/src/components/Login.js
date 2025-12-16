@@ -46,23 +46,33 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md p-8 bg-slate-800/50 border-slate-700 backdrop-blur-lg">
+    <div className="min-h-screen bg-[#0A0C12] flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Background Effects */}
+      <div className="absolute inset-0 bg-gradient-mesh opacity-50" />
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-500/10 rounded-full blur-[120px]" />
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-teal-500/10 rounded-full blur-[120px]" />
+      
+      <Card className="relative w-full max-w-md p-8 glass-card border-white/10 rounded-3xl shadow-2xl">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <TrendingUp className="w-10 h-10 text-emerald-400" />
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-              FinTech Hub
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="relative">
+              <div className="absolute inset-0 bg-teal-500/30 blur-xl rounded-full" />
+              <div className="relative p-3 rounded-2xl bg-gradient-to-br from-teal-500/20 to-purple-500/20 border border-white/10">
+                <TrendingUp className="w-8 h-8 text-teal-400" />
+              </div>
+            </div>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
+              MarketMorning
             </h1>
           </div>
-          <p className="text-slate-400">AI-Powered Financial Intelligence</p>
+          <p className="text-slate-500 text-sm">AI-Powered Trading Intelligence</p>
         </div>
 
         {/* Google Login */}
         <Button
           onClick={handleGoogleLogin}
-          className="w-full mb-6 bg-white hover:bg-gray-100 text-gray-800 font-medium py-3"
+          className="w-full mb-6 bg-white hover:bg-gray-50 text-gray-800 font-medium py-6 rounded-xl shadow-lg shadow-white/5 transition-all duration-200 hover:shadow-white/10 hover:-translate-y-0.5"
         >
           <Chrome className="w-5 h-5 mr-2" />
           Continue with Google
@@ -70,10 +80,10 @@ export default function Login() {
 
         <div className="relative mb-6">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-slate-600"></div>
+            <div className="w-full border-t border-white/10"></div>
           </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-slate-800 text-slate-400">or continue with email</span>
+          <div className="relative flex justify-center text-xs">
+            <span className="px-3 bg-[#141922] text-slate-500 rounded-full">or continue with email</span>
           </div>
         </div>
 
