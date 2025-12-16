@@ -104,6 +104,7 @@ set_usage_db(db)
 set_notif_db(db)
 set_email_db(db)
 set_trading_db(db)
+set_stripe_db(db)
 
 # Create the main app without a prefix
 app = FastAPI()
