@@ -315,51 +315,73 @@ function App() {
                 </Button>
               </nav>
               
-              {/* User Actions */}
-              <div className="flex items-center gap-2">
+              {/* Right Section - User Actions */}
+              <div className="flex items-center gap-3">
+                {/* Search */}
+                <div className="relative hidden lg:block">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                  <input
+                    type="text"
+                    placeholder="Search markets..."
+                    className="w-48 h-9 pl-9 pr-4 text-sm bg-slate-800/50 border border-slate-700/50 rounded-lg text-white placeholder-slate-500 focus:border-blue-500/50 focus:outline-none focus:ring-1 focus:ring-blue-500/20 transition-all"
+                  />
+                </div>
+                
+                {/* Notifications */}
                 <NotificationBell />
+                
+                {/* Deposit CTA */}
+                <Button
+                  onClick={() => setActiveView('subscription')}
+                  size="sm"
+                  className="bg-blue-600 hover:bg-blue-500 text-white font-medium px-4 shadow-lg shadow-blue-600/20 hidden sm:flex"
+                >
+                  <Zap className="w-4 h-4 mr-1.5" />
+                  Upgrade
+                </Button>
                 
                 {/* User Menu */}
                 <div className="relative" ref={userMenuRef}>
                   <button
                     onClick={() => setShowUserMenu(!showUserMenu)}
-                    className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-white/5 transition-all duration-200 border border-transparent hover:border-white/10"
+                    className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-slate-700/50 transition-all duration-200"
                   >
                     {user?.picture ? (
-                      <img src={user.picture} alt="" className="w-8 h-8 rounded-xl ring-2 ring-white/10" />
+                      <img src={user.picture} alt="" className="w-8 h-8 rounded-lg" />
                     ) : (
-                      <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-purple-500/30 to-pink-500/20 flex items-center justify-center ring-2 ring-white/10">
-                        <User className="w-4 h-4 text-purple-300" />
+                      <div className="w-8 h-8 rounded-lg bg-slate-700 flex items-center justify-center">
+                        <User className="w-4 h-4 text-slate-400" />
                       </div>
                     )}
+                    <ChevronDown className="w-4 h-4 text-slate-400" />
                   </button>
                   
                   {showUserMenu && (
-                    <div className="absolute right-0 mt-2 w-72 glass-card rounded-2xl shadow-2xl overflow-hidden z-50 animate-scale-in border border-white/10">
+                    <div className="absolute right-0 mt-2 w-64 bg-slate-800 border border-slate-700 rounded-xl shadow-dropdown overflow-hidden z-50 animate-slide-down">
                       {/* User Info Header */}
-                      <div className="p-4 bg-gradient-to-r from-purple-500/10 to-teal-500/10 border-b border-white/5">
+                      <div className="p-4 border-b border-slate-700">
                         <div className="flex items-center gap-3">
                           {user?.picture ? (
-                            <img src={user.picture} alt="" className="w-12 h-12 rounded-xl ring-2 ring-white/20" />
+                            <img src={user.picture} alt="" className="w-10 h-10 rounded-lg" />
                           ) : (
-                            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/30 to-pink-500/20 flex items-center justify-center ring-2 ring-white/20">
-                              <User className="w-6 h-6 text-purple-300" />
+                            <div className="w-10 h-10 rounded-lg bg-slate-700 flex items-center justify-center">
+                              <User className="w-5 h-5 text-slate-400" />
                             </div>
                           )}
                           <div className="flex-1 min-w-0">
-                            <p className="font-semibold text-white truncate">{user?.name || 'User'}</p>
-                            <p className="text-xs text-slate-400 truncate">{user?.email}</p>
+                            <p className="font-medium text-white truncate">{user?.name || 'User'}</p>
+                            <p className="text-xs text-slate-500 truncate">{user?.email}</p>
                           </div>
                         </div>
-                        <div className="mt-3 flex items-center gap-2">
-                          <span className={`px-3 py-1 text-xs font-medium rounded-full ${
+                        <div className="mt-3">
+                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-md ${
                             user?.subscription_tier === 'pro' 
-                              ? 'bg-gradient-to-r from-purple-500/30 to-pink-500/20 text-purple-300 border border-purple-500/30' 
+                              ? 'bg-purple-500/15 text-purple-400 border border-purple-500/20' 
                               : user?.subscription_tier === 'basic' 
-                              ? 'bg-gradient-to-r from-blue-500/30 to-cyan-500/20 text-blue-300 border border-blue-500/30' 
-                              : 'bg-slate-700/50 text-slate-400 border border-slate-600/50'
+                              ? 'bg-blue-500/15 text-blue-400 border border-blue-500/20' 
+                              : 'bg-slate-700 text-slate-400'
                           }`}>
-                            {user?.subscription_tier === 'pro' ? '⚡ PRO' : user?.subscription_tier === 'basic' ? '✨ BASIC' : '🆓 FREE'}
+                            {user?.subscription_tier === 'pro' ? '⚡ PRO' : user?.subscription_tier === 'basic' ? '✨ BASIC' : 'FREE TIER'}
                           </span>
                         </div>
                       </div>
