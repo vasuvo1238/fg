@@ -68,16 +68,19 @@ async def add_position(
         "symbol": symbol.upper(),
         "quantity": quantity,
         "entry_price": entry_price,
-        "entry_date": entry_date or datetime.now(timezone.utc),
+        "entry_date": (entry_date or datetime.now(timezone.utc)).isoformat() if isinstance(entry_date, datetime) else str(entry_date) if entry_date else datetime.now(timezone.utc).isoformat(),
         "position_type": position_type,
         "notes": notes,
         "status": "open",
-        "created_at": datetime.now(timezone.utc)
+        "created_at": datetime.now(timezone.utc).isoformat()
     }
     
     await db.trading_positions.insert_one(position)
     
-    return {"position_id": position_id, "status": "created", "position": position}
+    # Return without _id
+    position_response = {k: v for k, v in position.items() if k != '_id'}
+    
+    return {"position_id": position_id, "status": "created", "position": position_response}
 
 
 async def update_position(
