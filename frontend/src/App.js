@@ -3,7 +3,7 @@ import "@/App.css";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { AlertCircle, Send, Sparkles, TrendingUp, DollarSign, PieChart, BarChart3, MessageCircle, Microscope, Wallet, Shield, Activity, Target, LogOut, User, Settings } from "lucide-react";
+import { AlertCircle, Send, Sparkles, TrendingUp, DollarSign, PieChart, BarChart3, MessageCircle, Microscope, Wallet, Shield, Activity, Target, LogOut, User, Settings, Bot } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import StockPrediction from "@/components/StockPrediction";
