@@ -193,9 +193,22 @@ const CandlestickChart = ({ data, width = 800, height = 400 }) => {
   );
 };
 
+// Generate static MFI data
+const generateMFIData = () => {
+  const seed = 54321;
+  let s = seed;
+  const seededRandom = () => {
+    s = (s * 9301 + 49297) % 233280;
+    return s / 233280;
+  };
+  return Array.from({ length: 60 }, () => 20 + seededRandom() * 60);
+};
+
+const STATIC_MFI_DATA = generateMFIData();
+
 // Indicator Chart (MFI style)
 const IndicatorChart = ({ height = 100 }) => {
-  const data = Array.from({ length: 60 }, () => 20 + Math.random() * 60);
+  const data = STATIC_MFI_DATA;
   const width = 800;
   
   return (
