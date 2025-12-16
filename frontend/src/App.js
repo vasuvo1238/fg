@@ -474,7 +474,7 @@ function App() {
                 </h2>
                 <p className="text-muted-foreground max-w-xl mx-auto" style={{ fontFamily: 'Inter, sans-serif' }}>
                   Ask me anything about finance, investing, budgeting, or economics. 
-                  I'm here to provide professional guidance with a personal touch.
+                  I&apos;m here to provide professional guidance with a personal touch.
                 </p>
                 
                 {/* Disclaimer Badge */}
