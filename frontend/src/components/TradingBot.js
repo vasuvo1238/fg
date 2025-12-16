@@ -46,7 +46,7 @@ export default function TradingBot() {
   const fetchMorningReport = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API}/trading/morning-report`, { withCredentials: true });
+      const response = await axios.get(`${API}/trading-bot/morning-report`, { withCredentials: true });
       setReport(response.data);
     } catch (error) {
       console.error('Failed to fetch report:', error);
@@ -58,7 +58,7 @@ export default function TradingBot() {
 
   const fetchPositions = async () => {
     try {
-      const response = await axios.get(`${API}/trading/positions`, { withCredentials: true });
+      const response = await axios.get(`${API}/trading-bot/positions`, { withCredentials: true });
       setPositions(response.data.positions || []);
     } catch (error) {
       console.error('Failed to fetch positions:', error);
@@ -67,11 +67,11 @@ export default function TradingBot() {
 
   const fetchPortfolio = async () => {
     try {
-      const response = await axios.get(`${API}/trading/portfolio/analysis`, { withCredentials: true });
+      const response = await axios.get(`${API}/trading-bot/portfolio/analysis`, { withCredentials: true });
       setPortfolio(response.data);
       
       // Fetch alerts
-      const alertsRes = await axios.get(`${API}/trading/portfolio/alerts`, { withCredentials: true });
+      const alertsRes = await axios.get(`${API}/trading-bot/portfolio/alerts`, { withCredentials: true });
       setAlerts(alertsRes.data.alerts || []);
     } catch (error) {
       console.error('Failed to fetch portfolio:', error);
@@ -80,7 +80,7 @@ export default function TradingBot() {
 
   const downloadPDF = async () => {
     try {
-      const response = await axios.get(`${API}/trading/morning-report/pdf`, {
+      const response = await axios.get(`${API}/trading-bot/morning-report/pdf`, {
         withCredentials: true,
         responseType: 'blob'
       });
@@ -106,7 +106,7 @@ export default function TradingBot() {
     }
 
     try {
-      await axios.post(`${API}/trading/positions`, {
+      await axios.post(`${API}/trading-bot/positions`, {
         symbol: newPosition.symbol.toUpperCase(),
         quantity: parseFloat(newPosition.quantity),
         entry_price: parseFloat(newPosition.entry_price),
@@ -126,7 +126,7 @@ export default function TradingBot() {
 
   const closePosition = async (positionId, currentPrice) => {
     try {
-      await axios.post(`${API}/trading/positions/${positionId}/close`, {
+      await axios.post(`${API}/trading-bot/positions/${positionId}/close`, {
         exit_price: currentPrice
       }, { withCredentials: true });
 
