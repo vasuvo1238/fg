@@ -225,160 +225,95 @@ function App() {
               {/* Center Navigation */}
               <nav className="flex items-center gap-1 bg-slate-800/50 p-1 rounded-lg border border-slate-700/50">
               
-              {/* Navigation Pills */}
-              <div className="flex items-center gap-1 p-1 bg-slate-800/50 rounded-2xl border border-slate-700/50 backdrop-blur-sm">
-                <Button
-                  data-testid="chat-view-btn"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setActiveView("chat")}
-                  className={`gap-2 rounded-xl px-3 transition-all duration-200 ${
-                    activeView === "chat" 
-                      ? "bg-gradient-to-r from-teal-500/20 to-teal-600/10 text-teal-400 shadow-lg shadow-teal-500/10" 
-                      : "text-slate-400 hover:text-white hover:bg-white/5"
-                  }`}
-                >
-                  <MessageCircle className="w-4 h-4" />
-                  Chat
-                </Button>
-                <Button
-                  data-testid="stocks-view-btn"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setActiveView("stocks")}
-                  className={`gap-2 rounded-xl px-3 transition-all duration-200 ${
-                    activeView === "stocks" 
-                      ? "bg-gradient-to-r from-teal-500/20 to-teal-600/10 text-teal-400 shadow-lg shadow-teal-500/10" 
-                      : "text-slate-400 hover:text-white hover:bg-white/5"
-                  }`}
-                >
-                  <BarChart3 className="w-4 h-4" />
-                  Stocks
-                </Button>
-                <Button
-                  data-testid="options-view-btn"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setActiveView("options")}
-                  className={`gap-2 rounded-xl px-3 transition-all duration-200 ${
-                    activeView === "options" 
-                      ? "bg-gradient-to-r from-teal-500/20 to-teal-600/10 text-teal-400 shadow-lg shadow-teal-500/10" 
-                      : "text-slate-400 hover:text-white hover:bg-white/5"
-                  }`}
-                >
-                  <TrendingUp className="w-4 h-4" />
-                  Options
-                </Button>
-                <Button
-                  data-testid="analytics-view-btn"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setActiveView("analytics")}
-                  className={`gap-2 rounded-xl px-3 transition-all duration-200 ${
-                    activeView === "analytics" 
-                      ? "bg-gradient-to-r from-teal-500/20 to-teal-600/10 text-teal-400 shadow-lg shadow-teal-500/10" 
-                      : "text-slate-400 hover:text-white hover:bg-white/5"
-                  }`}
-                >
-                  <Microscope className="w-4 h-4" />
-                  Analytics
-                </Button>
-                <Button
-                  data-testid="portfolio-view-btn"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setActiveView("portfolio")}
-                  className={`gap-2 rounded-xl px-3 transition-all duration-200 ${
-                    activeView === "portfolio" 
-                      ? "bg-gradient-to-r from-teal-500/20 to-teal-600/10 text-teal-400 shadow-lg shadow-teal-500/10" 
-                      : "text-slate-400 hover:text-white hover:bg-white/5"
-                  }`}
-                >
-                  <Wallet className="w-4 h-4" />
-                  Portfolio
-                </Button>
-                <Button
-                  data-testid="risk-view-btn"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setActiveView("risk")}
-                  className={`gap-2 rounded-xl px-3 transition-all duration-200 ${
-                    activeView === "risk" 
-                      ? "bg-gradient-to-r from-teal-500/20 to-teal-600/10 text-teal-400 shadow-lg shadow-teal-500/10" 
-                      : "text-slate-400 hover:text-white hover:bg-white/5"
-                  }`}
-                >
-                  <Shield className="w-4 h-4" />
-                  Risk
-                </Button>
-                <Button
-                  data-testid="technical-view-btn"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setActiveView("technical")}
-                  className={`gap-2 rounded-xl px-3 transition-all duration-200 ${
-                    activeView === "technical" 
-                      ? "bg-gradient-to-r from-teal-500/20 to-teal-600/10 text-teal-400 shadow-lg shadow-teal-500/10" 
-                      : "text-slate-400 hover:text-white hover:bg-white/5"
-                  }`}
-                >
-                  <Activity className="w-4 h-4" />
-                  Technical
-                </Button>
+                {/* Main Nav Items */}
+                {[
+                  { id: 'chat', icon: MessageCircle, label: 'Chat' },
+                  { id: 'stocks', icon: BarChart3, label: 'Markets' },
+                  { id: 'options', icon: TrendingUp, label: 'Options' },
+                  { id: 'analytics', icon: Microscope, label: 'Analytics' },
+                  { id: 'portfolio', icon: Wallet, label: 'Portfolio' },
+                  { id: 'risk', icon: Shield, label: 'Risk' },
+                  { id: 'technical', icon: Activity, label: 'Technical' },
+                ].map(item => (
+                  <Button
+                    key={item.id}
+                    data-testid={`${item.id}-view-btn`}
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setActiveView(item.id)}
+                    className={`gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 ${
+                      activeView === item.id 
+                        ? "bg-blue-600/20 text-blue-400" 
+                        : "text-slate-400 hover:text-white hover:bg-slate-700/50"
+                    }`}
+                  >
+                    <item.icon className="w-4 h-4" />
+                    {item.label}
+                  </Button>
+                ))}
+                
+                {/* Divider */}
+                <div className="w-px h-6 bg-slate-700 mx-1" />
+                
+                {/* Special Markets */}
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => setActiveView("indian")}
-                  className={`gap-2 rounded-xl px-3 transition-all duration-200 ${
+                  className={`gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all ${
                     activeView === "indian" 
-                      ? "bg-gradient-to-r from-orange-500/20 to-orange-600/10 text-orange-400 shadow-lg shadow-orange-500/10" 
-                      : "text-slate-400 hover:text-white hover:bg-white/5"
+                      ? "bg-orange-500/20 text-orange-400" 
+                      : "text-slate-400 hover:text-white hover:bg-slate-700/50"
                   }`}
                 >
-                  <TrendingUp className="w-4 h-4" />
-                  Indian
+                  <Globe className="w-4 h-4" />
+                  India
                 </Button>
+                
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => setActiveView("prediction")}
-                  className={`gap-2 rounded-xl px-3 transition-all duration-200 ${
+                  className={`gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all ${
                     activeView === "prediction" 
-                      ? "bg-gradient-to-r from-purple-500/20 to-purple-600/10 text-purple-400 shadow-lg shadow-purple-500/10" 
-                      : "text-slate-400 hover:text-white hover:bg-white/5"
+                      ? "bg-purple-500/20 text-purple-400" 
+                      : "text-slate-400 hover:text-white hover:bg-slate-700/50"
                   }`}
                 >
                   <Target className="w-4 h-4" />
                   Prediction
                 </Button>
+                
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => setActiveView("crypto")}
-                  className={`gap-2 rounded-xl px-3 transition-all duration-200 ${
+                  className={`gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all ${
                     activeView === "crypto" 
-                      ? "bg-gradient-to-r from-amber-500/20 to-amber-600/10 text-amber-400 shadow-lg shadow-amber-500/10" 
-                      : "text-slate-400 hover:text-white hover:bg-white/5"
+                      ? "bg-purple-500/20 text-purple-400" 
+                      : "text-slate-400 hover:text-white hover:bg-slate-700/50"
                   }`}
                 >
                   <DollarSign className="w-4 h-4" />
                   Crypto
                 </Button>
+                
+                {/* Bot - Featured */}
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => setActiveView("tradingbot")}
-                  className={`gap-2 rounded-xl px-3 transition-all duration-200 relative overflow-hidden ${
+                  className={`gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all relative ${
                     activeView === "tradingbot" 
-                      ? "bg-gradient-to-r from-amber-500/30 to-orange-500/20 text-amber-300 shadow-lg shadow-amber-500/20" 
-                      : "text-amber-400/80 hover:text-amber-300 bg-gradient-to-r from-amber-500/10 to-orange-500/5 hover:from-amber-500/20 hover:to-orange-500/10"
+                      ? "bg-emerald-500/20 text-emerald-400" 
+                      : "text-emerald-400 hover:bg-emerald-500/10"
                   }`}
                 >
                   <Bot className="w-4 h-4" />
-                  <span className="font-medium">Bot</span>
-                  <span className="absolute -top-1 -right-1 w-2 h-2 bg-amber-400 rounded-full animate-pulse" />
+                  AI Bot
+                  <span className="absolute -top-1 -right-1 w-2 h-2 bg-emerald-500 rounded-full pulse-live" />
                 </Button>
-              </div>
+              </nav>
               
               {/* User Actions */}
               <div className="flex items-center gap-2">
