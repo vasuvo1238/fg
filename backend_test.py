@@ -1398,14 +1398,530 @@ class FinancialChatbotTester:
             self.log_test("Portfolio Save/Load/Delete", False, str(e))
             return False
 
+    # ============== AUTHENTICATION TESTS ==============
+    
+    def test_auth_login(self):
+        """Test POST /api/auth/login with test credentials"""
+        try:
+            payload = {
+                "email": "test@test.com",
+                "password": "password"
+            }
+            
+            start_time = time.time()
+            response = requests.post(
+                f"{self.api_url}/auth/login",
+                json=payload,
+                headers={"Content-Type": "application/json"},
+                timeout=30
+            )
+            latency = time.time() - start_time
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if success:
+                # Store session cookies for authenticated requests
+                self.session_cookies = response.cookies
+                data = response.json()
+                if "user" in data:
+                    details += f", User: {data.get('user', {}).get('email', 'N/A')}"
+                else:
+                    details += ", Login successful"
+            else:
+                details += f", Login failed"
+                    
+            self.log_test("Authentication - Login", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Authentication - Login", False, str(e))
+            return False
+
+    # ============== TRADING BOT API TESTS ==============
+    
+    def test_trading_morning_report(self):
+        """Test GET /api/trading/morning-report (authenticated)"""
+        try:
+            start_time = time.time()
+            response = requests.get(
+                f"{self.api_url}/trading/morning-report",
+                cookies=getattr(self, 'session_cookies', None),
+                timeout=30
+            )
+            latency = time.time() - start_time
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if success:
+                data = response.json()
+                # Check for expected morning report structure
+                expected_sections = ["futures", "sectors", "global_markets"]
+                found_sections = [section for section in expected_sections if section in data]
+                details += f", Sections found: {len(found_sections)}/{len(expected_sections)}"
+            elif response.status_code == 401:
+                details += ", Authentication required (expected)"
+            else:
+                details += f", Unexpected error"
+                    
+            self.log_test("Trading Bot - Morning Report", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Trading Bot - Morning Report", False, str(e))
+            return False
+
+    def test_trading_futures(self):
+        """Test GET /api/trading/futures - S&P 500, Nasdaq, Dow futures"""
+        try:
+            start_time = time.time()
+            response = requests.get(
+                f"{self.api_url}/trading/futures",
+                cookies=getattr(self, 'session_cookies', None),
+                timeout=30
+            )
+            latency = time.time() - start_time
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if success:
+                data = response.json()
+                # Check for major futures
+                expected_futures = ["S&P 500", "Nasdaq", "Dow"]
+                if isinstance(data, list):
+                    futures_names = [item.get("name", "") for item in data]
+                    found_futures = [name for name in expected_futures if any(name in fname for fname in futures_names)]
+                    details += f", Futures found: {len(found_futures)}/{len(expected_futures)}"
+                else:
+                    details += ", Invalid response structure"
+                    success = False
+                    
+            self.log_test("Trading Bot - Futures", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Trading Bot - Futures", False, str(e))
+            return False
+
+    def test_trading_global_markets(self):
+        """Test GET /api/trading/global-markets - Asia and Europe market data"""
+        try:
+            start_time = time.time()
+            response = requests.get(
+                f"{self.api_url}/trading/global-markets",
+                cookies=getattr(self, 'session_cookies', None),
+                timeout=30
+            )
+            latency = time.time() - start_time
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if success:
+                data = response.json()
+                # Check for Asia and Europe sections
+                if "asia" in data and "europe" in data:
+                    details += f", Asia markets: {len(data.get('asia', []))}, Europe markets: {len(data.get('europe', []))}"
+                else:
+                    details += ", Missing Asia/Europe sections"
+                    success = False
+                    
+            self.log_test("Trading Bot - Global Markets", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Trading Bot - Global Markets", False, str(e))
+            return False
+
+    def test_trading_sectors(self):
+        """Test GET /api/trading/sectors - Sector performance"""
+        try:
+            start_time = time.time()
+            response = requests.get(
+                f"{self.api_url}/trading/sectors",
+                cookies=getattr(self, 'session_cookies', None),
+                timeout=30
+            )
+            latency = time.time() - start_time
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if success:
+                data = response.json()
+                if isinstance(data, list) and len(data) > 0:
+                    # Check sector data structure
+                    sector = data[0]
+                    if "name" in sector and "performance" in sector:
+                        details += f", Sectors: {len(data)}"
+                    else:
+                        details += ", Invalid sector data structure"
+                        success = False
+                else:
+                    details += ", No sector data returned"
+                    success = False
+                    
+            self.log_test("Trading Bot - Sectors", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Trading Bot - Sectors", False, str(e))
+            return False
+
+    def test_trading_gap_scanners(self):
+        """Test GET /api/trading/gap-scanners - Gapping stocks"""
+        try:
+            start_time = time.time()
+            response = requests.get(
+                f"{self.api_url}/trading/gap-scanners",
+                cookies=getattr(self, 'session_cookies', None),
+                timeout=30
+            )
+            latency = time.time() - start_time
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if success:
+                data = response.json()
+                if "gappers_up" in data and "gappers_down" in data:
+                    details += f", Gappers up: {len(data.get('gappers_up', []))}, Gappers down: {len(data.get('gappers_down', []))}"
+                else:
+                    details += ", Missing gappers_up/gappers_down sections"
+                    success = False
+                    
+            self.log_test("Trading Bot - Gap Scanners", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Trading Bot - Gap Scanners", False, str(e))
+            return False
+
+    def test_trading_schedule_get(self):
+        """Test GET /api/trading/schedule - Get user's schedule config"""
+        try:
+            start_time = time.time()
+            response = requests.get(
+                f"{self.api_url}/trading/schedule",
+                cookies=getattr(self, 'session_cookies', None),
+                timeout=30
+            )
+            latency = time.time() - start_time
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if success:
+                data = response.json()
+                expected_fields = ["enabled", "time_utc", "days", "delivery_methods"]
+                missing_fields = [field for field in expected_fields if field not in data]
+                if missing_fields:
+                    details += f", Missing fields: {missing_fields}"
+                    success = False
+                else:
+                    details += f", Schedule config retrieved"
+            elif response.status_code == 401:
+                details += ", Authentication required (expected)"
+            else:
+                details += f", Unexpected error"
+                    
+            self.log_test("Trading Bot - Get Schedule", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Trading Bot - Get Schedule", False, str(e))
+            return False
+
+    def test_trading_schedule_update(self):
+        """Test PUT /api/trading/schedule - Update schedule config"""
+        try:
+            payload = {
+                "enabled": True,
+                "time_utc": "11:00",
+                "days": ["monday", "tuesday"],
+                "delivery_methods": ["push"]
+            }
+            
+            start_time = time.time()
+            response = requests.put(
+                f"{self.api_url}/trading/schedule",
+                json=payload,
+                cookies=getattr(self, 'session_cookies', None),
+                headers={"Content-Type": "application/json"},
+                timeout=30
+            )
+            latency = time.time() - start_time
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if success:
+                data = response.json()
+                if "success" in data or "message" in data:
+                    details += f", Schedule updated successfully"
+                else:
+                    details += f", Update response received"
+            elif response.status_code == 401:
+                details += ", Authentication required (expected)"
+            else:
+                details += f", Update failed"
+                    
+            self.log_test("Trading Bot - Update Schedule", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Trading Bot - Update Schedule", False, str(e))
+            return False
+
+    # ============== PORTFOLIO MANAGEMENT API TESTS ==============
+    
+    def test_trading_positions_add(self):
+        """Test POST /api/trading/positions - Add a position"""
+        try:
+            payload = {
+                "symbol": "AAPL",
+                "quantity": 10,
+                "entry_price": 180.50,
+                "position_type": "long"
+            }
+            
+            start_time = time.time()
+            response = requests.post(
+                f"{self.api_url}/trading/positions",
+                json=payload,
+                cookies=getattr(self, 'session_cookies', None),
+                headers={"Content-Type": "application/json"},
+                timeout=30
+            )
+            latency = time.time() - start_time
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if success:
+                data = response.json()
+                if "id" in data or "position_id" in data:
+                    details += f", Position added: AAPL x10 @ $180.50"
+                else:
+                    details += f", Position creation response received"
+            elif response.status_code == 401:
+                details += ", Authentication required (expected)"
+            else:
+                details += f", Failed to add position"
+                    
+            self.log_test("Portfolio - Add Position", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Portfolio - Add Position", False, str(e))
+            return False
+
+    def test_trading_positions_get(self):
+        """Test GET /api/trading/positions - Get all positions"""
+        try:
+            start_time = time.time()
+            response = requests.get(
+                f"{self.api_url}/trading/positions",
+                cookies=getattr(self, 'session_cookies', None),
+                timeout=30
+            )
+            latency = time.time() - start_time
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if success:
+                data = response.json()
+                if isinstance(data, list):
+                    details += f", Positions: {len(data)}"
+                elif "positions" in data:
+                    details += f", Positions: {len(data['positions'])}"
+                else:
+                    details += f", Positions data retrieved"
+            elif response.status_code == 401:
+                details += ", Authentication required (expected)"
+            else:
+                details += f", Failed to get positions"
+                    
+            self.log_test("Portfolio - Get Positions", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Portfolio - Get Positions", False, str(e))
+            return False
+
+    def test_trading_portfolio_analysis(self):
+        """Test GET /api/trading/portfolio/analysis - Get portfolio analysis"""
+        try:
+            start_time = time.time()
+            response = requests.get(
+                f"{self.api_url}/trading/portfolio/analysis",
+                cookies=getattr(self, 'session_cookies', None),
+                timeout=30
+            )
+            latency = time.time() - start_time
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if success:
+                data = response.json()
+                expected_fields = ["total_value", "total_pnl", "positions"]
+                found_fields = [field for field in expected_fields if field in data]
+                details += f", Analysis fields: {len(found_fields)}/{len(expected_fields)}"
+            elif response.status_code == 401:
+                details += ", Authentication required (expected)"
+            else:
+                details += f", Failed to get portfolio analysis"
+                    
+            self.log_test("Portfolio - Analysis", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Portfolio - Analysis", False, str(e))
+            return False
+
+    # ============== STRIPE PAYMENT API TESTS ==============
+    
+    def test_payments_tiers(self):
+        """Test GET /api/payments/tiers - Get Basic ($20) and Pro ($99) tiers"""
+        try:
+            start_time = time.time()
+            response = requests.get(
+                f"{self.api_url}/payments/tiers",
+                timeout=30
+            )
+            latency = time.time() - start_time
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if success:
+                data = response.json()
+                if "basic" in data and "pro" in data:
+                    basic_tier = data["basic"]
+                    pro_tier = data["pro"]
+                    
+                    # Check pricing
+                    basic_price = basic_tier.get("price", 0)
+                    pro_price = pro_tier.get("price", 0)
+                    
+                    if basic_price == 20 and pro_price == 99:
+                        details += f", Basic: ${basic_price}, Pro: ${pro_price}"
+                    else:
+                        details += f", Pricing mismatch - Basic: ${basic_price}, Pro: ${pro_price}"
+                        success = False
+                else:
+                    details += ", Missing basic/pro tiers"
+                    success = False
+                    
+            self.log_test("Payments - Tiers", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Payments - Tiers", False, str(e))
+            return False
+
+    def test_payments_checkout_create(self):
+        """Test POST /api/payments/checkout/create - Create checkout session"""
+        try:
+            payload = {
+                "tier": "basic",
+                "origin_url": "http://localhost:3000"
+            }
+            
+            start_time = time.time()
+            response = requests.post(
+                f"{self.api_url}/payments/checkout/create",
+                json=payload,
+                headers={"Content-Type": "application/json"},
+                timeout=30
+            )
+            latency = time.time() - start_time
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if success:
+                data = response.json()
+                if "checkout_url" in data or "url" in data:
+                    details += f", Checkout session created"
+                else:
+                    details += f", Checkout response received"
+            else:
+                details += f", Failed to create checkout session"
+                    
+            self.log_test("Payments - Create Checkout", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Payments - Create Checkout", False, str(e))
+            return False
+
+    def test_payments_subscription_status(self):
+        """Test GET /api/payments/subscription/status - Get subscription status"""
+        try:
+            start_time = time.time()
+            response = requests.get(
+                f"{self.api_url}/payments/subscription/status",
+                cookies=getattr(self, 'session_cookies', None),
+                timeout=30
+            )
+            latency = time.time() - start_time
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if success:
+                data = response.json()
+                if "status" in data:
+                    details += f", Subscription status: {data['status']}"
+                else:
+                    details += f", Subscription data retrieved"
+            elif response.status_code == 401:
+                details += ", Authentication required (expected)"
+            else:
+                details += f", Failed to get subscription status"
+                    
+            self.log_test("Payments - Subscription Status", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Payments - Subscription Status", False, str(e))
+            return False
+
     def run_all_tests(self):
         """Run all tests in sequence"""
-        print("🚀 Starting Comprehensive Financial Advisor API Tests")
+        print("🚀 Starting Trading Bot & Stripe Payment API Tests")
         print(f"Testing against: {self.base_url}")
         print("=" * 80)
         
         # Test sequence organized by category
         tests = [
+            # Authentication
+            self.test_auth_login,
+            
+            # Trading Bot APIs (authenticated)
+            self.test_trading_morning_report,
+            self.test_trading_futures,
+            self.test_trading_global_markets,
+            self.test_trading_sectors,
+            self.test_trading_gap_scanners,
+            self.test_trading_schedule_get,
+            self.test_trading_schedule_update,
+            
+            # Portfolio Management APIs (authenticated)
+            self.test_trading_positions_add,
+            self.test_trading_positions_get,
+            self.test_trading_portfolio_analysis,
+            
+            # Stripe Payment APIs
+            self.test_payments_tiers,
+            self.test_payments_checkout_create,
+            self.test_payments_subscription_status,
+            
             # Basic API tests
             self.test_api_root,
             
