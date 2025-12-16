@@ -451,55 +451,10 @@ function App() {
             <CryptoAnalysis />
           ) : activeView === "tradingbot" ? (
             <TradingBot />
+          ) : activeView === "dashboard" ? (
+            <Dashboard onOpenChat={() => { setChatOpen(true); setChatMinimized(false); }} />
           ) : (
-            <div>
-          {showWelcome && messages.length === 0 && (
-            <div className="welcome-section mb-12">
-              <div className="text-center mb-12">
-                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mb-6 icon-glow">
-                  <Sparkles className="w-10 h-10 text-primary" />
-                </div>
-                <h2 className="text-4xl font-light mb-4" style={{ fontFamily: 'Fraunces, serif', letterSpacing: '-0.02em' }}>
-                  Welcome to Your
-                  <span className="block font-black">Financial Advisor</span>
-                </h2>
-                <p className="text-muted-foreground max-w-xl mx-auto" style={{ fontFamily: 'Inter, sans-serif' }}>
-                  Ask me anything about finance, investing, budgeting, or economics. 
-                  I&apos;m here to provide professional guidance with a personal touch.
-                </p>
-                
-                {/* Disclaimer Badge */}
-                <div className="mt-6 max-w-2xl mx-auto">
-                  <div className="flex items-center justify-center gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-                    <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0" />
-                    <p className="text-xs text-amber-900">
-                      <strong>Educational Purpose Only:</strong> This platform is for learning and research. 
-                      Not financial advice. Consult a licensed advisor before investing.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                {exampleQuestions.map((q, idx) => {
-                  const IconComponent = q.icon;
-                  return (
-                    <button
-                      key={idx}
-                      data-testid={`example-question-${idx}`}
-                      onClick={() => handleExampleClick(q.text)}
-                      className="example-card group text-left p-6 rounded-xl bg-secondary/50 border border-border/50 hover:border-primary/50 hover:bg-secondary transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
-                    >
-                      <div className={`inline-flex p-3 rounded-lg bg-gradient-to-br ${q.gradient} mb-4`}>
-                        <IconComponent className="w-5 h-5 text-white" />
-                      </div>
-                      <p className="text-sm leading-relaxed" style={{ fontFamily: 'Inter, sans-serif' }}>{q.text}</p>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
+            <Dashboard onOpenChat={() => { setChatOpen(true); setChatMinimized(false); }} />
 
           {/* Messages */}
           <div ref={scrollRef} className="messages-area space-y-6">
