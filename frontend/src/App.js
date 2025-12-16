@@ -158,30 +158,72 @@ function App() {
   };
 
   return (
-    <div className="App min-h-screen bg-gradient-mesh">
+    <div className="App min-h-screen bg-[#0F172A]">
       {/* Main Container */}
       <div className="relative min-h-screen pb-32">
-        {/* Premium Header */}
-        <div className="glass sticky top-0 z-10 border-b border-white/5">
-          <div className="max-w-7xl mx-auto px-6 py-3">
-            <div className="flex items-center justify-between">
-              {/* Logo Section */}
-              <div className="flex items-center gap-4">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-teal-500/20 blur-xl rounded-full" />
-                  <div className="relative p-2.5 rounded-xl bg-gradient-to-br from-teal-500/20 to-purple-500/20 border border-white/10">
-                    <Sparkles className="w-6 h-6 text-teal-400" />
-                  </div>
+        {/* Professional Trading Header - Sticky */}
+        <header className="glass-header sticky top-0 z-50">
+          {/* Top Bar with Ticker */}
+          <div className="border-b border-slate-700/50 bg-slate-900/50">
+            <div className="max-w-[1800px] mx-auto px-4">
+              <div className="flex items-center justify-between h-8 text-xs">
+                {/* Market Status */}
+                <div className="flex items-center gap-4">
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-2 h-2 bg-emerald-500 rounded-full pulse-live" />
+                    <span className="text-slate-400">Markets Open</span>
+                  </span>
+                  <span className="text-slate-500">|</span>
+                  <span className="text-slate-400">
+                    {new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZoneName: 'short' })}
+                  </span>
                 </div>
-                <div>
-                  <h1 className="text-xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
-                    MarketMorning
-                  </h1>
-                  <p className="text-[10px] text-slate-500 font-mono tracking-wider uppercase">
-                    AI-Powered Trading Intelligence
-                  </p>
+                
+                {/* Quick Ticker */}
+                <div className="flex items-center gap-6 font-mono">
+                  <span className="flex items-center gap-2">
+                    <span className="text-slate-400">S&P 500</span>
+                    <span className="text-emerald-400">+0.45%</span>
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <span className="text-slate-400">BTC</span>
+                    <span className="text-emerald-400">$104,250</span>
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <span className="text-slate-400">ETH</span>
+                    <span className="text-red-400">-1.2%</span>
+                  </span>
+                </div>
+                
+                {/* Trust Elements */}
+                <div className="flex items-center gap-3">
+                  <span className="trust-badge">
+                    <Shield className="w-3 h-3" />
+                    256-bit SSL
+                  </span>
                 </div>
               </div>
+            </div>
+          </div>
+          
+          {/* Main Navigation */}
+          <div className="max-w-[1800px] mx-auto px-4 py-2">
+            <div className="flex items-center justify-between">
+              {/* Logo - Left */}
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
+                  <div className="p-2 rounded-lg bg-blue-600">
+                    <TrendingUp className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h1 className="text-lg font-bold text-white">MarketMorning</h1>
+                    <p className="text-[10px] text-slate-500 -mt-0.5">Pro Trading Platform</p>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Center Navigation */}
+              <nav className="flex items-center gap-1 bg-slate-800/50 p-1 rounded-lg border border-slate-700/50">
               
               {/* Navigation Pills */}
               <div className="flex items-center gap-1 p-1 bg-slate-800/50 rounded-2xl border border-slate-700/50 backdrop-blur-sm">
