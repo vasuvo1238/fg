@@ -273,6 +273,15 @@ function App() {
                   <DollarSign className="w-4 h-4" />
                   Crypto
                 </Button>
+                <Button
+                  variant={activeView === "tradingbot" ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setActiveView("tradingbot")}
+                  className="gap-2 nav-pill bg-gradient-to-r from-amber-500/20 to-orange-500/20 hover:from-amber-500/30 hover:to-orange-500/30"
+                >
+                  <Bot className="w-4 h-4 text-amber-400" />
+                  <span className="text-amber-400">Bot</span>
+                </Button>
               </div>
               
               {/* User Actions */}
