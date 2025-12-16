@@ -158,130 +158,183 @@ function App() {
   };
 
   return (
-    <div className="App min-h-screen">
+    <div className="App min-h-screen bg-gradient-mesh">
       {/* Main Container */}
       <div className="relative min-h-screen pb-32">
-        {/* Header */}
-        <div className="header-glass sticky top-0 z-10 backdrop-blur-xl bg-background/80 border-b border-border/50">
-          <div className="max-w-6xl mx-auto px-6 py-4">
+        {/* Premium Header */}
+        <div className="glass sticky top-0 z-10 border-b border-white/5">
+          <div className="max-w-7xl mx-auto px-6 py-3">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="icon-glow">
-                  <Sparkles className="w-6 h-6 text-primary" />
+              {/* Logo Section */}
+              <div className="flex items-center gap-4">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-teal-500/20 blur-xl rounded-full" />
+                  <div className="relative p-2.5 rounded-xl bg-gradient-to-br from-teal-500/20 to-purple-500/20 border border-white/10">
+                    <Sparkles className="w-6 h-6 text-teal-400" />
+                  </div>
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold" style={{ fontFamily: 'Fraunces, serif' }}>Financial Advisor</h1>
-                  <p className="text-xs text-muted-foreground" style={{ fontFamily: 'JetBrains Mono, monospace' }}>Your trusted finance buddy with AI predictions</p>
+                  <h1 className="text-xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
+                    MarketMorning
+                  </h1>
+                  <p className="text-[10px] text-slate-500 font-mono tracking-wider uppercase">
+                    AI-Powered Trading Intelligence
+                  </p>
                 </div>
               </div>
               
-              {/* View Switcher */}
-              <div className="flex items-center gap-2 bg-secondary p-1 rounded-lg">
+              {/* Navigation Pills */}
+              <div className="flex items-center gap-1 p-1 bg-slate-800/50 rounded-2xl border border-slate-700/50 backdrop-blur-sm">
                 <Button
                   data-testid="chat-view-btn"
-                  variant={activeView === "chat" ? "default" : "ghost"}
+                  variant="ghost"
                   size="sm"
                   onClick={() => setActiveView("chat")}
-                  className="gap-2"
+                  className={`gap-2 rounded-xl px-3 transition-all duration-200 ${
+                    activeView === "chat" 
+                      ? "bg-gradient-to-r from-teal-500/20 to-teal-600/10 text-teal-400 shadow-lg shadow-teal-500/10" 
+                      : "text-slate-400 hover:text-white hover:bg-white/5"
+                  }`}
                 >
                   <MessageCircle className="w-4 h-4" />
                   Chat
                 </Button>
                 <Button
                   data-testid="stocks-view-btn"
-                  variant={activeView === "stocks" ? "default" : "ghost"}
+                  variant="ghost"
                   size="sm"
                   onClick={() => setActiveView("stocks")}
-                  className="gap-2 nav-pill"
+                  className={`gap-2 rounded-xl px-3 transition-all duration-200 ${
+                    activeView === "stocks" 
+                      ? "bg-gradient-to-r from-teal-500/20 to-teal-600/10 text-teal-400 shadow-lg shadow-teal-500/10" 
+                      : "text-slate-400 hover:text-white hover:bg-white/5"
+                  }`}
                 >
                   <BarChart3 className="w-4 h-4" />
                   Stocks
                 </Button>
                 <Button
                   data-testid="options-view-btn"
-                  variant={activeView === "options" ? "default" : "ghost"}
+                  variant="ghost"
                   size="sm"
                   onClick={() => setActiveView("options")}
-                  className="gap-2 nav-pill"
+                  className={`gap-2 rounded-xl px-3 transition-all duration-200 ${
+                    activeView === "options" 
+                      ? "bg-gradient-to-r from-teal-500/20 to-teal-600/10 text-teal-400 shadow-lg shadow-teal-500/10" 
+                      : "text-slate-400 hover:text-white hover:bg-white/5"
+                  }`}
                 >
                   <TrendingUp className="w-4 h-4" />
                   Options
                 </Button>
                 <Button
                   data-testid="analytics-view-btn"
-                  variant={activeView === "analytics" ? "default" : "ghost"}
+                  variant="ghost"
                   size="sm"
                   onClick={() => setActiveView("analytics")}
-                  className="gap-2 nav-pill"
+                  className={`gap-2 rounded-xl px-3 transition-all duration-200 ${
+                    activeView === "analytics" 
+                      ? "bg-gradient-to-r from-teal-500/20 to-teal-600/10 text-teal-400 shadow-lg shadow-teal-500/10" 
+                      : "text-slate-400 hover:text-white hover:bg-white/5"
+                  }`}
                 >
                   <Microscope className="w-4 h-4" />
                   Analytics
                 </Button>
                 <Button
                   data-testid="portfolio-view-btn"
-                  variant={activeView === "portfolio" ? "default" : "ghost"}
+                  variant="ghost"
                   size="sm"
                   onClick={() => setActiveView("portfolio")}
-                  className="gap-2 nav-pill"
+                  className={`gap-2 rounded-xl px-3 transition-all duration-200 ${
+                    activeView === "portfolio" 
+                      ? "bg-gradient-to-r from-teal-500/20 to-teal-600/10 text-teal-400 shadow-lg shadow-teal-500/10" 
+                      : "text-slate-400 hover:text-white hover:bg-white/5"
+                  }`}
                 >
                   <Wallet className="w-4 h-4" />
                   Portfolio
                 </Button>
                 <Button
                   data-testid="risk-view-btn"
-                  variant={activeView === "risk" ? "default" : "ghost"}
+                  variant="ghost"
                   size="sm"
                   onClick={() => setActiveView("risk")}
-                  className="gap-2 nav-pill"
+                  className={`gap-2 rounded-xl px-3 transition-all duration-200 ${
+                    activeView === "risk" 
+                      ? "bg-gradient-to-r from-teal-500/20 to-teal-600/10 text-teal-400 shadow-lg shadow-teal-500/10" 
+                      : "text-slate-400 hover:text-white hover:bg-white/5"
+                  }`}
                 >
                   <Shield className="w-4 h-4" />
                   Risk
                 </Button>
                 <Button
                   data-testid="technical-view-btn"
-                  variant={activeView === "technical" ? "default" : "ghost"}
+                  variant="ghost"
                   size="sm"
                   onClick={() => setActiveView("technical")}
-                  className="gap-2 nav-pill"
+                  className={`gap-2 rounded-xl px-3 transition-all duration-200 ${
+                    activeView === "technical" 
+                      ? "bg-gradient-to-r from-teal-500/20 to-teal-600/10 text-teal-400 shadow-lg shadow-teal-500/10" 
+                      : "text-slate-400 hover:text-white hover:bg-white/5"
+                  }`}
                 >
                   <Activity className="w-4 h-4" />
                   Technical
                 </Button>
                 <Button
-                  variant={activeView === "indian" ? "default" : "ghost"}
+                  variant="ghost"
                   size="sm"
                   onClick={() => setActiveView("indian")}
-                  className="gap-2 nav-pill"
+                  className={`gap-2 rounded-xl px-3 transition-all duration-200 ${
+                    activeView === "indian" 
+                      ? "bg-gradient-to-r from-orange-500/20 to-orange-600/10 text-orange-400 shadow-lg shadow-orange-500/10" 
+                      : "text-slate-400 hover:text-white hover:bg-white/5"
+                  }`}
                 >
                   <TrendingUp className="w-4 h-4" />
                   Indian
                 </Button>
                 <Button
-                  variant={activeView === "prediction" ? "default" : "ghost"}
+                  variant="ghost"
                   size="sm"
                   onClick={() => setActiveView("prediction")}
-                  className="gap-2 nav-pill"
+                  className={`gap-2 rounded-xl px-3 transition-all duration-200 ${
+                    activeView === "prediction" 
+                      ? "bg-gradient-to-r from-purple-500/20 to-purple-600/10 text-purple-400 shadow-lg shadow-purple-500/10" 
+                      : "text-slate-400 hover:text-white hover:bg-white/5"
+                  }`}
                 >
                   <Target className="w-4 h-4" />
                   Prediction
                 </Button>
                 <Button
-                  variant={activeView === "crypto" ? "default" : "ghost"}
+                  variant="ghost"
                   size="sm"
                   onClick={() => setActiveView("crypto")}
-                  className="gap-2 nav-pill"
+                  className={`gap-2 rounded-xl px-3 transition-all duration-200 ${
+                    activeView === "crypto" 
+                      ? "bg-gradient-to-r from-amber-500/20 to-amber-600/10 text-amber-400 shadow-lg shadow-amber-500/10" 
+                      : "text-slate-400 hover:text-white hover:bg-white/5"
+                  }`}
                 >
                   <DollarSign className="w-4 h-4" />
                   Crypto
                 </Button>
                 <Button
-                  variant={activeView === "tradingbot" ? "default" : "ghost"}
+                  variant="ghost"
                   size="sm"
                   onClick={() => setActiveView("tradingbot")}
-                  className="gap-2 nav-pill bg-gradient-to-r from-amber-500/20 to-orange-500/20 hover:from-amber-500/30 hover:to-orange-500/30"
+                  className={`gap-2 rounded-xl px-3 transition-all duration-200 relative overflow-hidden ${
+                    activeView === "tradingbot" 
+                      ? "bg-gradient-to-r from-amber-500/30 to-orange-500/20 text-amber-300 shadow-lg shadow-amber-500/20" 
+                      : "text-amber-400/80 hover:text-amber-300 bg-gradient-to-r from-amber-500/10 to-orange-500/5 hover:from-amber-500/20 hover:to-orange-500/10"
+                  }`}
                 >
-                  <Bot className="w-4 h-4 text-amber-400" />
-                  <span className="text-amber-400">Bot</span>
+                  <Bot className="w-4 h-4" />
+                  <span className="font-medium">Bot</span>
+                  <span className="absolute -top-1 -right-1 w-2 h-2 bg-amber-400 rounded-full animate-pulse" />
                 </Button>
               </div>
               
