@@ -89,7 +89,7 @@ async def create_checkout_session(request: Request, checkout_data: CreateCheckou
         user = await get_current_user(request)
         user_id = user["user_id"]
         user_email = user.get("email", "")
-    except:
+    except Exception:
         user_id = "anonymous"
         user_email = ""
     
