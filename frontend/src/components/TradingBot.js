@@ -754,6 +754,193 @@ export default function TradingBot() {
             </Card>
           )}
         </TabsContent>
+
+        {/* Schedule Tab */}
+        <TabsContent value="schedule" className="space-y-6">
+          <Card className="bg-slate-800/50 border-slate-700">
+            <CardHeader>
+              <CardTitle className="text-white flex items-center gap-2">
+                <Clock className="w-5 h-5 text-purple-400" />
+                Automated Report Schedule
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Enable/Disable Toggle */}
+              <div className="flex items-center justify-between p-4 bg-slate-700/50 rounded-lg">
+                <div>
+                  <h4 className="text-white font-medium">Enable Scheduled Reports</h4>
+                  <p className="text-sm text-slate-400">Automatically receive morning reports at your preferred time</p>
+                </div>
+                <button
+                  onClick={() => setSchedule(prev => ({ ...prev, enabled: !prev.enabled }))}
+                  className={`relative w-14 h-8 rounded-full transition-colors ${
+                    schedule.enabled ? 'bg-emerald-500' : 'bg-slate-600'
+                  }`}
+                >
+                  <div className={`absolute top-1 w-6 h-6 rounded-full bg-white transition-transform ${
+                    schedule.enabled ? 'translate-x-7' : 'translate-x-1'
+                  }`} />
+                </button>
+              </div>
+
+              {/* Time Selection */}
+              <div className="space-y-2">
+                <Label className="text-slate-300">Report Time (UTC)</Label>
+                <Select
+                  value={schedule.time_utc}
+                  onValueChange={(value) => setSchedule(prev => ({ ...prev, time_utc: value }))}
+                >
+                  <SelectTrigger className="w-full bg-slate-700 border-slate-600 text-white">
+                    <SelectValue placeholder="Select time" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-slate-800 border-slate-700">
+                    {['09:00', '10:00', '11:00', '12:00', '13:00', '14:00'].map(time => (
+                      <SelectItem key={time} value={time} className="text-white hover:bg-slate-700">
+                        {time} UTC ({time === '11:00' ? '6:00 AM EST' : time === '12:00' ? '7:00 AM EST' : time === '13:00' ? '8:00 AM EST' : time})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-slate-500">11:00 UTC = 6:00 AM EST (Pre-market)</p>
+              </div>
+
+              {/* Days Selection */}
+              <div className="space-y-2">
+                <Label className="text-slate-300">Active Days</Label>
+                <div className="flex flex-wrap gap-2">
+                  {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map(day => (
+                    <button
+                      key={day}
+                      onClick={() => toggleDay(day)}
+                      className={`px-4 py-2 rounded-lg capitalize transition-colors ${
+                        schedule.days.includes(day)
+                          ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                          : 'bg-slate-700 text-slate-400 border border-slate-600'
+                      }`}
+                    >
+                      {day.slice(0, 3)}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Crypto Weekends */}
+              <div className="flex items-center justify-between p-4 bg-slate-700/50 rounded-lg">
+                <div>
+                  <h4 className="text-white font-medium">Include Crypto on Weekends</h4>
+                  <p className="text-sm text-slate-400">Crypto markets trade 24/7</p>
+                </div>
+                <button
+                  onClick={() => setSchedule(prev => ({ ...prev, include_crypto_weekends: !prev.include_crypto_weekends }))}
+                  className={`relative w-14 h-8 rounded-full transition-colors ${
+                    schedule.include_crypto_weekends ? 'bg-emerald-500' : 'bg-slate-600'
+                  }`}
+                >
+                  <div className={`absolute top-1 w-6 h-6 rounded-full bg-white transition-transform ${
+                    schedule.include_crypto_weekends ? 'translate-x-7' : 'translate-x-1'
+                  }`} />
+                </button>
+              </div>
+
+              {/* Delivery Methods */}
+              <div className="space-y-2">
+                <Label className="text-slate-300">Delivery Methods</Label>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {[
+                    { id: 'push', label: 'Push Notification', icon: '🔔' },
+                    { id: 'email', label: 'Email', icon: '📧' },
+                    { id: 'sms', label: 'SMS', icon: '📱', comingSoon: true },
+                    { id: 'whatsapp', label: 'WhatsApp', icon: '💬', comingSoon: true }
+                  ].map(method => (
+                    <button
+                      key={method.id}
+                      onClick={() => !method.comingSoon && toggleDeliveryMethod(method.id)}
+                      disabled={method.comingSoon}
+                      className={`p-4 rounded-lg text-center transition-colors relative ${
+                        schedule.delivery_methods.includes(method.id)
+                          ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
+                          : method.comingSoon
+                          ? 'bg-slate-700/50 text-slate-500 border border-slate-600 cursor-not-allowed'
+                          : 'bg-slate-700 text-slate-400 border border-slate-600 hover:border-slate-500'
+                      }`}
+                    >
+                      <span className="text-2xl">{method.icon}</span>
+                      <p className="text-sm mt-1">{method.label}</p>
+                      {method.comingSoon && (
+                        <span className="absolute top-2 right-2 text-[10px] bg-amber-500/20 text-amber-400 px-1.5 py-0.5 rounded">
+                          Soon
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Save Button */}
+              <Button 
+                onClick={saveSchedule} 
+                disabled={savingSchedule}
+                className="w-full bg-emerald-600 hover:bg-emerald-700"
+              >
+                {savingSchedule ? (
+                  <>
+                    <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <Calendar className="w-4 h-4 mr-2" />
+                    Save Schedule
+                  </>
+                )}
+              </Button>
+
+              {/* Schedule Summary */}
+              {schedule.enabled && (
+                <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-lg">
+                  <h4 className="text-emerald-400 font-medium flex items-center gap-2">
+                    <Bell className="w-4 h-4" />
+                    Schedule Active
+                  </h4>
+                  <p className="text-sm text-slate-300 mt-2">
+                    You'll receive morning reports at <strong>{schedule.time_utc} UTC</strong> on{' '}
+                    <strong>{schedule.days.map(d => d.charAt(0).toUpperCase() + d.slice(1)).join(', ')}</strong>{' '}
+                    via <strong>{schedule.delivery_methods.map(m => m.charAt(0).toUpperCase() + m.slice(1)).join(' & ')}</strong>.
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Voice Commands Card */}
+          <Card className="bg-slate-800/50 border-slate-700">
+            <CardHeader>
+              <CardTitle className="text-white flex items-center gap-2">
+                <Mic className="w-5 h-5 text-cyan-400" />
+                Voice Commands
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-slate-400 mb-4">Say these commands to quickly access your trading data:</p>
+              <div className="grid md:grid-cols-2 gap-3">
+                {[
+                  { command: '"Get morning report"', desc: 'Full pre-market analysis' },
+                  { command: '"Check my portfolio"', desc: 'Portfolio summary & P/L' },
+                  { command: '"Show pre-market futures"', desc: 'S&P, Nasdaq, Dow futures' },
+                  { command: '"Any alerts?"', desc: 'Position alerts & warnings' }
+                ].map((item, i) => (
+                  <div key={i} className="p-3 bg-slate-700/50 rounded-lg">
+                    <p className="text-cyan-400 font-mono text-sm">{item.command}</p>
+                    <p className="text-slate-400 text-xs mt-1">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-slate-500 mt-4">
+                * Voice activation coming soon with mobile app integration
+              </p>
+            </CardContent>
+          </Card>
+        </TabsContent>
       </Tabs>
     </div>
   );
