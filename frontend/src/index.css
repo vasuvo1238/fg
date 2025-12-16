@@ -2,92 +2,118 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Modern Fintech Font Stack */
+/* Import Inter font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* Typography - Sans-serif for readability */
 body {
     margin: 0;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-        "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    font-size: 14px;
+    line-height: 1.6;
 }
 
 code {
-    font-family: 'JetBrains Mono', source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
-/* Modern Fintech Dark Theme - Premium Trading App Palette */
+/* 
+ * Financial Markets & Crypto Design System
+ * Based on TradingView, Binance, Coinbase best practices
+ * Dark mode default for reduced eye strain during trading sessions
+ */
+
 @layer base {
     :root {
-        --background: 48 55.6% 98.2%;
-        --foreground: 0 0% 10.2%;
-        --card: 48 55.6% 98.2%;
-        --card-foreground: 0 0% 10.2%;
-        --popover: 48 55.6% 98.2%;
-        --popover-foreground: 0 0% 10.2%;
-        --primary: 151 68.7% 18.8%;
-        --primary-foreground: 0 0% 98%;
-        --secondary: 240 4.8% 95.9%;
-        --secondary-foreground: 151 68.7% 18.8%;
-        --muted: 0 0% 45.1%;
-        --muted-foreground: 0 0% 45.1%;
-        --accent: 45 64.6% 52.4%;
-        --accent-foreground: 0 0% 10.2%;
-        --destructive: 0 84.2% 60.2%;
-        --destructive-foreground: 0 0% 98%;
-        --border: 0 0% 89.8%;
-        --input: 0 0% 89.8%;
-        --ring: 151 68.7% 18.8%;
+        /* Light Mode (Toggle option) */
+        --background: 0 0% 100%;
+        --foreground: 215 25% 15%;
+        --card: 0 0% 100%;
+        --card-foreground: 215 25% 15%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 215 25% 15%;
+        --primary: 217 91% 60%;
+        --primary-foreground: 0 0% 100%;
+        --secondary: 215 20% 95%;
+        --secondary-foreground: 215 25% 15%;
+        --muted: 215 20% 65%;
+        --muted-foreground: 215 15% 45%;
+        --accent: 217 91% 60%;
+        --accent-foreground: 0 0% 100%;
+        --destructive: 0 84% 60%;
+        --destructive-foreground: 0 0% 100%;
+        --border: 215 20% 88%;
+        --input: 215 20% 88%;
+        --ring: 217 91% 60%;
         --warning: 38 92% 50%;
-        --radius: 0.75rem;
+        --radius: 0.5rem;
+        
+        /* Semantic Trading Colors */
+        --positive: 160 84% 39%;
+        --negative: 0 84% 60%;
     }
 
     .dark {
-        /* Near-black base for premium look */
-        --background: 225 15% 4%;
-        --foreground: 210 20% 92%;
+        /* 
+         * Dark Mode - Default for Trading
+         * Deep charcoal/navy-black for immersion
+         * Reduces glare, easier on eyes during long sessions
+         */
+        --background: 222 47% 7%;        /* Navy-black #0F172A */
+        --foreground: 214 32% 91%;       /* Light gray #E2E8F0 */
         
-        /* Card surfaces with subtle blue tint */
-        --card: 225 15% 7%;
-        --card-foreground: 210 20% 92%;
+        /* Cards/Panels - Dark gray */
+        --card: 217 33% 15%;             /* #1E293B */
+        --card-foreground: 214 32% 91%;
         
-        /* Popovers slightly elevated */
-        --popover: 225 15% 9%;
-        --popover-foreground: 210 20% 92%;
+        /* Popovers */
+        --popover: 217 33% 12%;
+        --popover-foreground: 214 32% 91%;
         
-        /* Primary - Vivid Teal (Buy/Positive) */
-        --primary: 168 76% 46%;
-        --primary-foreground: 225 15% 4%;
+        /* Primary - Trustworthy Blue */
+        --primary: 217 91% 60%;          /* #3B82F6 */
+        --primary-foreground: 0 0% 100%;
         
         /* Secondary surfaces */
-        --secondary: 225 15% 12%;
-        --secondary-foreground: 210 20% 85%;
+        --secondary: 217 33% 17%;
+        --secondary-foreground: 214 32% 85%;
         
         /* Muted text */
-        --muted: 220 10% 50%;
-        --muted-foreground: 220 10% 60%;
+        --muted: 215 20% 45%;
+        --muted-foreground: 215 20% 55%;
         
-        /* Accent - Electric Purple (Brand/CTA) */
-        --accent: 265 85% 65%;
+        /* Accent - Same blue for consistency */
+        --accent: 217 91% 60%;
         --accent-foreground: 0 0% 100%;
         
-        /* Destructive - Warm Coral Red */
-        --destructive: 0 75% 55%;
+        /* Destructive - Red for losses */
+        --destructive: 0 84% 60%;        /* #EF4444 */
         --destructive-foreground: 0 0% 100%;
         
         /* Borders and inputs */
-        --border: 225 15% 15%;
-        --input: 225 15% 12%;
-        --ring: 168 76% 46%;
+        --border: 217 33% 22%;
+        --input: 217 33% 17%;
+        --ring: 217 91% 60%;
         
         /* Warning - Amber */
-        --warning: 40 95% 55%;
+        --warning: 38 92% 50%;
+        
+        /* Semantic Trading Colors */
+        --positive: 160 84% 39%;         /* Green #10B981 for gains */
+        --negative: 0 84% 60%;           /* Red #EF4444 for losses */
+        
+        /* Crypto Highlights - Subtle neon */
+        --crypto-teal: 174 72% 40%;      /* #14B8A6 */
+        --crypto-purple: 258 77% 76%;    /* #A78BFA */
         
         /* Chart colors */
-        --chart-1: 168 76% 46%;
-        --chart-2: 265 85% 65%;
-        --chart-3: 40 95% 55%;
-        --chart-4: 200 85% 55%;
-        --chart-5: 330 75% 60%;
+        --chart-1: 217 91% 60%;
+        --chart-2: 160 84% 39%;
+        --chart-3: 38 92% 50%;
+        --chart-4: 174 72% 40%;
+        --chart-5: 258 77% 76%;
     }
 }
 
@@ -100,11 +126,11 @@ code {
     }
 }
 
-/* Custom Scrollbar for Dark Theme */
+/* Custom Scrollbar - Dark theme optimized */
 @layer utilities {
     .scrollbar-thin {
         scrollbar-width: thin;
-        scrollbar-color: hsl(225 15% 20%) transparent;
+        scrollbar-color: hsl(217 33% 25%) transparent;
     }
     
     .scrollbar-thin::-webkit-scrollbar {
@@ -117,250 +143,189 @@ code {
     }
     
     .scrollbar-thin::-webkit-scrollbar-thumb {
-        background: hsl(225 15% 20%);
+        background: hsl(217 33% 25%);
         border-radius: 3px;
     }
     
     .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-        background: hsl(225 15% 30%);
+        background: hsl(217 33% 35%);
     }
 }
 
-/* Glass Morphism Effect */
+/* Trading-specific utilities */
+@layer utilities {
+    /* Price change indicators */
+    .price-up {
+        @apply text-emerald-500;
+    }
+    
+    .price-down {
+        @apply text-red-500;
+    }
+    
+    .price-neutral {
+        @apply text-slate-400;
+    }
+    
+    /* Tabular numbers for financial data */
+    .tabular-nums {
+        font-variant-numeric: tabular-nums;
+        font-feature-settings: "tnum";
+    }
+    
+    /* Trust badge styling */
+    .trust-badge {
+        @apply inline-flex items-center gap-1.5 px-2 py-1 text-xs font-medium rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20;
+    }
+}
+
+/* Glass morphism - for cards and overlays */
 @layer utilities {
     .glass {
-        background: rgba(15, 18, 25, 0.7);
+        background: rgba(30, 41, 59, 0.8);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
         border: 1px solid rgba(255, 255, 255, 0.05);
     }
     
     .glass-card {
-        background: linear-gradient(135deg, rgba(20, 25, 35, 0.9) 0%, rgba(15, 18, 25, 0.95) 100%);
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
         border: 1px solid rgba(255, 255, 255, 0.06);
     }
-}
-
-/* Glow Effects */
-@layer utilities {
-    .glow-teal {
-        box-shadow: 0 0 20px rgba(0, 194, 168, 0.15), 0 0 40px rgba(0, 194, 168, 0.05);
-    }
     
-    .glow-purple {
-        box-shadow: 0 0 20px rgba(139, 92, 246, 0.15), 0 0 40px rgba(139, 92, 246, 0.05);
-    }
-    
-    .glow-amber {
-        box-shadow: 0 0 20px rgba(245, 158, 11, 0.15), 0 0 40px rgba(245, 158, 11, 0.05);
-    }
-    
-    .glow-red {
-        box-shadow: 0 0 20px rgba(239, 68, 68, 0.15), 0 0 40px rgba(239, 68, 68, 0.05);
-    }
-    
-    .text-glow-teal {
-        text-shadow: 0 0 10px rgba(0, 194, 168, 0.5);
-    }
-    
-    .text-glow-purple {
-        text-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+    .glass-header {
+        background: rgba(15, 23, 42, 0.85);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
 }
 
-/* Premium Gradients */
-@layer utilities {
-    .gradient-primary {
-        background: linear-gradient(135deg, #00C2A8 0%, #00A896 100%);
-    }
-    
-    .gradient-accent {
-        background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
-    }
-    
-    .gradient-warning {
-        background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
-    }
-    
-    .gradient-danger {
-        background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
-    }
-    
-    .gradient-dark {
-        background: linear-gradient(180deg, rgba(15, 18, 25, 0) 0%, rgba(10, 12, 18, 1) 100%);
-    }
-    
-    .gradient-card {
-        background: linear-gradient(135deg, rgba(25, 30, 42, 1) 0%, rgba(15, 18, 25, 1) 100%);
-    }
-    
-    .gradient-border {
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.02) 100%);
-    }
-    
-    .gradient-mesh {
-        background: 
-            radial-gradient(at 40% 20%, rgba(0, 194, 168, 0.08) 0px, transparent 50%),
-            radial-gradient(at 80% 0%, rgba(139, 92, 246, 0.08) 0px, transparent 50%),
-            radial-gradient(at 0% 50%, rgba(0, 194, 168, 0.05) 0px, transparent 50%),
-            radial-gradient(at 80% 50%, rgba(139, 92, 246, 0.05) 0px, transparent 50%),
-            radial-gradient(at 0% 100%, rgba(0, 194, 168, 0.08) 0px, transparent 50%);
-    }
-}
-
-/* Animated Backgrounds */
-@layer utilities {
-    .animate-gradient {
-        background-size: 200% 200%;
-        animation: gradient-shift 8s ease infinite;
-    }
-    
-    @keyframes gradient-shift {
-        0%, 100% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-    }
-    
-    .animate-pulse-slow {
-        animation: pulse-slow 3s ease-in-out infinite;
-    }
-    
-    @keyframes pulse-slow {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.7; }
-    }
-    
-    .animate-float {
-        animation: float 6s ease-in-out infinite;
-    }
-    
-    @keyframes float {
-        0%, 100% { transform: translateY(0px); }
-        50% { transform: translateY(-10px); }
-    }
-    
-    .animate-glow {
-        animation: glow-pulse 2s ease-in-out infinite;
-    }
-    
-    @keyframes glow-pulse {
-        0%, 100% { box-shadow: 0 0 20px rgba(0, 194, 168, 0.2); }
-        50% { box-shadow: 0 0 30px rgba(0, 194, 168, 0.4); }
-    }
-}
-
-/* Number Styling for Financial Data */
-@layer utilities {
-    .tabular-nums {
-        font-variant-numeric: tabular-nums;
-        font-feature-settings: "tnum";
-    }
-    
-    .positive {
-        @apply text-emerald-400;
-    }
-    
-    .negative {
-        @apply text-red-400;
-    }
-    
-    .neutral {
-        @apply text-slate-400;
-    }
-}
-
-/* Card Hover Effects */
-@layer utilities {
-    .card-hover {
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    .card-hover:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 1px rgba(255, 255, 255, 0.1);
-    }
-}
-
-/* Navigation Pills */
+/* Trading Card Styles */
 @layer components {
-    .nav-pill {
-        @apply relative px-4 py-2 rounded-xl font-medium text-sm transition-all duration-200;
+    .trading-card {
+        @apply bg-slate-800/50 border border-slate-700/50 rounded-xl;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
     }
     
-    .nav-pill:hover {
-        @apply bg-white/5;
+    .trading-card:hover {
+        @apply border-slate-600/50;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -4px rgba(0, 0, 0, 0.2);
     }
     
-    .nav-pill.active {
-        @apply bg-gradient-to-r from-teal-500/20 to-teal-600/10 text-teal-400;
-    }
-    
-    .nav-pill.active::before {
-        content: '';
-        @apply absolute inset-0 rounded-xl;
-        background: linear-gradient(135deg, rgba(0, 194, 168, 0.1) 0%, transparent 100%);
+    .stat-card {
+        @apply bg-slate-800/30 border border-slate-700/30 rounded-lg p-4;
     }
 }
 
-/* Status Badges */
-@layer components {
-    .badge-success {
-        @apply bg-emerald-500/15 text-emerald-400 border border-emerald-500/20 px-2.5 py-0.5 rounded-full text-xs font-medium;
-    }
-    
-    .badge-warning {
-        @apply bg-amber-500/15 text-amber-400 border border-amber-500/20 px-2.5 py-0.5 rounded-full text-xs font-medium;
-    }
-    
-    .badge-danger {
-        @apply bg-red-500/15 text-red-400 border border-red-500/20 px-2.5 py-0.5 rounded-full text-xs font-medium;
-    }
-    
-    .badge-info {
-        @apply bg-blue-500/15 text-blue-400 border border-blue-500/20 px-2.5 py-0.5 rounded-full text-xs font-medium;
-    }
-    
-    .badge-purple {
-        @apply bg-purple-500/15 text-purple-400 border border-purple-500/20 px-2.5 py-0.5 rounded-full text-xs font-medium;
-    }
-}
-
-/* Input Styles */
-@layer components {
-    .input-dark {
-        @apply bg-slate-800/50 border-slate-700/50 text-white placeholder-slate-500 
-               focus:border-teal-500/50 focus:ring-1 focus:ring-teal-500/20 
-               transition-all duration-200;
-    }
-}
-
-/* Button Variants */
+/* Button Variants - Following trust principles */
 @layer components {
     .btn-primary {
-        @apply bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-400 hover:to-teal-500 
-               text-white font-medium shadow-lg shadow-teal-500/20 
-               transition-all duration-200 hover:shadow-teal-500/30;
+        @apply bg-blue-600 hover:bg-blue-500 text-white font-medium shadow-lg shadow-blue-600/20 
+               transition-all duration-200 hover:shadow-blue-500/30;
     }
     
-    .btn-accent {
-        @apply bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-400 hover:to-purple-500 
-               text-white font-medium shadow-lg shadow-purple-500/20 
-               transition-all duration-200 hover:shadow-purple-500/30;
+    .btn-success {
+        @apply bg-emerald-600 hover:bg-emerald-500 text-white font-medium shadow-lg shadow-emerald-600/20 
+               transition-all duration-200 hover:shadow-emerald-500/30;
+    }
+    
+    .btn-danger {
+        @apply bg-red-600 hover:bg-red-500 text-white font-medium shadow-lg shadow-red-600/20 
+               transition-all duration-200 hover:shadow-red-500/30;
     }
     
     .btn-ghost {
         @apply bg-transparent hover:bg-white/5 text-slate-300 hover:text-white 
                transition-all duration-200;
     }
+    
+    .btn-outline {
+        @apply bg-transparent border border-slate-600 hover:border-slate-500 text-slate-300 
+               hover:text-white transition-all duration-200;
+    }
 }
 
-/* Chart Grid Lines */
+/* Navigation Pills - Clean, professional */
+@layer components {
+    .nav-pill {
+        @apply relative px-3 py-2 rounded-lg font-medium text-sm transition-all duration-200;
+    }
+    
+    .nav-pill:hover {
+        @apply bg-slate-700/50 text-white;
+    }
+    
+    .nav-pill.active {
+        @apply bg-blue-600/20 text-blue-400;
+    }
+}
+
+/* Status Badges - Clear visual hierarchy */
+@layer components {
+    .badge {
+        @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-medium;
+    }
+    
+    .badge-success {
+        @apply bg-emerald-500/15 text-emerald-400 border border-emerald-500/20;
+    }
+    
+    .badge-warning {
+        @apply bg-amber-500/15 text-amber-400 border border-amber-500/20;
+    }
+    
+    .badge-danger {
+        @apply bg-red-500/15 text-red-400 border border-red-500/20;
+    }
+    
+    .badge-info {
+        @apply bg-blue-500/15 text-blue-400 border border-blue-500/20;
+    }
+    
+    .badge-crypto {
+        @apply bg-purple-500/15 text-purple-400 border border-purple-500/20;
+    }
+}
+
+/* Input Styles - Professional trading UI */
+@layer components {
+    .input-trading {
+        @apply bg-slate-800/50 border-slate-700/50 text-white placeholder-slate-500 
+               focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20 
+               rounded-lg transition-all duration-200;
+    }
+    
+    .input-search {
+        @apply bg-slate-800/30 border-slate-700/30 text-white placeholder-slate-500 
+               focus:border-blue-500/50 focus:ring-0 rounded-full pl-10;
+    }
+}
+
+/* Market Ticker Animation */
+@layer utilities {
+    .ticker-scroll {
+        animation: ticker 30s linear infinite;
+    }
+    
+    @keyframes ticker {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+    }
+    
+    .ticker-scroll:hover {
+        animation-play-state: paused;
+    }
+}
+
+/* Chart Grid Background */
 @layer utilities {
     .chart-grid {
         background-image: 
-            linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
         background-size: 40px 40px;
     }
 }
@@ -377,11 +342,115 @@ code {
     }
 }
 
-/* Focus Visible */
+/* Animations */
+@layer utilities {
+    .animate-fade-in {
+        animation: fadeIn 0.3s ease-out;
+    }
+    
+    @keyframes fadeIn {
+        0% { opacity: 0; transform: translateY(8px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
+    
+    .animate-scale-in {
+        animation: scaleIn 0.2s ease-out;
+    }
+    
+    @keyframes scaleIn {
+        0% { opacity: 0; transform: scale(0.95); }
+        100% { opacity: 1; transform: scale(1); }
+    }
+    
+    .animate-slide-down {
+        animation: slideDown 0.2s ease-out;
+    }
+    
+    @keyframes slideDown {
+        0% { opacity: 0; transform: translateY(-10px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
+    
+    .pulse-live {
+        animation: pulseLive 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulseLive {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+}
+
+/* Focus States - Accessibility */
 @layer utilities {
     .focus-ring {
-        @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900;
+        @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 
+               focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900;
     }
+}
+
+/* Trust & Security Elements */
+@layer components {
+    .security-badge {
+        @apply inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium 
+               rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20;
+    }
+    
+    .verified-badge {
+        @apply inline-flex items-center gap-1 text-blue-400;
+    }
+}
+
+/* Order Book Styles */
+@layer components {
+    .order-row {
+        @apply flex items-center justify-between py-1 px-2 text-xs font-mono;
+    }
+    
+    .order-row-bid {
+        @apply bg-emerald-500/5 hover:bg-emerald-500/10;
+    }
+    
+    .order-row-ask {
+        @apply bg-red-500/5 hover:bg-red-500/10;
+    }
+    
+    .depth-bar {
+        @apply absolute inset-y-0 right-0 opacity-20;
+    }
+}
+
+/* Responsive Grid for Dashboard */
+@layer utilities {
+    .dashboard-grid {
+        @apply grid gap-4;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+    .dark {
+        --foreground: 0 0% 100%;
+        --border: 217 33% 35%;
+    }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+    .ticker-scroll,
+    .animate-fade-in,
+    .animate-scale-in,
+    .animate-slide-down,
+    .pulse-live {
+        animation: none;
+    }
+}
+
+/* Selection Color */
+::selection {
+    background: rgba(59, 130, 246, 0.3);
+    color: white;
 }
 
 /* Debug wrapper styles */
@@ -389,51 +458,4 @@ code {
     [data-debug-wrapper="true"] {
         display: contents !important;
     }
-
-    [data-debug-wrapper="true"] > * {
-        margin-left: inherit;
-        margin-right: inherit;
-        margin-top: inherit;
-        margin-bottom: inherit;
-        padding-left: inherit;
-        padding-right: inherit;
-        padding-top: inherit;
-        padding-bottom: inherit;
-        column-gap: inherit;
-        row-gap: inherit;
-        gap: inherit;
-        border-left-width: inherit;
-        border-right-width: inherit;
-        border-top-width: inherit;
-        border-bottom-width: inherit;
-        border-left-style: inherit;
-        border-right-style: inherit;
-        border-top-style: inherit;
-        border-bottom-style: inherit;
-        border-left-color: inherit;
-        border-right-color: inherit;
-        border-top-color: inherit;
-        border-bottom-color: inherit;
-    }
-}
-
-/* Custom Selection */
-::selection {
-    background: rgba(0, 194, 168, 0.3);
-    color: white;
-}
-
-/* Smooth Transitions for Theme */
-* {
-    transition-property: background-color, border-color, color;
-    transition-duration: 0.15s;
-    transition-timing-function: ease;
-}
-
-/* Override for animations that shouldn't have default transition */
-.no-transition,
-.animate-spin,
-.animate-pulse,
-.animate-bounce {
-    transition: none;
 }
