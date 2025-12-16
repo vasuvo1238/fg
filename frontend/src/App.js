@@ -339,36 +339,50 @@ function App() {
               </div>
               
               {/* User Actions */}
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <NotificationBell />
                 
                 {/* User Menu */}
                 <div className="relative" ref={userMenuRef}>
                   <button
                     onClick={() => setShowUserMenu(!showUserMenu)}
-                    className="flex items-center gap-2 p-2 rounded-lg hover:bg-slate-700/50 transition-colors"
+                    className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-white/5 transition-all duration-200 border border-transparent hover:border-white/10"
                   >
                     {user?.picture ? (
-                      <img src={user.picture} alt="" className="w-8 h-8 rounded-full" />
+                      <img src={user.picture} alt="" className="w-8 h-8 rounded-xl ring-2 ring-white/10" />
                     ) : (
-                      <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
-                        <User className="w-4 h-4 text-purple-400" />
+                      <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-purple-500/30 to-pink-500/20 flex items-center justify-center ring-2 ring-white/10">
+                        <User className="w-4 h-4 text-purple-300" />
                       </div>
                     )}
                   </button>
                   
                   {showUserMenu && (
-                    <div className="absolute right-0 mt-2 w-64 bg-slate-800 border border-slate-700 rounded-xl shadow-2xl overflow-hidden z-50">
-                      <div className="px-4 py-3 border-b border-slate-700">
-                        <p className="font-medium text-white">{user?.name || 'User'}</p>
-                        <p className="text-xs text-slate-400">{user?.email}</p>
-                        <div className="mt-2 flex items-center gap-2">
-                          <span className={`px-2 py-0.5 text-xs rounded-full ${
-                            user?.subscription_tier === 'pro' ? 'bg-purple-500/20 text-purple-400' :
-                            user?.subscription_tier === 'basic' ? 'bg-blue-500/20 text-blue-400' :
-                            'bg-slate-500/20 text-slate-400'
+                    <div className="absolute right-0 mt-2 w-72 glass-card rounded-2xl shadow-2xl overflow-hidden z-50 animate-scale-in border border-white/10">
+                      {/* User Info Header */}
+                      <div className="p-4 bg-gradient-to-r from-purple-500/10 to-teal-500/10 border-b border-white/5">
+                        <div className="flex items-center gap-3">
+                          {user?.picture ? (
+                            <img src={user.picture} alt="" className="w-12 h-12 rounded-xl ring-2 ring-white/20" />
+                          ) : (
+                            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/30 to-pink-500/20 flex items-center justify-center ring-2 ring-white/20">
+                              <User className="w-6 h-6 text-purple-300" />
+                            </div>
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <p className="font-semibold text-white truncate">{user?.name || 'User'}</p>
+                            <p className="text-xs text-slate-400 truncate">{user?.email}</p>
+                          </div>
+                        </div>
+                        <div className="mt-3 flex items-center gap-2">
+                          <span className={`px-3 py-1 text-xs font-medium rounded-full ${
+                            user?.subscription_tier === 'pro' 
+                              ? 'bg-gradient-to-r from-purple-500/30 to-pink-500/20 text-purple-300 border border-purple-500/30' 
+                              : user?.subscription_tier === 'basic' 
+                              ? 'bg-gradient-to-r from-blue-500/30 to-cyan-500/20 text-blue-300 border border-blue-500/30' 
+                              : 'bg-slate-700/50 text-slate-400 border border-slate-600/50'
                           }`}>
-                            {user?.subscription_tier?.toUpperCase() || 'FREE'}
+                            {user?.subscription_tier === 'pro' ? '⚡ PRO' : user?.subscription_tier === 'basic' ? '✨ BASIC' : '🆓 FREE'}
                           </span>
                         </div>
                       </div>
