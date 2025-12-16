@@ -30,9 +30,11 @@ function App() {
   const [sessionId, setSessionId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
-  const [activeView, setActiveView] = useState("chat");
+  const [activeView, setActiveView] = useState("dashboard");
   const [user, setUser] = useState(null);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatMinimized, setChatMinimized] = useState(false);
   const scrollRef = useRef(null);
   const inputRef = useRef(null);
   const userMenuRef = useRef(null);
