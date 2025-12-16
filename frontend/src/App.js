@@ -451,103 +451,36 @@ function App() {
             <CryptoAnalysis />
           ) : activeView === "tradingbot" ? (
             <TradingBot />
-          ) : activeView === "dashboard" ? (
-            <Dashboard onOpenChat={() => { setChatOpen(true); setChatMinimized(false); }} />
           ) : (
             <Dashboard onOpenChat={() => { setChatOpen(true); setChatMinimized(false); }} />
-
-          {/* Messages */}
-          <div ref={scrollRef} className="messages-area space-y-6">
-            {messages.map((msg) => (
-              <div
-                key={msg.id}
-                data-testid={`message-${msg.role}`}
-                className={`message-wrapper flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
-                {msg.role === 'user' ? (
-                  <div className="user-message max-w-[80%] p-4 rounded-2xl rounded-tr-sm bg-primary text-primary-foreground shadow-lg">
-                    <p className="text-sm" style={{ fontFamily: 'Inter, sans-serif' }}>{msg.content}</p>
-                  </div>
-                ) : (
-                  <div className={`bot-message max-w-[85%] p-6 rounded-2xl rounded-tl-sm bg-secondary/80 border shadow-lg ${
-                    msg.is_guardrail_triggered ? 'border-warning/50 guardrail-border' : 'border-border/30'
-                  }`}>
-                    {msg.is_guardrail_triggered && (
-                      <div className="flex items-center gap-2 mb-3 text-warning" data-testid="guardrail-warning">
-                        <AlertCircle className="w-4 h-4" />
-                        <span className="text-xs uppercase tracking-widest" style={{ fontFamily: 'JetBrains Mono, monospace' }}>Topic Restriction</span>
-                      </div>
-                    )}
-                    <div className="prose prose-sm max-w-none" style={{ fontFamily: 'Inter, sans-serif' }}>
-                      <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
-
-            {isLoading && (
-              <div className="message-wrapper flex justify-start" data-testid="typing-indicator">
-                <div className="bot-message max-w-[85%] p-6 rounded-2xl rounded-tl-sm bg-secondary/80 border border-border/30">
-                  <div className="typing-indicator flex items-center gap-2">
-                    <div className="dot"></div>
-                    <div className="dot"></div>
-                    <div className="dot"></div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-            </div>
           )}
         </div>
       </div>
 
-      {/* Floating Input Bar - Only show in chat view */}
-      {activeView === "chat" && (
-        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 w-[90%] max-w-3xl z-20">
-        <div className="input-command-bar backdrop-blur-xl bg-background/90 border border-border/50 rounded-full shadow-2xl p-2">
-          <div className="flex items-center gap-2">
-            <Input
-              ref={inputRef}
-              data-testid="chat-input"
-              type="text"
-              placeholder="Ask me anything about finance..."
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyPress={handleKeyPress}
-              disabled={isLoading}
-              className="flex-1 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 text-sm"
-              style={{ fontFamily: 'Inter, sans-serif' }}
-            />
-            <Button
-              data-testid="send-button"
-              onClick={() => handleSendMessage()}
-              disabled={!inputValue.trim() || isLoading}
-              size="icon"
-              className="rounded-full h-10 w-10 bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all duration-300"
-            >
-              <Send className="w-4 h-4" />
-            </Button>
-          </div>
-        </div>
-        <p className="text-center text-xs text-muted-foreground mt-3" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
-          Always consult a licensed advisor for personalized financial advice
-        </p>
-        </div>
+      {/* Floating AI Chat */}
+      {chatOpen ? (
+        <FloatingChat 
+          isOpen={chatOpen}
+          onClose={() => setChatOpen(false)}
+          onMinimize={() => setChatMinimized(!chatMinimized)}
+          isMinimized={chatMinimized}
+        />
+      ) : (
+        <FloatingChatButton 
+          onClick={() => { setChatOpen(true); setChatMinimized(false); }}
+          hasMessages={false}
+        />
       )}
 
-      {/* Global Footer Disclaimer - Shows on all views */}
-      {activeView !== "chat" && (
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[90%] max-w-4xl z-10">
-          <div className="p-3 bg-gray-900/95 backdrop-blur-xl border border-gray-700 rounded-lg shadow-2xl">
-            <p className="text-center text-xs text-gray-300" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
-              ⚠️ <strong>Disclaimer:</strong> For educational purposes only. Not financial advice. 
-              Consult a licensed financial advisor before making any investment decisions.
-            </p>
-          </div>
+      {/* Global Footer Disclaimer */}
+      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[90%] max-w-4xl z-10 pointer-events-none">
+        <div className="p-3 bg-slate-900/95 backdrop-blur-xl border border-slate-700/50 rounded-lg shadow-2xl">
+          <p className="text-center text-xs text-slate-400">
+            ⚠️ <strong>Disclaimer:</strong> For educational purposes only. Not financial advice. 
+            Consult a licensed financial advisor before making investment decisions.
+          </p>
         </div>
-      )}
+      </div>
     </div>
   );
 }
