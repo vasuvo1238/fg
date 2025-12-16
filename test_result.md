@@ -722,11 +722,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Trading Bot Feature - Navigation and Interface"
-    - "Trading Bot Feature - Morning Report Tab"
-    - "Trading Bot Feature - Schedule Tab"
-    - "Subscription Page - Plans and Pricing"
-    - "Subscription Page - Feature Comparison and FAQ"
+    - "TradingView-Style Dashboard Interface"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
