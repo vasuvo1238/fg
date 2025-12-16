@@ -36,12 +36,62 @@ export default function TradingBot() {
     position_type: 'long',
     notes: ''
   });
+  
+  // Scheduling state
+  const [schedule, setSchedule] = useState({
+    enabled: false,
+    time_utc: '11:00',
+    days: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
+    include_crypto_weekends: true,
+    delivery_methods: ['push']
+  });
+  const [savingSchedule, setSavingSchedule] = useState(false);
 
   useEffect(() => {
     fetchMorningReport();
     fetchPositions();
     fetchPortfolio();
+    fetchSchedule();
   }, []);
+
+  const fetchSchedule = async () => {
+    try {
+      const response = await axios.get(`${API}/trading/schedule`, { withCredentials: true });
+      setSchedule(response.data);
+    } catch (error) {
+      console.error('Failed to fetch schedule:', error);
+    }
+  };
+
+  const saveSchedule = async () => {
+    setSavingSchedule(true);
+    try {
+      await axios.put(`${API}/trading/schedule`, schedule, { withCredentials: true });
+      toast.success('Schedule saved successfully!');
+    } catch (error) {
+      toast.error('Failed to save schedule');
+    } finally {
+      setSavingSchedule(false);
+    }
+  };
+
+  const toggleDay = (day) => {
+    setSchedule(prev => ({
+      ...prev,
+      days: prev.days.includes(day) 
+        ? prev.days.filter(d => d !== day)
+        : [...prev.days, day]
+    }));
+  };
+
+  const toggleDeliveryMethod = (method) => {
+    setSchedule(prev => ({
+      ...prev,
+      delivery_methods: prev.delivery_methods.includes(method)
+        ? prev.delivery_methods.filter(m => m !== method)
+        : [...prev.delivery_methods, method]
+    }));
+  };
 
   const fetchMorningReport = async () => {
     setLoading(true);
