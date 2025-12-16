@@ -53,41 +53,55 @@ module.exports = {
                                 '4': 'hsl(var(--chart-4))',
                                 '5': 'hsl(var(--chart-5))'
                         },
-                        // Custom Fintech Colors
-                        fintech: {
-                                dark: '#0A0C12',
-                                surface: '#0F1219',
-                                card: '#141922',
-                                border: '#1E2432',
-                                teal: '#00C2A8',
-                                'teal-dark': '#00A896',
-                                purple: '#8B5CF6',
-                                'purple-dark': '#7C3AED',
-                                amber: '#F59E0B',
-                                coral: '#EF4444',
-                                blue: '#38A5FF',
+                        // Financial Markets Color System
+                        // Based on TradingView, Binance, Coinbase
+                        trading: {
+                                // Core backgrounds
+                                dark: '#0F172A',        // Navy-black
+                                panel: '#1E293B',       // Dark gray for cards
+                                surface: '#334155',     // Elevated surfaces
+                                
+                                // Text hierarchy
+                                text: '#E2E8F0',        // Light gray body
+                                'text-muted': '#94A3B8', // Muted text
+                                
+                                // Semantic colors
+                                positive: '#10B981',    // Green for gains
+                                negative: '#EF4444',    // Red for losses
+                                blue: '#3B82F6',        // Trustworthy blue
+                                
+                                // Crypto highlights
+                                teal: '#14B8A6',        // Web3 accent
+                                purple: '#A78BFA',      // Crypto accent
+                                
+                                // Borders
+                                border: '#334155',
+                                'border-light': '#475569',
                         }
                 },
                 fontFamily: {
                         sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
                         mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
                 },
-                boxShadow: {
-                        'glow-teal': '0 0 20px rgba(0, 194, 168, 0.15), 0 0 40px rgba(0, 194, 168, 0.05)',
-                        'glow-purple': '0 0 20px rgba(139, 92, 246, 0.15), 0 0 40px rgba(139, 92, 246, 0.05)',
-                        'glow-amber': '0 0 20px rgba(245, 158, 11, 0.15), 0 0 40px rgba(245, 158, 11, 0.05)',
-                        'card-hover': '0 20px 40px rgba(0, 0, 0, 0.3), 0 0 1px rgba(255, 255, 255, 0.1)',
-                        'inner-light': 'inset 0 1px 0 0 rgba(255, 255, 255, 0.05)',
+                fontSize: {
+                        // Trading UI typography scale
+                        'xs': ['12px', { lineHeight: '16px' }],
+                        'sm': ['14px', { lineHeight: '20px' }],
+                        'base': ['16px', { lineHeight: '24px' }],
+                        'lg': ['18px', { lineHeight: '28px' }],
+                        'xl': ['20px', { lineHeight: '28px' }],
+                        '2xl': ['24px', { lineHeight: '32px', fontWeight: '600' }],
+                        '3xl': ['30px', { lineHeight: '36px', fontWeight: '700' }],
+                        '4xl': ['36px', { lineHeight: '40px', fontWeight: '700' }],
+                        '5xl': ['48px', { lineHeight: '1', fontWeight: '800' }],
                 },
-                backgroundImage: {
-                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-                        'gradient-mesh': `
-                                radial-gradient(at 40% 20%, rgba(0, 194, 168, 0.08) 0px, transparent 50%),
-                                radial-gradient(at 80% 0%, rgba(139, 92, 246, 0.08) 0px, transparent 50%),
-                                radial-gradient(at 0% 50%, rgba(0, 194, 168, 0.05) 0px, transparent 50%),
-                                radial-gradient(at 80% 50%, rgba(139, 92, 246, 0.05) 0px, transparent 50%)
-                        `,
-                        'gradient-card': 'linear-gradient(135deg, rgba(25, 30, 42, 1) 0%, rgba(15, 18, 25, 1) 100%)',
+                boxShadow: {
+                        'card': '0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -2px rgba(0, 0, 0, 0.1)',
+                        'card-hover': '0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -4px rgba(0, 0, 0, 0.2)',
+                        'dropdown': '0 10px 40px rgba(0, 0, 0, 0.4)',
+                        'glow-blue': '0 0 20px rgba(59, 130, 246, 0.3)',
+                        'glow-green': '0 0 20px rgba(16, 185, 129, 0.3)',
+                        'glow-red': '0 0 20px rgba(239, 68, 68, 0.3)',
                 },
                 keyframes: {
                         'accordion-down': {
@@ -102,36 +116,36 @@ module.exports = {
                                 '0%': { backgroundPosition: '200% 0' },
                                 '100%': { backgroundPosition: '-200% 0' }
                         },
-                        'pulse-glow': {
-                                '0%, 100%': { boxShadow: '0 0 20px rgba(0, 194, 168, 0.2)' },
-                                '50%': { boxShadow: '0 0 30px rgba(0, 194, 168, 0.4)' }
-                        },
-                        'float': {
-                                '0%, 100%': { transform: 'translateY(0px)' },
-                                '50%': { transform: 'translateY(-10px)' }
+                        'ticker': {
+                                '0%': { transform: 'translateX(0)' },
+                                '100%': { transform: 'translateX(-50%)' }
                         },
                         'fade-in': {
-                                '0%': { opacity: '0', transform: 'translateY(10px)' },
+                                '0%': { opacity: '0', transform: 'translateY(8px)' },
                                 '100%': { opacity: '1', transform: 'translateY(0)' }
-                        },
-                        'slide-in-right': {
-                                '0%': { opacity: '0', transform: 'translateX(20px)' },
-                                '100%': { opacity: '1', transform: 'translateX(0)' }
                         },
                         'scale-in': {
                                 '0%': { opacity: '0', transform: 'scale(0.95)' },
                                 '100%': { opacity: '1', transform: 'scale(1)' }
+                        },
+                        'slide-down': {
+                                '0%': { opacity: '0', transform: 'translateY(-10px)' },
+                                '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        'pulse-live': {
+                                '0%, 100%': { opacity: '1' },
+                                '50%': { opacity: '0.5' }
                         }
                 },
                 animation: {
                         'accordion-down': 'accordion-down 0.2s ease-out',
                         'accordion-up': 'accordion-up 0.2s ease-out',
                         'shimmer': 'shimmer 1.5s infinite',
-                        'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
-                        'float': 'float 6s ease-in-out infinite',
+                        'ticker': 'ticker 30s linear infinite',
                         'fade-in': 'fade-in 0.3s ease-out',
-                        'slide-in-right': 'slide-in-right 0.3s ease-out',
-                        'scale-in': 'scale-in 0.2s ease-out'
+                        'scale-in': 'scale-in 0.2s ease-out',
+                        'slide-down': 'slide-down 0.2s ease-out',
+                        'pulse-live': 'pulse-live 2s ease-in-out infinite'
                 }
         }
   },
