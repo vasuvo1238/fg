@@ -144,7 +144,7 @@ The optimizer is using real Polymarket data with Phase 1 quantitative enhancemen
 
 ### Backend API Test
 ```bash
-curl "https://market-sage-8.preview.emergentagent.com/api/prediction-markets/markets?sources=polymarket&limit=3"
+curl "https://marketmorning.preview.emergentagent.com/api/prediction-markets/markets?sources=polymarket&limit=3"
 ```
 **Result**: ✅ Returns 100 live markets with real prices and volumes
 

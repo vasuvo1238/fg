@@ -180,7 +180,7 @@ async def send_email(
         return False
     
     # Get app URL
-    app_url = os.environ.get("APP_URL", "https://market-sage-8.preview.emergentagent.com")
+    app_url = os.environ.get("APP_URL", "https://marketmorning.preview.emergentagent.com")
     template_data["app_url"] = app_url
     
     # Format template
