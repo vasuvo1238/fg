@@ -239,7 +239,7 @@ async def get_subscription_status(request: Request):
     from routes.auth import get_current_user
     try:
         user = await get_current_user(request)
-    except:
+    except Exception:
         raise HTTPException(status_code=401, detail="Not authenticated")
     
     user_data = await db.users.find_one(
