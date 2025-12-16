@@ -903,7 +903,7 @@ export default function TradingBot() {
                     Schedule Active
                   </h4>
                   <p className="text-sm text-slate-300 mt-2">
-                    You'll receive morning reports at <strong>{schedule.time_utc} UTC</strong> on{' '}
+                    You&apos;ll receive morning reports at <strong>{schedule.time_utc} UTC</strong> on{' '}
                     <strong>{schedule.days.map(d => d.charAt(0).toUpperCase() + d.slice(1)).join(', ')}</strong>{' '}
                     via <strong>{schedule.delivery_methods.map(m => m.charAt(0).toUpperCase() + m.slice(1)).join(' & ')}</strong>.
                   </p>
