@@ -364,6 +364,8 @@ function App() {
             <PredictionMarkets />
           ) : activeView === "crypto" ? (
             <CryptoAnalysis />
+          ) : activeView === "tradingbot" ? (
+            <TradingBot />
           ) : (
             <div>
           {showWelcome && messages.length === 0 && (
