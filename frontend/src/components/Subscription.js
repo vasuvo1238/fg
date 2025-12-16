@@ -73,58 +73,6 @@ export default function Subscription() {
     checkPaymentStatus();
   }, [fetchData, checkPaymentStatus]);
 
-  const fetchData = async () => {
-    try {
-      const [tiersRes, subRes] = await Promise.all([
-        axios.get(`${API}/payments/tiers`, { withCredentials: true }),
-        axios.get(`${API}/payments/subscription/status`, { withCredentials: true })
-      ]);
-      setTiers(tiersRes.data.tiers);
-      setCurrentSubscription(subRes.data);
-    } catch (error) {
-      console.error('Failed to fetch subscription data:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const checkPaymentStatus = async () => {
-    // Check if returning from Stripe
-    const urlParams = new URLSearchParams(window.location.search);
-    const sessionId = urlParams.get('session_id');
-    
-    if (sessionId) {
-      setLoading(true);
-      toast.info('Verifying payment...');
-      
-      // Poll for payment status
-      for (let i = 0; i < 5; i++) {
-        try {
-          const response = await axios.get(
-            `${API}/payments/checkout/status/${sessionId}`,
-            { withCredentials: true }
-          );
-          
-          if (response.data.payment_status === 'paid') {
-            toast.success('Payment successful! Welcome to ' + (response.data.tier === 'pro' ? 'Pro' : 'Basic') + '!');
-            // Clear URL params
-            window.history.replaceState({}, document.title, window.location.pathname);
-            fetchData();
-            return;
-          }
-          
-          // Wait before next poll
-          await new Promise(r => setTimeout(r, 2000));
-        } catch (error) {
-          console.error('Status check error:', error);
-        }
-      }
-      
-      toast.error('Could not verify payment. Please check your account.');
-      setLoading(false);
-    }
-  };
-
   const handleSubscribe = async (tier) => {
     setProcessingTier(tier);
     
