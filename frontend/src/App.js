@@ -321,6 +321,13 @@ function App() {
                       </div>
                       <div className="py-2">
                         <button 
+                          onClick={() => { setActiveView('subscription'); setShowUserMenu(false); }}
+                          className="w-full px-4 py-2 text-left text-sm text-purple-400 hover:bg-slate-700/50 flex items-center gap-2"
+                        >
+                          <Sparkles className="w-4 h-4" />
+                          Upgrade Plan
+                        </button>
+                        <button 
                           onClick={() => { setActiveView('settings'); setShowUserMenu(false); }}
                           className="w-full px-4 py-2 text-left text-sm text-slate-300 hover:bg-slate-700/50 flex items-center gap-2"
                         >
