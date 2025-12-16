@@ -7,7 +7,7 @@ import {
   TrendingUp, TrendingDown, Star, Plus, X, ArrowUpRight, ArrowDownRight,
   Activity, Clock, ChevronRight, ChevronDown, Flame,
   BarChart3, Search, Crosshair, Ruler, Type, PenTool, 
-  Maximize2, Settings, Camera, Save, LineChart, CandlestickChart,
+  Maximize2, Settings, Camera, Save, LineChart,
   Layers, Eye, EyeOff, RotateCcw, ZoomIn, ZoomOut, MousePointer,
   TrendingUp as TrendIcon, Circle, Square, Triangle, Minus, Move,
   Grid3X3, Lock, Unlock, Trash2, Copy, MoreHorizontal, ChevronLeft, Bell
