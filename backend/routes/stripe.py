@@ -271,7 +271,7 @@ async def get_payment_transactions(request: Request):
     from routes.auth import get_current_user
     try:
         user = await get_current_user(request)
-    except:
+    except Exception:
         raise HTTPException(status_code=401, detail="Not authenticated")
     
     transactions = await db.payment_transactions.find(
