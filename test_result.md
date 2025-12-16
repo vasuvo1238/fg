@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Test the Portfolio Manager Pro feature comprehensively with Portfolio Optimizer, Kelly Criterion, and Margin/Leverage tabs"
+user_problem_statement: "Test the new Trading Bot feature, Subscription/Payment page, and Schedule functionality"
 
 frontend:
   - task: "Analyst Target Prices UI (Stock Prediction Page)"
