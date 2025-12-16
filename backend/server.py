@@ -2080,6 +2080,60 @@ async def get_trending():
         raise HTTPException(status_code=500, detail=str(e))
 
 
+# Stripe Webhook Handler (outside api_router since it needs raw body)
+@app.post("/api/webhook/stripe")
+async def stripe_webhook(request: Request):
+    """Handle Stripe webhooks"""
+    from emergentintegrations.payments.stripe.checkout import StripeCheckout
+    
+    api_key = os.environ.get("STRIPE_API_KEY")
+    if not api_key:
+        raise HTTPException(status_code=500, detail="Stripe not configured")
+    
+    host_url = str(request.base_url).rstrip('/')
+    webhook_url = f"{host_url}/api/webhook/stripe"
+    
+    stripe_checkout = StripeCheckout(api_key=api_key, webhook_url=webhook_url)
+    
+    body = await request.body()
+    signature = request.headers.get("Stripe-Signature")
+    
+    try:
+        webhook_response = await stripe_checkout.handle_webhook(body, signature)
+        
+        # Update transaction if payment completed
+        if webhook_response.payment_status == "paid":
+            await db.payment_transactions.update_one(
+                {"session_id": webhook_response.session_id},
+                {"$set": {
+                    "payment_status": "paid",
+                    "status": "complete",
+                    "webhook_processed_at": datetime.now(timezone.utc).isoformat()
+                }}
+            )
+            
+            # Get transaction to update user subscription
+            transaction = await db.payment_transactions.find_one(
+                {"session_id": webhook_response.session_id}
+            )
+            
+            if transaction and transaction.get("user_id"):
+                await db.users.update_one(
+                    {"user_id": transaction["user_id"]},
+                    {"$set": {
+                        "subscription_tier": transaction.get("tier", "basic"),
+                        "subscription_status": "active",
+                        "subscription_updated_at": datetime.now(timezone.utc).isoformat()
+                    }}
+                )
+        
+        return {"status": "success", "event_type": webhook_response.event_type}
+        
+    except Exception as e:
+        logger.error(f"Webhook error: {str(e)}")
+        return {"status": "error", "message": str(e)}
+
+
 # Include the router in the main app
 app.include_router(api_router)
 
