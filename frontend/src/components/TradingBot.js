@@ -228,6 +228,10 @@ export default function TradingBot() {
             <BarChart3 className="w-4 h-4" />
             Positions
           </TabsTrigger>
+          <TabsTrigger value="schedule" className="gap-2">
+            <Clock className="w-4 h-4" />
+            Schedule
+          </TabsTrigger>
         </TabsList>
 
         {/* Morning Report Tab */}
