@@ -38,17 +38,30 @@ const PriceDisplay = ({ label, value, color = 'white' }) => (
   </span>
 );
 
+// Generate static sample data (seeded for consistency)
+const generateCandleData = () => {
+  const seed = 12345;
+  let s = seed;
+  const seededRandom = () => {
+    s = (s * 9301 + 49297) % 233280;
+    return s / 233280;
+  };
+  
+  return Array.from({ length: 60 }, (_, i) => {
+    const basePrice = 175 + Math.sin(i / 10) * 15 + seededRandom() * 5;
+    const open = basePrice + (seededRandom() - 0.5) * 3;
+    const close = basePrice + (seededRandom() - 0.5) * 3;
+    const high = Math.max(open, close) + seededRandom() * 2;
+    const low = Math.min(open, close) - seededRandom() * 2;
+    return { open, close, high, low, volume: seededRandom() * 50 + 10 };
+  });
+};
+
+const STATIC_CANDLE_DATA = generateCandleData();
+
 // Mini Candlestick Chart (SVG)
 const CandlestickChart = ({ data, width = 800, height = 400 }) => {
-  // Generate sample candlestick data
-  const candles = data || Array.from({ length: 60 }, (_, i) => {
-    const basePrice = 175 + Math.sin(i / 10) * 15 + Math.random() * 5;
-    const open = basePrice + (Math.random() - 0.5) * 3;
-    const close = basePrice + (Math.random() - 0.5) * 3;
-    const high = Math.max(open, close) + Math.random() * 2;
-    const low = Math.min(open, close) - Math.random() * 2;
-    return { open, close, high, low, volume: Math.random() * 50 + 10 };
-  });
+  const candles = data || STATIC_CANDLE_DATA;
 
   const maxPrice = Math.max(...candles.map(c => c.high));
   const minPrice = Math.min(...candles.map(c => c.low));
