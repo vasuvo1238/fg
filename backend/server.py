@@ -1998,6 +1998,7 @@ api_router.include_router(auth_router)
 api_router.include_router(usage_router)
 api_router.include_router(notification_router)
 api_router.include_router(trading_router)
+api_router.include_router(stripe_router)
 
 # ==================== NEWS & SENTIMENT ====================
 @api_router.get("/news/{symbol}")
