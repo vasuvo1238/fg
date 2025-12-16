@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
@@ -16,10 +16,62 @@ export default function Subscription() {
   const [loading, setLoading] = useState(true);
   const [processingTier, setProcessingTier] = useState(null);
 
+  const fetchData = useCallback(async () => {
+    try {
+      const [tiersRes, subRes] = await Promise.all([
+        axios.get(`${API}/payments/tiers`, { withCredentials: true }),
+        axios.get(`${API}/payments/subscription/status`, { withCredentials: true })
+      ]);
+      setTiers(tiersRes.data.tiers);
+      setCurrentSubscription(subRes.data);
+    } catch (error) {
+      console.error('Failed to fetch subscription data:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const checkPaymentStatus = useCallback(async () => {
+    // Check if returning from Stripe
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessionId = urlParams.get('session_id');
+    
+    if (sessionId) {
+      setLoading(true);
+      toast.info('Verifying payment...');
+      
+      // Poll for payment status
+      for (let i = 0; i < 5; i++) {
+        try {
+          const response = await axios.get(
+            `${API}/payments/checkout/status/${sessionId}`,
+            { withCredentials: true }
+          );
+          
+          if (response.data.payment_status === 'paid') {
+            toast.success('Payment successful! Welcome to ' + (response.data.tier === 'pro' ? 'Pro' : 'Basic') + '!');
+            // Clear URL params
+            window.history.replaceState({}, document.title, window.location.pathname);
+            fetchData();
+            return;
+          }
+          
+          // Wait before next poll
+          await new Promise(r => setTimeout(r, 2000));
+        } catch (error) {
+          console.error('Status check error:', error);
+        }
+      }
+      
+      toast.error('Could not verify payment. Please check your account.');
+      setLoading(false);
+    }
+  }, [fetchData]);
+
   useEffect(() => {
     fetchData();
     checkPaymentStatus();
-  }, []);
+  }, [fetchData, checkPaymentStatus]);
 
   const fetchData = async () => {
     try {
