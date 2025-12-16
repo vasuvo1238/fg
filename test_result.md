@@ -635,10 +635,11 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Analyst Target Prices UI (Stock Prediction Page)"
-    - "Real-Time Options Chain UI (Options Pro Tab)"
-    - "Earnings Calendar UI (Technical Analysis Page)"
-    - "Save/Load Portfolio UI (Portfolio Manager Tab)"
+    - "Trading Bot Feature - Navigation and Interface"
+    - "Trading Bot Feature - Morning Report Tab"
+    - "Trading Bot Feature - Schedule Tab"
+    - "Subscription Page - Plans and Pricing"
+    - "Subscription Page - Feature Comparison and FAQ"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
