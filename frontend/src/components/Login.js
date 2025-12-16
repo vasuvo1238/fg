@@ -99,23 +99,23 @@ export default function Login() {
                 placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="pl-10 bg-slate-700/50 border-slate-600 text-white placeholder:text-slate-500"
+                className="pl-10 h-12 bg-slate-800/50 border-white/10 text-white placeholder:text-slate-500 rounded-xl focus:border-teal-500/50 focus:ring-1 focus:ring-teal-500/20 transition-all"
                 required
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="password" className="text-slate-300">Password</Label>
+            <Label htmlFor="password" className="text-slate-400 text-sm">Password</Label>
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-500" />
               <Input
                 id="password"
                 type="password"
                 placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="pl-10 bg-slate-700/50 border-slate-600 text-white placeholder:text-slate-500"
+                className="pl-10 h-12 bg-slate-800/50 border-white/10 text-white placeholder:text-slate-500 rounded-xl focus:border-teal-500/50 focus:ring-1 focus:ring-teal-500/20 transition-all"
                 required
               />
             </div>
@@ -123,26 +123,31 @@ export default function Login() {
 
           <Button
             type="submit"
-            className="w-full bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white font-medium py-3"
+            className="w-full h-12 bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-400 hover:to-teal-500 text-white font-semibold rounded-xl shadow-lg shadow-teal-500/20 transition-all duration-200 hover:shadow-teal-500/30 hover:-translate-y-0.5"
             disabled={loading}
           >
-            {loading ? 'Signing in...' : 'Sign In'}
+            {loading ? (
+              <span className="flex items-center gap-2">
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                Signing in...
+              </span>
+            ) : 'Sign In'}
           </Button>
         </form>
 
-        <p className="text-center mt-6 text-slate-400">
-          Don't have an account?{' '}
-          <Link to="/register" className="text-emerald-400 hover:text-emerald-300 font-medium">
+        <p className="text-center mt-6 text-slate-500 text-sm">
+          Don&apos;t have an account?{' '}
+          <Link to="/register" className="text-teal-400 hover:text-teal-300 font-medium transition-colors">
             Sign up
           </Link>
         </p>
 
         {/* Legal Links */}
-        <div className="mt-8 pt-6 border-t border-slate-700 text-center text-xs text-slate-500">
+        <div className="mt-8 pt-6 border-t border-white/5 text-center text-xs text-slate-600">
           By continuing, you agree to our{' '}
-          <Link to="/terms" className="text-emerald-400 hover:underline">Terms of Service</Link>
+          <Link to="/terms" className="text-teal-500 hover:text-teal-400 transition-colors">Terms of Service</Link>
           {' '}and{' '}
-          <Link to="/privacy" className="text-emerald-400 hover:underline">Privacy Policy</Link>
+          <Link to="/privacy" className="text-teal-500 hover:text-teal-400 transition-colors">Privacy Policy</Link>
         </div>
       </Card>
     </div>
