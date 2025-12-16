@@ -86,6 +86,7 @@ from routes.auth import auth_router, set_database as set_auth_db
 from routes.usage import usage_router, set_database as set_usage_db
 from routes.notifications import notification_router, set_database as set_notif_db
 from routes.trading_bot import trading_router, set_database as set_trading_db
+from routes.stripe import stripe_router, set_database as set_stripe_db
 from services.email_service import set_database as set_email_db
 
 
