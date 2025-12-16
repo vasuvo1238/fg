@@ -386,27 +386,44 @@ function App() {
                           </span>
                         </div>
                       </div>
-                      <div className="py-2">
+                      {/* Menu Items */}
+                      <div className="p-2">
                         <button 
                           onClick={() => { setActiveView('subscription'); setShowUserMenu(false); }}
-                          className="w-full px-4 py-2 text-left text-sm text-purple-400 hover:bg-slate-700/50 flex items-center gap-2"
+                          className="w-full px-3 py-2.5 text-left text-sm rounded-xl flex items-center gap-3 transition-all duration-200 group hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-pink-500/5"
                         >
-                          <Sparkles className="w-4 h-4" />
-                          Upgrade Plan
+                          <div className="p-2 rounded-lg bg-purple-500/10 group-hover:bg-purple-500/20 transition-colors">
+                            <Sparkles className="w-4 h-4 text-purple-400" />
+                          </div>
+                          <div>
+                            <p className="text-white font-medium">Upgrade Plan</p>
+                            <p className="text-xs text-slate-500">Unlock premium features</p>
+                          </div>
                         </button>
                         <button 
                           onClick={() => { setActiveView('settings'); setShowUserMenu(false); }}
-                          className="w-full px-4 py-2 text-left text-sm text-slate-300 hover:bg-slate-700/50 flex items-center gap-2"
+                          className="w-full px-3 py-2.5 text-left text-sm rounded-xl flex items-center gap-3 transition-all duration-200 group hover:bg-white/5"
                         >
-                          <Settings className="w-4 h-4" />
-                          Settings
+                          <div className="p-2 rounded-lg bg-slate-700/50 group-hover:bg-slate-700 transition-colors">
+                            <Settings className="w-4 h-4 text-slate-400" />
+                          </div>
+                          <div>
+                            <p className="text-slate-300 font-medium">Settings</p>
+                            <p className="text-xs text-slate-500">Notifications & preferences</p>
+                          </div>
                         </button>
+                      </div>
+                      
+                      {/* Logout */}
+                      <div className="p-2 border-t border-white/5">
                         <button 
                           onClick={handleLogout}
-                          className="w-full px-4 py-2 text-left text-sm text-red-400 hover:bg-slate-700/50 flex items-center gap-2"
+                          className="w-full px-3 py-2.5 text-left text-sm rounded-xl flex items-center gap-3 transition-all duration-200 group hover:bg-red-500/10"
                         >
-                          <LogOut className="w-4 h-4" />
-                          Sign Out
+                          <div className="p-2 rounded-lg bg-red-500/10 group-hover:bg-red-500/20 transition-colors">
+                            <LogOut className="w-4 h-4 text-red-400" />
+                          </div>
+                          <p className="text-red-400 font-medium">Sign Out</p>
                         </button>
                       </div>
                     </div>
@@ -418,7 +435,7 @@ function App() {
         </div>
 
         {/* Content Area */}
-        <div className="max-w-6xl mx-auto px-6 pt-8 pb-4">
+        <div className="max-w-7xl mx-auto px-6 pt-8 pb-4">
           {activeView === "settings" ? (
             <NotificationSettings />
           ) : activeView === "subscription" ? (
