@@ -548,7 +548,7 @@ function App() {
               </Button>
             </div>
           </div>
-          <p className="text-center text-sm text-slate-300 mt-2">
+          <p className="text-center text-sm mt-2" style={{ color: '#E2E8F0' }}>
             Always consult a licensed advisor for personalized financial advice
           </p>
         </div>
@@ -558,7 +558,7 @@ function App() {
       {activeView !== "chat" && (
         <div className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[90%] max-w-4xl z-10 pointer-events-none">
           <div className="p-3 bg-slate-900/95 backdrop-blur-xl border border-slate-600/50 rounded-lg shadow-2xl">
-            <p className="text-center text-sm text-slate-200">
+            <p className="text-center text-sm" style={{ color: '#F1F5F9' }}>
               ⚠️ <strong>Disclaimer:</strong> For educational purposes only. Not financial advice.
             </p>
           </div>
