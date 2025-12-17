@@ -7,7 +7,7 @@ from datetime import datetime
 
 class ScheduleTester:
     def __init__(self):
-        self.base_url = "https://marketmorning.preview.emergentagent.com"
+        self.base_url = "https://stockwizard-11.preview.emergentagent.com"
         self.api_url = f"{self.base_url}/api"
         self.session_cookies = None
 
