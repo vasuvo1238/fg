@@ -77,42 +77,42 @@ code {
         
         /* Secondary surfaces */
         --secondary: 217 33% 17%;
-        --secondary-foreground: 214 32% 85%;
+        --secondary-foreground: 0 0% 95%;  /* Brighter */
         
-        /* Muted text */
-        --muted: 215 20% 45%;
-        --muted-foreground: 215 20% 55%;
+        /* Muted text - INCREASED VISIBILITY */
+        --muted: 215 20% 60%;            /* Brighter muted */
+        --muted-foreground: 215 20% 75%; /* Much brighter */
         
-        /* Accent - Same blue for consistency */
-        --accent: 217 91% 60%;
+        /* Accent - Brighter blue for visibility */
+        --accent: 217 91% 65%;
         --accent-foreground: 0 0% 100%;
         
-        /* Destructive - Red for losses */
-        --destructive: 0 84% 60%;        /* #EF4444 */
+        /* Destructive - Brighter Red */
+        --destructive: 0 84% 65%;        /* Brighter red */
         --destructive-foreground: 0 0% 100%;
         
         /* Borders and inputs */
-        --border: 217 33% 22%;
-        --input: 217 33% 17%;
-        --ring: 217 91% 60%;
+        --border: 217 33% 28%;           /* Slightly brighter borders */
+        --input: 217 33% 20%;
+        --ring: 217 91% 65%;
         
-        /* Warning - Amber */
-        --warning: 38 92% 50%;
+        /* Warning - Brighter Amber */
+        --warning: 38 92% 55%;
         
-        /* Semantic Trading Colors */
-        --positive: 160 84% 39%;         /* Green #10B981 for gains */
-        --negative: 0 84% 60%;           /* Red #EF4444 for losses */
+        /* Semantic Trading Colors - BRIGHTER */
+        --positive: 160 84% 48%;         /* Brighter Green */
+        --negative: 0 84% 65%;           /* Brighter Red */
         
-        /* Crypto Highlights - Subtle neon */
-        --crypto-teal: 174 72% 40%;      /* #14B8A6 */
-        --crypto-purple: 258 77% 76%;    /* #A78BFA */
+        /* Crypto Highlights - Brighter neon */
+        --crypto-teal: 174 72% 50%;      /* Brighter teal */
+        --crypto-purple: 258 77% 80%;    /* Brighter purple */
         
-        /* Chart colors */
-        --chart-1: 217 91% 60%;
-        --chart-2: 160 84% 39%;
-        --chart-3: 38 92% 50%;
-        --chart-4: 174 72% 40%;
-        --chart-5: 258 77% 76%;
+        /* Chart colors - Brighter */
+        --chart-1: 217 91% 65%;
+        --chart-2: 160 84% 50%;
+        --chart-3: 38 92% 55%;
+        --chart-4: 174 72% 50%;
+        --chart-5: 258 77% 80%;
     }
 }
 
