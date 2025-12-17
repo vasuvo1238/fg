@@ -17,8 +17,6 @@ import PredictionMarkets from "@/components/PredictionMarkets";
 import CryptoAnalysis from "@/components/CryptoAnalysis";
 import TradingBot from "@/components/TradingBot";
 import Subscription from "@/components/Subscription";
-import Dashboard from "@/components/Dashboard";
-import FloatingChat, { FloatingChatButton } from "@/components/FloatingChat";
 import NotificationBell from "@/components/NotificationBell";
 import NotificationSettings from "@/components/NotificationSettings";
 import { API } from "@/lib/api";
