@@ -58,22 +58,21 @@ code {
     .dark {
         /* 
          * Dark Mode - Default for Trading
-         * Deep charcoal/navy-black for immersion
-         * Reduces glare, easier on eyes during long sessions
+         * HIGH CONTRAST for better readability
          */
         --background: 222 47% 7%;        /* Navy-black #0F172A */
-        --foreground: 214 32% 91%;       /* Light gray #E2E8F0 */
+        --foreground: 0 0% 98%;          /* Near white for maximum contrast */
         
         /* Cards/Panels - Dark gray */
         --card: 217 33% 15%;             /* #1E293B */
-        --card-foreground: 214 32% 91%;
+        --card-foreground: 0 0% 98%;     /* Near white */
         
         /* Popovers */
         --popover: 217 33% 12%;
-        --popover-foreground: 214 32% 91%;
+        --popover-foreground: 0 0% 98%;  /* Near white */
         
         /* Primary - Trustworthy Blue */
-        --primary: 217 91% 60%;          /* #3B82F6 */
+        --primary: 217 91% 65%;          /* Brighter blue */
         --primary-foreground: 0 0% 100%;
         
         /* Secondary surfaces */
