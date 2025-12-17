@@ -217,7 +217,7 @@ function App() {
                   </div>
                   <div>
                     <h1 className="text-lg font-bold text-white">MarketMorning</h1>
-                    <p className="text-[10px] text-slate-500 -mt-0.5">Pro Trading Platform</p>
+                    <p className="text-[10px] text-slate-300 -mt-0.5">Pro Trading Platform</p>
                   </div>
                 </div>
               </div>
