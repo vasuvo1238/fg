@@ -1801,9 +1801,9 @@ class FinancialChatbotTester:
             
             if success:
                 data = response.json()
-                if "basic" in data and "pro" in data:
-                    basic_tier = data["basic"]
-                    pro_tier = data["pro"]
+                if "tiers" in data and "basic" in data["tiers"] and "pro" in data["tiers"]:
+                    basic_tier = data["tiers"]["basic"]
+                    pro_tier = data["tiers"]["pro"]
                     
                     # Check pricing
                     basic_price = basic_tier.get("price", 0)
@@ -1815,7 +1815,7 @@ class FinancialChatbotTester:
                         details += f", Pricing mismatch - Basic: ${basic_price}, Pro: ${pro_price}"
                         success = False
                 else:
-                    details += ", Missing basic/pro tiers"
+                    details += ", Missing tiers structure or basic/pro tiers"
                     success = False
                     
             self.log_test("Payments - Tiers", success, details)
