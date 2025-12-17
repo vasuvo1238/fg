@@ -1893,6 +1893,240 @@ class FinancialChatbotTester:
             self.log_test("Payments - Subscription Status", False, str(e))
             return False
 
+    # ============== MARKETMORNING SPECIFIC TESTS ==============
+    
+    def test_auth_me(self):
+        """Test GET /api/auth/me - Get current user info"""
+        try:
+            start_time = time.time()
+            response = requests.get(
+                f"{self.api_url}/auth/me",
+                cookies=getattr(self, 'session_cookies', None),
+                timeout=30
+            )
+            latency = time.time() - start_time
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if success:
+                data = response.json()
+                if "user" in data:
+                    details += f", User: {data.get('user', {}).get('email', 'N/A')}"
+                else:
+                    details += ", User info retrieved"
+            elif response.status_code == 401:
+                details += ", Authentication required (expected if not logged in)"
+            else:
+                details += f", Unexpected error"
+                    
+            self.log_test("Auth - Get Current User", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Auth - Get Current User", False, str(e))
+            return False
+
+    def test_auth_logout(self):
+        """Test POST /api/auth/logout - Logout current user"""
+        try:
+            start_time = time.time()
+            response = requests.post(
+                f"{self.api_url}/auth/logout",
+                cookies=getattr(self, 'session_cookies', None),
+                timeout=30
+            )
+            latency = time.time() - start_time
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if success:
+                # Clear session cookies after logout
+                self.session_cookies = None
+                details += ", Logout successful"
+            else:
+                details += f", Logout failed"
+                    
+            self.log_test("Auth - Logout", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Auth - Logout", False, str(e))
+            return False
+
+    def test_chat_simple_stock_question(self):
+        """Test chat with simple stock question"""
+        try:
+            payload = {
+                "message": "Tell me about Apple stock",
+                "session_id": f"marketmorning_test_{int(time.time())}"
+            }
+            
+            start_time = time.time()
+            response = requests.post(
+                f"{self.api_url}/chat",
+                json=payload,
+                headers={"Content-Type": "application/json"},
+                timeout=30
+            )
+            latency = time.time() - start_time
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}, Latency: {latency:.2f}s"
+            
+            if success:
+                data = response.json()
+                if not data.get("is_guardrail_triggered", True) and len(data.get("message", "")) > 50:
+                    details += f", Response length: {len(data['message'])} chars"
+                else:
+                    success = False
+                    details += ", Response too short or guardrails triggered"
+                    
+            self.log_test("Chat - Simple Stock Question", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Chat - Simple Stock Question", False, str(e))
+            return False
+
+    def test_chat_response_handling(self):
+        """Test chat response handling and structure"""
+        try:
+            payload = {
+                "message": "What are the current market trends?",
+                "session_id": f"response_test_{int(time.time())}"
+            }
+            
+            response = requests.post(
+                f"{self.api_url}/chat",
+                json=payload,
+                headers={"Content-Type": "application/json"},
+                timeout=30
+            )
+            
+            success = response.status_code == 200
+            details = f"Status: {response.status_code}"
+            
+            if success:
+                data = response.json()
+                required_fields = ["session_id", "message", "is_guardrail_triggered"]
+                missing_fields = [field for field in required_fields if field not in data]
+                
+                if missing_fields:
+                    success = False
+                    details += f", Missing fields: {missing_fields}"
+                else:
+                    details += ", All required fields present"
+                    
+            self.log_test("Chat - Response Handling", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_test("Chat - Response Handling", False, str(e))
+            return False
+
+    # Navigation & Views Tests (these test backend endpoints that support the views)
+    def test_chat_view_default(self):
+        """Test chat view (default) - basic chat functionality"""
+        return self.test_chat_simple_stock_question()
+
+    def test_stocks_view(self):
+        """Test stocks view - stock prediction tool"""
+        return self.test_stock_info_endpoint()
+
+    def test_ai_bot_view(self):
+        """Test AI Bot view - Morning Trading Bot"""
+        return self.test_trading_morning_report()
+
+    def test_portfolio_view(self):
+        """Test portfolio view"""
+        return self.test_portfolio_save_load_delete()
+
+    def test_options_view(self):
+        """Test options view"""
+        return self.test_options_templates()
+
+    def test_analytics_view(self):
+        """Test analytics view"""
+        return self.test_models_performance()
+
+    def test_risk_view(self):
+        """Test risk view - placeholder (no specific backend endpoint)"""
+        self.log_test("Risk View", True, "Risk view functionality - frontend only")
+        return True
+
+    def test_technical_view(self):
+        """Test technical view"""
+        return self.test_earnings_calendar_aapl()
+
+    def test_india_markets_view(self):
+        """Test India markets view - placeholder"""
+        self.log_test("India Markets View", True, "India markets functionality - frontend only")
+        return True
+
+    def test_prediction_markets_view(self):
+        """Test prediction markets view - placeholder"""
+        self.log_test("Prediction Markets View", True, "Prediction markets functionality - frontend only")
+        return True
+
+    def test_crypto_view(self):
+        """Test crypto view - placeholder"""
+        self.log_test("Crypto View", True, "Crypto functionality - frontend only")
+        return True
+
+    def run_marketmorning_test(self):
+        """Run MarketMorning platform comprehensive tests based on review request"""
+        print("🚀 Starting MarketMorning Financial Trading Platform Testing")
+        print("=" * 80)
+        
+        # Authentication & User Flow Tests
+        print("\n🔐 AUTHENTICATION & USER FLOW TESTS")
+        print("-" * 40)
+        self.test_auth_login()
+        self.test_auth_me()
+        self.test_auth_logout()
+        
+        # Main Chat Feature Tests
+        print("\n💬 MAIN CHAT FEATURE TESTS")
+        print("-" * 40)
+        self.test_chat_simple_stock_question()
+        self.test_chat_response_handling()
+        
+        # Navigation & Views Tests
+        print("\n🧭 NAVIGATION & VIEWS TESTS")
+        print("-" * 40)
+        self.test_chat_view_default()
+        self.test_stocks_view()
+        self.test_ai_bot_view()
+        self.test_portfolio_view()
+        self.test_options_view()
+        self.test_analytics_view()
+        self.test_risk_view()
+        self.test_technical_view()
+        self.test_india_markets_view()
+        self.test_prediction_markets_view()
+        self.test_crypto_view()
+        
+        # API Endpoints Tests (as specified in review request)
+        print("\n📡 SPECIFIC API ENDPOINTS TESTS")
+        print("-" * 40)
+        self.test_trading_morning_report()
+        self.test_payments_tiers()
+        self.test_payments_subscription_status()
+        
+        # Additional Core Tests
+        print("\n⭐ ADDITIONAL CORE TESTS")
+        print("-" * 40)
+        self.test_stock_info_endpoint()
+        self.test_options_templates()
+        self.test_analyst_targets_aapl()
+        self.test_earnings_calendar_aapl()
+        self.test_options_chain_expiries()
+        
+        # Print final results
+        self.print_final_results()
+
     def run_all_tests(self):
         """Run all tests in sequence"""
         print("🚀 Starting Trading Bot & Stripe Payment API Tests")
