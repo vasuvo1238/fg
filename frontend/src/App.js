@@ -227,8 +227,8 @@ function App() {
               
                 {/* Main Nav Items */}
                 {[
-                  { id: 'dashboard', icon: BarChart3, label: 'Dashboard' },
-                  { id: 'stocks', icon: TrendingUp, label: 'Markets' },
+                  { id: 'chat', icon: MessageCircle, label: 'Chat' },
+                  { id: 'stocks', icon: BarChart3, label: 'Stocks' },
                   { id: 'options', icon: TrendingUp, label: 'Options' },
                   { id: 'analytics', icon: Microscope, label: 'Analytics' },
                   { id: 'portfolio', icon: Wallet, label: 'Portfolio' },
