@@ -391,26 +391,26 @@ function App() {
                           onClick={() => { setActiveView('subscription'); setShowUserMenu(false); }}
                           className="w-full px-4 py-2.5 text-left text-sm flex items-center gap-3 hover:bg-slate-700/50 transition-colors"
                         >
-                          <Sparkles className="w-4 h-4 text-purple-400" />
-                          <span className="text-slate-300">Upgrade Plan</span>
+                          <Sparkles className="w-4 h-4 text-purple-300" />
+                          <span className="text-slate-100 font-medium">Upgrade Plan</span>
                         </button>
                         <button 
                           onClick={() => { setActiveView('settings'); setShowUserMenu(false); }}
                           className="w-full px-4 py-2.5 text-left text-sm flex items-center gap-3 hover:bg-slate-700/50 transition-colors"
                         >
-                          <Settings className="w-4 h-4 text-slate-400" />
-                          <span className="text-slate-300">Settings</span>
+                          <Settings className="w-4 h-4 text-slate-300" />
+                          <span className="text-slate-100 font-medium">Settings</span>
                         </button>
                       </div>
                       
                       {/* Logout */}
-                      <div className="py-2 border-t border-slate-700">
+                      <div className="py-2 border-t border-slate-600">
                         <button 
                           onClick={handleLogout}
                           className="w-full px-4 py-2.5 text-left text-sm flex items-center gap-3 hover:bg-slate-700/50 transition-colors"
                         >
                           <LogOut className="w-4 h-4 text-red-400" />
-                          <span className="text-red-400">Sign Out</span>
+                          <span className="text-red-300 font-medium">Sign Out</span>
                         </button>
                       </div>
                     </div>
