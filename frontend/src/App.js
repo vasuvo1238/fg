@@ -452,13 +452,13 @@ function App() {
             <div className="max-w-4xl mx-auto">
               {showWelcome && messages.length === 0 && (
                 <div className="text-center py-12">
-                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-600/20 mb-6">
-                    <Sparkles className="w-8 h-8 text-blue-400" />
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-600/30 mb-6">
+                    <Sparkles className="w-8 h-8 text-blue-300" />
                   </div>
                   <h2 className="text-3xl font-bold text-white mb-3">
                     Welcome to MarketMorning
                   </h2>
-                  <p className="text-slate-400 max-w-xl mx-auto mb-8">
+                  <p className="text-slate-200 max-w-xl mx-auto mb-8 text-base">
                     Your AI-powered financial assistant. Ask me anything about stocks, crypto, investing strategies, or market analysis.
                   </p>
                   
@@ -470,20 +470,20 @@ function App() {
                         <button
                           key={idx}
                           onClick={() => handleExampleClick(q.text)}
-                          className="text-left p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 hover:border-blue-500/50 hover:bg-slate-800 transition-all"
+                          className="text-left p-4 rounded-xl bg-slate-800/70 border border-slate-600/50 hover:border-blue-500/50 hover:bg-slate-700/70 transition-all"
                         >
                           <div className={`inline-flex p-2 rounded-lg bg-gradient-to-br ${q.gradient} mb-3`}>
                             <IconComponent className="w-4 h-4 text-white" />
                           </div>
-                          <p className="text-sm text-slate-300">{q.text}</p>
+                          <p className="text-sm text-slate-100 font-medium">{q.text}</p>
                         </button>
                       );
                     })}
                   </div>
 
                   {/* Disclaimer */}
-                  <div className="max-w-2xl mx-auto p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg">
-                    <p className="text-xs text-amber-200">
+                  <div className="max-w-2xl mx-auto p-3 bg-amber-500/15 border border-amber-500/30 rounded-lg">
+                    <p className="text-sm text-amber-100">
                       <strong>⚠️ Educational Purpose Only:</strong> This platform is for learning and research. Not financial advice. Consult a licensed advisor before investing.
                     </p>
                   </div>
