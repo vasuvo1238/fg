@@ -170,11 +170,11 @@ function App() {
                 {/* Market Status */}
                 <div className="flex items-center gap-4">
                   <span className="flex items-center gap-1.5">
-                    <span className="w-2 h-2 bg-emerald-500 rounded-full pulse-live" />
-                    <span className="text-slate-400">Markets Open</span>
+                    <span className="w-2 h-2 bg-emerald-400 rounded-full pulse-live" />
+                    <span className="text-slate-200 font-medium">Markets Open</span>
                   </span>
-                  <span className="text-slate-500">|</span>
-                  <span className="text-slate-400">
+                  <span className="text-slate-400">|</span>
+                  <span className="text-slate-200">
                     {new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZoneName: 'short' })}
                   </span>
                 </div>
@@ -182,16 +182,16 @@ function App() {
                 {/* Quick Ticker */}
                 <div className="flex items-center gap-6 font-mono">
                   <span className="flex items-center gap-2">
-                    <span className="text-slate-400">S&P 500</span>
-                    <span className="text-emerald-400">+0.45%</span>
+                    <span className="text-slate-200 font-medium">S&P 500</span>
+                    <span className="text-emerald-300 font-semibold">+0.45%</span>
                   </span>
                   <span className="flex items-center gap-2">
-                    <span className="text-slate-400">BTC</span>
-                    <span className="text-emerald-400">$104,250</span>
+                    <span className="text-slate-200 font-medium">BTC</span>
+                    <span className="text-emerald-300 font-semibold">$104,250</span>
                   </span>
                   <span className="flex items-center gap-2">
-                    <span className="text-slate-400">ETH</span>
-                    <span className="text-red-400">-1.2%</span>
+                    <span className="text-slate-200 font-medium">ETH</span>
+                    <span className="text-red-400 font-semibold">-1.2%</span>
                   </span>
                 </div>
                 
