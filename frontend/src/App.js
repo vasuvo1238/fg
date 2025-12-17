@@ -527,7 +527,7 @@ function App() {
       {/* Chat Input - Only show in chat view */}
       {activeView === "chat" && (
         <div className="fixed bottom-8 left-1/2 -translate-x-1/2 w-[90%] max-w-3xl z-20">
-          <div className="bg-slate-800/90 backdrop-blur-xl border border-slate-700 rounded-2xl p-2 shadow-2xl">
+          <div className="bg-slate-800/95 backdrop-blur-xl border border-slate-600 rounded-2xl p-2 shadow-2xl">
             <div className="flex items-center gap-2">
               <Input
                 ref={inputRef}
@@ -537,7 +537,7 @@ function App() {
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyPress={handleKeyPress}
                 disabled={isLoading}
-                className="flex-1 border-0 bg-transparent text-white placeholder-slate-500 focus-visible:ring-0"
+                className="flex-1 border-0 bg-transparent text-white placeholder-slate-400 focus-visible:ring-0 text-base"
               />
               <Button
                 onClick={() => handleSendMessage()}
@@ -548,7 +548,7 @@ function App() {
               </Button>
             </div>
           </div>
-          <p className="text-center text-xs text-slate-500 mt-2">
+          <p className="text-center text-sm text-slate-300 mt-2">
             Always consult a licensed advisor for personalized financial advice
           </p>
         </div>
@@ -557,8 +557,8 @@ function App() {
       {/* Footer Disclaimer for non-chat views */}
       {activeView !== "chat" && (
         <div className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[90%] max-w-4xl z-10 pointer-events-none">
-          <div className="p-3 bg-slate-900/95 backdrop-blur-xl border border-slate-700/50 rounded-lg shadow-2xl">
-            <p className="text-center text-xs text-slate-400">
+          <div className="p-3 bg-slate-900/95 backdrop-blur-xl border border-slate-600/50 rounded-lg shadow-2xl">
+            <p className="text-center text-sm text-slate-200">
               ⚠️ <strong>Disclaimer:</strong> For educational purposes only. Not financial advice.
             </p>
           </div>
