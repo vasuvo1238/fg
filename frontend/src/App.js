@@ -262,8 +262,8 @@ function App() {
                   onClick={() => setActiveView("indian")}
                   className={`gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all ${
                     activeView === "indian" 
-                      ? "bg-orange-500/20 text-orange-400" 
-                      : "text-slate-400 hover:text-white hover:bg-slate-700/50"
+                      ? "bg-orange-500/20 text-orange-300" 
+                      : "text-slate-200 hover:text-white hover:bg-slate-700/50"
                   }`}
                 >
                   <Globe className="w-4 h-4" />
@@ -276,8 +276,8 @@ function App() {
                   onClick={() => setActiveView("prediction")}
                   className={`gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all ${
                     activeView === "prediction" 
-                      ? "bg-purple-500/20 text-purple-400" 
-                      : "text-slate-400 hover:text-white hover:bg-slate-700/50"
+                      ? "bg-purple-500/20 text-purple-300" 
+                      : "text-slate-200 hover:text-white hover:bg-slate-700/50"
                   }`}
                 >
                   <Target className="w-4 h-4" />
@@ -290,8 +290,8 @@ function App() {
                   onClick={() => setActiveView("crypto")}
                   className={`gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all ${
                     activeView === "crypto" 
-                      ? "bg-purple-500/20 text-purple-400" 
-                      : "text-slate-400 hover:text-white hover:bg-slate-700/50"
+                      ? "bg-purple-500/20 text-purple-300" 
+                      : "text-slate-200 hover:text-white hover:bg-slate-700/50"
                   }`}
                 >
                   <DollarSign className="w-4 h-4" />
@@ -305,13 +305,13 @@ function App() {
                   onClick={() => setActiveView("tradingbot")}
                   className={`gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all relative ${
                     activeView === "tradingbot" 
-                      ? "bg-emerald-500/20 text-emerald-400" 
-                      : "text-emerald-400 hover:bg-emerald-500/10"
+                      ? "bg-emerald-500/20 text-emerald-300" 
+                      : "text-emerald-300 hover:bg-emerald-500/10"
                   }`}
                 >
                   <Bot className="w-4 h-4" />
                   AI Bot
-                  <span className="absolute -top-1 -right-1 w-2 h-2 bg-emerald-500 rounded-full pulse-live" />
+                  <span className="absolute -top-1 -right-1 w-2 h-2 bg-emerald-400 rounded-full pulse-live" />
                 </Button>
               </nav>
               
