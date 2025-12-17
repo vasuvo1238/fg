@@ -50,7 +50,7 @@ export default function Login() {
       {/* Simple professional background */}
       <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-[#0F172A] to-slate-900" />
       
-      <Card className="relative w-full max-w-md p-8 bg-slate-800/50 border-slate-700/50 rounded-2xl shadow-2xl backdrop-blur-sm">
+      <Card className="relative w-full max-w-md p-8 bg-slate-800/70 border-slate-600/50 rounded-2xl shadow-2xl backdrop-blur-sm">
         {/* Logo - Clean and Professional */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-3">
