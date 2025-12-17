@@ -483,7 +483,7 @@ function App() {
 
                   {/* Disclaimer */}
                   <div className="max-w-2xl mx-auto p-3 bg-amber-500/15 border border-amber-500/30 rounded-lg">
-                    <p className="text-sm text-amber-100">
+                    <p className="text-sm text-amber-50">
                       <strong>⚠️ Educational Purpose Only:</strong> This platform is for learning and research. Not financial advice. Consult a licensed advisor before investing.
                     </p>
                   </div>
