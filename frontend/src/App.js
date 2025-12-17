@@ -243,8 +243,8 @@ function App() {
                     onClick={() => setActiveView(item.id)}
                     className={`gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 ${
                       activeView === item.id 
-                        ? "bg-blue-600/20 text-blue-400" 
-                        : "text-slate-400 hover:text-white hover:bg-slate-700/50"
+                        ? "bg-blue-600/20 text-blue-300" 
+                        : "text-slate-200 hover:text-white hover:bg-slate-700/50"
                     }`}
                   >
                     <item.icon className="w-4 h-4" />
