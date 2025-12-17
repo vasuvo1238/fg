@@ -2238,7 +2238,12 @@ class FinancialChatbotTester:
 
 def main():
     tester = FinancialChatbotTester()
-    return tester.run_all_tests()
+    
+    # Check if specific test type is requested
+    if len(sys.argv) > 1 and sys.argv[1] == "comprehensive":
+        return tester.run_all_tests()
+    else:
+        return tester.run_marketmorning_test()  # Default to MarketMorning tests for this review
 
 if __name__ == "__main__":
     sys.exit(main())
