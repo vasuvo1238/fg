@@ -458,7 +458,7 @@ function App() {
                   <h2 className="text-3xl font-bold text-white mb-3">
                     Welcome to MarketMorning
                   </h2>
-                  <p className="text-slate-200 max-w-xl mx-auto mb-8 text-base">
+                  <p className="text-slate-100 max-w-xl mx-auto mb-8 text-lg font-medium">
                     Your AI-powered financial assistant. Ask me anything about stocks, crypto, investing strategies, or market analysis.
                   </p>
                   
