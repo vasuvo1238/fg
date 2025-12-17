@@ -61,13 +61,13 @@ export default function Login() {
               MarketMorning
             </h1>
           </div>
-          <p className="text-slate-500 text-sm">Professional Trading Platform</p>
+          <p className="text-slate-300 text-sm">Professional Trading Platform</p>
         </div>
 
         {/* Google Login - Primary CTA */}
         <Button
           onClick={handleGoogleLogin}
-          className="w-full mb-5 bg-white hover:bg-gray-100 text-gray-800 font-medium h-12 rounded-xl shadow-lg transition-all duration-200"
+          className="w-full mb-5 bg-white hover:bg-gray-100 text-gray-800 font-semibold h-12 rounded-xl shadow-lg transition-all duration-200"
         >
           <Chrome className="w-5 h-5 mr-2" />
           Continue with Google
@@ -75,42 +75,42 @@ export default function Login() {
 
         <div className="relative mb-5">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-slate-700"></div>
+            <div className="w-full border-t border-slate-600"></div>
           </div>
-          <div className="relative flex justify-center text-xs">
-            <span className="px-3 bg-slate-800 text-slate-500">or continue with email</span>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-3 bg-slate-800 text-slate-300">or continue with email</span>
           </div>
         </div>
 
         {/* Email Login Form */}
         <form onSubmit={handleEmailLogin} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-slate-300">Email</Label>
+            <Label htmlFor="email" className="text-slate-100 font-medium">Email</Label>
             <div className="relative">
-              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-300" />
               <Input
                 id="email"
                 type="email"
                 placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="pl-10 h-12 bg-slate-800/50 border-white/10 text-white placeholder:text-slate-500 rounded-xl focus:border-teal-500/50 focus:ring-1 focus:ring-teal-500/20 transition-all"
+                className="pl-10 h-12 bg-slate-700/50 border-slate-500/50 text-white placeholder:text-slate-400 rounded-xl focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20 transition-all"
                 required
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="password" className="text-slate-400 text-sm">Password</Label>
+            <Label htmlFor="password" className="text-slate-100 font-medium">Password</Label>
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-500" />
+              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-300" />
               <Input
                 id="password"
                 type="password"
                 placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="pl-10 h-12 bg-slate-800/50 border-white/10 text-white placeholder:text-slate-500 rounded-xl focus:border-teal-500/50 focus:ring-1 focus:ring-teal-500/20 transition-all"
+                className="pl-10 h-12 bg-slate-700/50 border-slate-500/50 text-white placeholder:text-slate-400 rounded-xl focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20 transition-all"
                 required
               />
             </div>
