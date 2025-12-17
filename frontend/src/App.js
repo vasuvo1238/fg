@@ -448,35 +448,122 @@ function App() {
           ) : activeView === "tradingbot" ? (
             <TradingBot />
           ) : (
-            <Dashboard onOpenChat={() => { setChatOpen(true); setChatMinimized(false); }} />
+            /* Chat View */
+            <div className="max-w-4xl mx-auto">
+              {showWelcome && messages.length === 0 && (
+                <div className="text-center py-12">
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-600/20 mb-6">
+                    <Sparkles className="w-8 h-8 text-blue-400" />
+                  </div>
+                  <h2 className="text-3xl font-bold text-white mb-3">
+                    Welcome to MarketMorning
+                  </h2>
+                  <p className="text-slate-400 max-w-xl mx-auto mb-8">
+                    Your AI-powered financial assistant. Ask me anything about stocks, crypto, investing strategies, or market analysis.
+                  </p>
+                  
+                  {/* Example Questions */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                    {exampleQuestions.map((q, idx) => {
+                      const IconComponent = q.icon;
+                      return (
+                        <button
+                          key={idx}
+                          onClick={() => handleExampleClick(q.text)}
+                          className="text-left p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 hover:border-blue-500/50 hover:bg-slate-800 transition-all"
+                        >
+                          <div className={`inline-flex p-2 rounded-lg bg-gradient-to-br ${q.gradient} mb-3`}>
+                            <IconComponent className="w-4 h-4 text-white" />
+                          </div>
+                          <p className="text-sm text-slate-300">{q.text}</p>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Disclaimer */}
+                  <div className="max-w-2xl mx-auto p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+                    <p className="text-xs text-amber-200">
+                      <strong>⚠️ Educational Purpose Only:</strong> This platform is for learning and research. Not financial advice. Consult a licensed advisor before investing.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Messages */}
+              <div ref={scrollRef} className="space-y-4 pb-32">
+                {messages.map((msg) => (
+                  <div
+                    key={msg.id}
+                    className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                  >
+                    <div className={`max-w-[80%] p-4 rounded-2xl ${
+                      msg.role === 'user' 
+                        ? 'bg-blue-600 text-white rounded-tr-sm' 
+                        : 'bg-slate-800 text-slate-200 rounded-tl-sm border border-slate-700'
+                    }`}>
+                      <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
+                    </div>
+                  </div>
+                ))}
+
+                {isLoading && (
+                  <div className="flex justify-start">
+                    <div className="bg-slate-800 p-4 rounded-2xl rounded-tl-sm border border-slate-700">
+                      <div className="flex gap-1">
+                        <span className="w-2 h-2 bg-slate-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                        <span className="w-2 h-2 bg-slate-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                        <span className="w-2 h-2 bg-slate-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
           )}
         </div>
       </div>
 
-      {/* Floating AI Chat */}
-      {chatOpen ? (
-        <FloatingChat 
-          isOpen={chatOpen}
-          onClose={() => setChatOpen(false)}
-          onMinimize={() => setChatMinimized(!chatMinimized)}
-          isMinimized={chatMinimized}
-        />
-      ) : (
-        <FloatingChatButton 
-          onClick={() => { setChatOpen(true); setChatMinimized(false); }}
-          hasMessages={false}
-        />
-      )}
-
-      {/* Global Footer Disclaimer */}
-      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[90%] max-w-4xl z-10 pointer-events-none">
-        <div className="p-3 bg-slate-900/95 backdrop-blur-xl border border-slate-700/50 rounded-lg shadow-2xl">
-          <p className="text-center text-xs text-slate-400">
-            ⚠️ <strong>Disclaimer:</strong> For educational purposes only. Not financial advice. 
-            Consult a licensed financial advisor before making investment decisions.
+      {/* Chat Input - Only show in chat view */}
+      {activeView === "chat" && (
+        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 w-[90%] max-w-3xl z-20">
+          <div className="bg-slate-800/90 backdrop-blur-xl border border-slate-700 rounded-2xl p-2 shadow-2xl">
+            <div className="flex items-center gap-2">
+              <Input
+                ref={inputRef}
+                type="text"
+                placeholder="Ask about stocks, crypto, or investing..."
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyPress={handleKeyPress}
+                disabled={isLoading}
+                className="flex-1 border-0 bg-transparent text-white placeholder-slate-500 focus-visible:ring-0"
+              />
+              <Button
+                onClick={() => handleSendMessage()}
+                disabled={!inputValue.trim() || isLoading}
+                className="rounded-xl bg-blue-600 hover:bg-blue-500"
+              >
+                <Send className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+          <p className="text-center text-xs text-slate-500 mt-2">
+            Always consult a licensed advisor for personalized financial advice
           </p>
         </div>
-      </div>
+      )}
+
+      {/* Footer Disclaimer for non-chat views */}
+      {activeView !== "chat" && (
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[90%] max-w-4xl z-10 pointer-events-none">
+          <div className="p-3 bg-slate-900/95 backdrop-blur-xl border border-slate-700/50 rounded-lg shadow-2xl">
+            <p className="text-center text-xs text-slate-400">
+              ⚠️ <strong>Disclaimer:</strong> For educational purposes only. Not financial advice.
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
