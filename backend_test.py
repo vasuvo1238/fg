@@ -2125,7 +2125,23 @@ class FinancialChatbotTester:
         self.test_options_chain_expiries()
         
         # Print final results
-        self.print_final_results()
+        print("\n" + "=" * 80)
+        print(f"📊 MarketMorning Test Results: {self.tests_passed}/{self.tests_run} passed")
+        print(f"Success Rate: {(self.tests_passed/self.tests_run)*100:.1f}%")
+        
+        # Detailed breakdown
+        failed_tests = [result for result in self.test_results if not result["success"]]
+        if failed_tests:
+            print(f"\n❌ Failed Tests ({len(failed_tests)}):")
+            for test in failed_tests:
+                print(f"  • {test['test']}: {test['details']}")
+        
+        if self.tests_passed == self.tests_run:
+            print("\n🎉 All MarketMorning tests passed!")
+            return 0
+        else:
+            print(f"\n⚠️  {len(failed_tests)} tests failed. Check details above.")
+            return 1
 
     def run_all_tests(self):
         """Run all tests in sequence"""
