@@ -483,7 +483,7 @@ function App() {
 
                   {/* Disclaimer */}
                   <div className="max-w-2xl mx-auto p-3 bg-amber-500/15 border border-amber-500/30 rounded-lg">
-                    <p className="text-sm font-medium" style={{ color: '#92400E' }}>
+                    <p className="text-sm font-semibold" style={{ color: '#451A03' }}>
                       <strong>⚠️ Educational Purpose Only:</strong> This platform is for learning and research. Not financial advice. Consult a licensed advisor before investing.
                     </p>
                   </div>
