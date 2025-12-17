@@ -2037,6 +2037,9 @@ class FinancialChatbotTester:
 
     def test_ai_bot_view(self):
         """Test AI Bot view - Morning Trading Bot"""
+        # Re-login for authenticated endpoint
+        if not self.session_cookies:
+            self.test_auth_login()
         return self.test_trading_morning_report()
 
     def test_portfolio_view(self):
