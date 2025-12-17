@@ -482,8 +482,8 @@ function App() {
                   </div>
 
                   {/* Disclaimer */}
-                  <div className="max-w-2xl mx-auto p-3 bg-amber-500/15 border border-amber-500/30 rounded-lg">
-                    <p className="text-sm font-semibold" style={{ color: '#451A03' }}>
+                  <div className="max-w-2xl mx-auto p-4 rounded-lg" style={{ backgroundColor: '#92400E', border: '2px solid #B45309' }}>
+                    <p className="text-sm font-semibold" style={{ color: '#FEF3C7' }}>
                       <strong>⚠️ Educational Purpose Only:</strong> This platform is for learning and research. Not financial advice. Consult a licensed advisor before investing.
                     </p>
                   </div>
