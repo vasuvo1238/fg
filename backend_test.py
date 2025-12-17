@@ -2111,6 +2111,8 @@ class FinancialChatbotTester:
         # API Endpoints Tests (as specified in review request)
         print("\n📡 SPECIFIC API ENDPOINTS TESTS")
         print("-" * 40)
+        # Re-login for authenticated endpoints
+        self.test_auth_login()
         self.test_trading_morning_report()
         self.test_payments_tiers()
         self.test_payments_subscription_status()
