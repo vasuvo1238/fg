@@ -455,10 +455,10 @@ function App() {
                   <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-600/30 mb-6">
                     <Sparkles className="w-8 h-8 text-blue-300" />
                   </div>
-                  <h2 className="text-3xl font-bold text-white mb-3">
+                  <h2 className="text-3xl font-bold mb-3" style={{ color: '#FFFFFF' }}>
                     Welcome to MarketMorning
                   </h2>
-                  <p className="text-white max-w-xl mx-auto mb-8 text-lg font-normal">
+                  <p className="max-w-xl mx-auto mb-8 text-lg font-normal" style={{ color: '#F1F5F9' }}>
                     Your AI-powered financial assistant. Ask me anything about stocks, crypto, investing strategies, or market analysis.
                   </p>
                   
