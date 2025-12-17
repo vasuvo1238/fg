@@ -369,8 +369,8 @@ function App() {
                             </div>
                           )}
                           <div className="flex-1 min-w-0">
-                            <p className="font-medium text-white truncate">{user?.name || 'User'}</p>
-                            <p className="text-xs text-slate-500 truncate">{user?.email}</p>
+                            <p className="font-semibold text-white truncate">{user?.name || 'User'}</p>
+                            <p className="text-xs text-slate-300 truncate">{user?.email}</p>
                           </div>
                         </div>
                         <div className="mt-3">
